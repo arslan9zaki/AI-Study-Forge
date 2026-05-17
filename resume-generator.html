@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Resume Generator</title>
 
+<style>
+
+body{
+background:#0f172a;
+color:white;
+font-family:Arial;
+padding:40px;
+}
+
+.box{
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+max-width:800px;
+margin:auto;
+}
+
+textarea{
+width:100%;
+height:200px;
+margin-top:20px;
+padding:10px;
+font-size:16px;
+}
+
+button{
+margin-top:20px;
+padding:12px 25px;
+background:blue;
+color:white;
+border:none;
+font-size:16px;
+cursor:pointer;
+}
+
+#output{
+margin-top:30px;
+background:#111827;
+padding:20px;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>AI Resume Generator</h1>
+
+<p>Enter your information below:</p>
+
+<textarea id="inputBox"></textarea>
+
+<button onclick="makeResume()">Generate Resume</button>
+
+<div id="output">
+Your resume will appear here
+</div>
+
+</div>
+
+<script>
+
+function makeResume(){
+
+let text =
+document.getElementById("inputBox").value;
+
+document.getElementById("output").innerText =
+"PROFESSIONAL RESUME\n\n" + text;
+
+}
+
+</script>
+
+</body>
+</html>
