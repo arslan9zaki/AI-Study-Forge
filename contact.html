@@ -1,23 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact - AI Biz Tools</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact Us | AI Insider</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#0f1117;
+color:white;
+}
+
+header{
+background:black;
+padding:20px;
+text-align:center;
+border-bottom:1px solid #222;
+}
+
+header h1{
+margin:0;
+color:gold;
+font-size:40px;
+}
+
+nav{
+margin-top:12px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin:0 15px;
+transition:0.3s;
+}
+
+nav a:hover{
+color:gold;
+}
+
+.contact-section{
+max-width:700px;
+margin:80px auto;
+padding:40px;
+background:#1a1d26;
+border-radius:12px;
+box-shadow:0 0 20px rgba(0,0,0,0.3);
+}
+
+.contact-section h2{
+text-align:center;
+color:gold;
+margin-bottom:20px;
+font-size:40px;
+}
+
+.contact-section p{
+text-align:center;
+color:#ccc;
+margin-bottom:40px;
+line-height:1.7;
+}
+
+form{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+input,
+textarea{
+padding:15px;
+border:none;
+border-radius:8px;
+background:#0f1117;
+color:white;
+font-size:16px;
+}
+
+textarea{
+height:150px;
+resize:none;
+}
+
+button{
+padding:15px;
+background:gold;
+border:none;
+border-radius:8px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+footer{
+background:black;
+padding:25px;
+text-align:center;
+margin-top:40px;
+border-top:1px solid #222;
+}
+
+</style>
 </head>
+
 <body>
 
-  <h1>Contact Us</h1>
+<header>
 
-  <p>If you have any questions, suggestions, or business inquiries, feel free to contact us.</p>
+<h1>AI Insider</h1>
 
-  <h3>Email</h3>
-  <p>support@aibiztools.netlify.app</p>
+<nav>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="blog.html">Blog</a>
+<a href="contact.html">Contact</a>
+</nav>
 
-  <h3>Follow Us</h3>
-  <p>We are working on adding social media profiles soon.</p>
+</header>
 
-  <a href="index.html">Back to Home</a>
+<section class="contact-section">
+
+<h2>Contact Us</h2>
+
+<p>
+Have questions, suggestions or business inquiries?
+Feel free to contact the AI Insider team anytime.
+</p>
+
+<form>
+
+<input type="text" placeholder="Your Name" required>
+
+<input type="email" placeholder="Your Email" required>
+
+<textarea placeholder="Your Message"></textarea>
+
+<button type="submit">Send Message</button>
+
+</form>
+
+</section>
+
+<footer>
+© 2026 AI Insider — All Rights Reserved
+</footer>
 
 </body>
 </html>
