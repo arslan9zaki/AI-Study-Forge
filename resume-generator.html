@@ -1,306 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Resume Generator | AI Biz Tools</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Resume Builder | AI Biz Tools</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #0f172a;
-            color: white;
-            min-height: 100vh;
-        }
-
-        header {
-            background: #111827;
-            padding: 20px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #38bdf8;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            transition: 0.3s;
-        }
-
-        nav a:hover {
-            color: #38bdf8;
-        }
-
-        .hero {
-            padding: 80px 8%;
-            text-align: center;
-            background: linear-gradient(to right, #0f172a, #1e293b);
-        }
-
-        .hero h1 {
-            font-size: 52px;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            font-size: 20px;
-            color: #cbd5e1;
-            max-width: 800px;
-            margin: auto;
-            line-height: 1.7;
-        }
-
-        .generator-box {
-            background: #1e293b;
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
-        }
-
-        .generator-box h2 {
-            margin-bottom: 25px;
-            color: #38bdf8;
-            text-align: center;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: none;
-            background: #0f172a;
-            color: white;
-            font-size: 16px;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .generate-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            background: #38bdf8;
-            color: #0f172a;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .generate-btn:hover {
-            background: #0ea5e9;
-        }
-
-        .output-box {
-            margin-top: 30px;
-            background: #0f172a;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            line-height: 1.8;
-            display: none;
-        }
-
-        .features {
-            padding: 80px 8%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-        }
-
-        .feature-card {
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 18px;
-            transition: 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-        }
-
-        .feature-card h3 {
-            color: #38bdf8;
-            margin-bottom: 15px;
-        }
-
-        footer {
-            background: #111827;
-            padding: 25px;
-            text-align: center;
-            color: #94a3b8;
-            margin-top: 50px;
-        }
-
-        @media(max-width:768px) {
-            .hero h1 {
-                font-size: 38px;
-            }
-
-            nav {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo">AI Biz Tools</div>
-
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="blog.html">Blog</a>
-    </nav>
-</header>
-
-<section class="hero">
-    <h1>Professional AI Resume Generator</h1>
-
-    <p>
-        Create high-quality professional resumes instantly using our modern AI-powered resume builder.
-        Perfect for students, lecturers, office workers, freelancers, and remote job seekers.
-    </p>
-</section>
-
-<section class="generator-box">
-
-    <h2>Generate Your Resume</h2>
-
-    <div class="input-group">
-        <label>Full Name</label>
-        <input type="text" id="name" placeholder="Enter your full name">
-    </div>
-
-    <div class="input-group">
-        <label>Job Title</label>
-        <input type="text" id="job" placeholder="Biology Lecturer, Web Developer etc.">
-    </div>
-
-    <div class="input-group">
-        <label>Skills</label>
-        <textarea id="skills" placeholder="Teaching, Communication, Research, MS Office etc."></textarea>
-    </div>
-
-    <div class="input-group">
-        <label>Experience Level</label>
-        <select id="experience">
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Professional</option>
-        </select>
-    </div>
-
-    <button class="generate-btn" onclick="generateResume()">
-        Generate Resume
-    </button>
-
-    <div class="output-box" id="output"></div>
-
-</section>
-
-<section class="features">
-
-    <div class="feature-card">
-        <h3>AI Powered</h3>
-        <p>
-            Smart resume generation system designed for modern professional jobs.
-        </p>
-    </div>
-
-    <div class="feature-card">
-        <h3>Professional Design</h3>
-        <p>
-            Clean and attractive modern layout suitable for international companies.
-        </p>
-    </div>
-
-    <div class="feature-card">
-        <h3>Fast Generation</h3>
-        <p>
-            Create resumes within seconds without complex editing.
-        </p>
-    </div>
-
-</section>
-
-<footer>
-    © 2026 AI Biz Tools | All Rights Reserved
-</footer>
-
-<script>
-
-function generateResume() {
-
-    let name = document.getElementById("name").value;
-    let job = document.getElementById("job").value;
-    let skills = document.getElementById("skills").value;
-    let experience = document.getElementById("experience").value;
-
-    let output = document.getElementById("output");
-
-    output.style.display = "block";
-
-    output.innerHTML = `
-
-        <h2 style="color:#38bdf8; margin-bottom:20px;">Professional Resume</h2>
-
-        <p><strong>Name:</strong> ${name}</p>
-
-        <p><strong>Position:</strong> ${job}</p>
-
-        <p><strong>Experience Level:</strong> ${experience}</p>
-
-        <p><strong>Skills:</strong> ${skills}</p>
-
-        <br>
-
-        <h3 style="color:#38bdf8;">Professional Summary</h3>
-
-        <p>
-            Highly motivated ${job} with strong expertise in ${skills}. Dedicated to delivering high-quality work, excellent communication, and professional performance in competitive environments.
-        </p>
-
-    `;
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
 }
 
-</script>
+body{
+background:#0f172a;
+color:white;
+}
 
-</body>
+header{
+padding:20px 8%;
+background:#111827;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #1e293b;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:#38bdf8;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+nav a:hover{
+color:#38bdf8;
+}
+
+.hero{
+padding:60px 8%;
+text-align:center;
+}
+
+.hero h1{
+font-size:48px;
+margin-bottom:15px;
+}
+
+.hero p{
 </html>
