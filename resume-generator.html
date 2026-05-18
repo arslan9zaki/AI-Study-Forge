@@ -548,8 +548,15 @@
           <input type="text" id="f-website" placeholder="johndoe.dev" oninput="render()"/>
         </div>
         <div class="form-group full">
+  <label>Profile Photo</label>
+  <input type="file" id="f-photo" accept="image/*" onchange="loadPhoto(event)">
+</div>
+        <div class="form-group full">
           <label>Professional Summary</label>
           <textarea id="f-summary" rows="4" placeholder="Write a compelling 2-3 sentence summary about your expertise and career goals..." oninput="render()"></textarea>
+          <button class="btn btn-accent" onclick="generateSummary()">
+✨ Generate AI Summary
+</button>
         </div>
       </div>
     </div>
@@ -674,6 +681,13 @@ const state = {
   languages: [],
   experience: [],
   education: [],
+  photo: ''
+};
+  template: 'classic',
+  skills: [],
+  languages: [],
+  experience: [],
+  education: [],
 };
 
 // ── Tabs ──
@@ -689,6 +703,17 @@ function selectTemplate(name, el) {
   state.template = name;
   document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
+  function generateSummary() {
+  const title = document.getElementById('f-title').value;
+  const skills = state.skills.join(', ');
+
+  const summary =
+    `Results-driven ${title || 'professional'} with strong expertise in ${skills || 'communication and leadership'}. Passionate about delivering high-quality work, solving problems, and achieving organizational goals through dedication and innovation.`;
+
+  document.getElementById('f-summary').value = summary;
+
+  render();
+}
   render();
 }
 
@@ -803,7 +828,17 @@ function renderChips(containerId, arr, removeFn) {
 }
 
 // ── Helper ──
-function g(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function loadPhoto(event) {
+  const reader = new FileReader();
+
+  reader.onload = function() {
+    state.photo = reader.result;
+    render();
+  };
+
+  reader.readAsDataURL(event.target.files[0]);
+}
+  function g(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 function icon(emoji) { return `<span style="margin-right:2px">${emoji}</span>`; }
 function contactRow(items) {
   const filtered = items.filter(i => i.val);
@@ -889,7 +924,9 @@ function render() {
     out.innerHTML = `
     <div class="tpl-classic-resume">
       <div class="r-header">
-        <div class="r-name">${fullName}</div>
+        ${state.photo ? `<img src="${state.photo}" style="width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #c9a84c;margin-bottom:18px;">` : ''}
+
+<div class="r-name">${fullName}</div>
         <div class="r-title">${title}</div>
         <div class="r-contact">${contacts}</div>
       </div>
@@ -910,7 +947,9 @@ function render() {
     out.innerHTML = `
     <div class="tpl-modern-resume">
       <div class="r-header">
-        <div class="r-name">${fullName}</div>
+        ${state.photo ? `<img src="${state.photo}" style="width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #c9a84c;margin-bottom:18px;">` : ''}
+
+<div class="r-name">${fullName}</div>
         <div class="r-title">${title}</div>
         <div class="r-contact">${contacts}</div>
       </div>
@@ -933,7 +972,9 @@ function render() {
       <div class="r-accent-bar"></div>
       <div class="r-content">
         <div class="r-header">
-          <div class="r-name">${fullName}</div>
+          ${state.photo ? `<img src="${state.photo}" style="width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #c9a84c;margin-bottom:18px;">` : ''}
+
+<div class="r-name">${fullName}</div>
           <div class="r-title">${title}</div>
           <div class="r-contact">${contacts}</div>
         </div>
