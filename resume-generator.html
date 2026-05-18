@@ -1,375 +1,232 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Resume Generator</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+margin:0;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#111827;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
+}
+
+.container{
+display:flex;
+min-height:100vh;
+}
+
+.left{
+width:40%;
+background:#1e293b;
+padding:20px;
+overflow:auto;
+}
+
+.right{
+width:60%;
+background:#f8fafc;
+padding:30px;
+color:black;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-top:5px;
+margin-bottom:15px;
+border:none;
+border-radius:8px;
+font-size:15px;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+margin-top:10px;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.resume{
+background:white;
+padding:40px;
+border-radius:10px;
+box-shadow:0 0 20px rgba(0,0,0,0.1);
+}
+
+.resume h1{
+margin:0;
+font-size:36px;
+color:#111827;
+}
+
+.resume h2{
+color:#2563eb;
+margin-top:30px;
+border-bottom:2px solid #2563eb;
+padding-bottom:5px;
+}
+
+.skill{
+display:inline-block;
+background:#dbeafe;
+padding:6px 12px;
+margin:5px;
+border-radius:20px;
+}
+
+.lang{
+display:inline-block;
+background:#dcfce7;
+padding:6px 12px;
+margin:5px;
+border-radius:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+AI Resume Generator
+</header>
+
+<div class="container">
+
+<div class="left">
+
+<label>Full Name</label>
+<input type="text" id="name" oninput="generateResume()">
+
+<label>Professional Title</label>
+<input type="text" id="title" oninput="generateResume()">
+
+<label>Email</label>
+<input type="text" id="email" oninput="generateResume()">
+
+<label>Phone</label>
+<input type="text" id="phone" oninput="generateResume()">
+
+<label>Location</label>
+<input type="text" id="location" oninput="generateResume()">
+
+<label>Professional Summary</label>
+<textarea id="summary" rows="5" oninput="generateResume()"></textarea>
+
+<label>Skills (comma separated)</label>
+<input type="text" id="skills" oninput="generateResume()">
+
+<label>Languages (comma separated)</label>
+<input type="text" id="languages" oninput="generateResume()">
+
+<label>Experience</label>
+<textarea id="experience" rows="6" oninput="generateResume()"></textarea>
+
+<label>Education</label>
+<textarea id="education" rows="5" oninput="generateResume()"></textarea>
+
+<button onclick="window.print()">Download PDF</button>
+
+</div>
+
+<div class="right">
+
+<div class="resume" id="resumePreview">
+
+<h1>Your Name</h1>
+
+<p>Professional Title</p>
+
+</div>
+
+</div>
+
+</div>
+
 <script>
-const state = {
-  template: 'classic',
-  skills: [],
-  languages: [],
-  experience: [],
-  education: []
-};
 
-function switchTab(id) {
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
+function generateResume(){
 
-  document.querySelectorAll('.form-section').forEach(section => {
-    section.classList.remove('active');
-  });
+const name=document.getElementById("name").value;
+const title=document.getElementById("title").value;
+const email=document.getElementById("email").value;
+const phone=document.getElementById("phone").value;
+const location=document.getElementById("location").value;
+const summary=document.getElementById("summary").value;
+const experience=document.getElementById("experience").value;
+const education=document.getElementById("education").value;
 
-  document.querySelector(`#tab-${id}`).classList.add('active');
+const skills=document.getElementById("skills").value.split(",");
+const languages=document.getElementById("languages").value.split(",");
 
-  event.target.classList.add('active');
+let skillsHTML="";
+skills.forEach(skill=>{
+if(skill.trim()!==""){
+skillsHTML+=`<span class="skill">${skill}</span>`;
+}
+});
+
+let langHTML="";
+languages.forEach(lang=>{
+if(lang.trim()!==""){
+langHTML+=`<span class="lang">${lang}</span>`;
+}
+});
+
+document.getElementById("resumePreview").innerHTML=`
+
+<h1>${name || "Your Name"}</h1>
+
+<p>${title || "Professional Title"}</p>
+
+<p>
+${email}
+${phone ? " | "+phone : ""}
+${location ? " | "+location : ""}
+</p>
+
+<h2>Professional Summary</h2>
+<p>${summary}</p>
+
+<h2>Skills</h2>
+${skillsHTML}
+
+<h2>Languages</h2>
+${langHTML}
+
+<h2>Experience</h2>
+<p>${experience.replace(/\n/g,"<br>")}</p>
+
+<h2>Education</h2>
+<p>${education.replace(/\n/g,"<br>")}</p>
+
+`;
+
 }
 
-function selectTemplate(name, el) {
-  state.template = name;
+generateResume();
 
-  document.querySelectorAll('.template-card').forEach(card => {
-    card.classList.remove('selected');
-  });
-
-  el.classList.add('selected');
-
-  render();
-}
-
-let expCount = 0;
-
-function addExperience() {
-  expCount++;
-
-  state.experience.push({
-    id: expCount,
-    title: '',
-    company: '',
-    location: '',
-    from: '',
-    to: '',
-    desc: ''
-  });
-
-  renderExperience();
-  render();
-}
-
-function removeExperience(id) {
-  state.experience = state.experience.filter(exp => exp.id !== id);
-
-  renderExperience();
-  render();
-}
-
-function renderExperience() {
-  const container = document.getElementById('exp-list');
-
-  container.innerHTML = '';
-
-  state.experience.forEach((exp, index) => {
-    container.innerHTML += `
-      <div class="dynamic-item">
-        <button class="remove-btn" onclick="removeExperience(${exp.id})">✕</button>
-
-        <div class="form-group">
-          <label>Job Title</label>
-          <input type="text"
-            value="${exp.title}"
-            oninput="state.experience[${index}].title=this.value;render()">
-        </div>
-
-        <div class="form-group">
-          <label>Company</label>
-          <input type="text"
-            value="${exp.company}"
-            oninput="state.experience[${index}].company=this.value;render()">
-        </div>
-
-        <div class="form-group">
-          <label>Duration</label>
-          <input type="text"
-            value="${exp.from}"
-            placeholder="2022 - Present"
-            oninput="state.experience[${index}].from=this.value;render()">
-        </div>
-
-        <div class="form-group">
-          <label>Description</label>
-          <textarea
-            oninput="state.experience[${index}].desc=this.value;render()"
-          >${exp.desc}</textarea>
-        </div>
-      </div>
-    `;
-  });
-}
-
-let eduCount = 0;
-
-function addEducation() {
-  eduCount++;
-
-  state.education.push({
-    id: eduCount,
-    degree: '',
-    school: '',
-    year: ''
-  });
-
-  renderEducation();
-  render();
-}
-
-function removeEducation(id) {
-  state.education = state.education.filter(edu => edu.id !== id);
-
-  renderEducation();
-  render();
-}
-
-function renderEducation() {
-  const container = document.getElementById('edu-list');
-
-  container.innerHTML = '';
-
-  state.education.forEach((edu, index) => {
-    container.innerHTML += `
-      <div class="dynamic-item">
-        <button class="remove-btn" onclick="removeEducation(${edu.id})">✕</button>
-
-        <div class="form-group">
-          <label>Degree</label>
-          <input type="text"
-            value="${edu.degree}"
-            oninput="state.education[${index}].degree=this.value;render()">
-        </div>
-
-        <div class="form-group">
-          <label>School</label>
-          <input type="text"
-            value="${edu.school}"
-            oninput="state.education[${index}].school=this.value;render()">
-        </div>
-
-        <div class="form-group">
-          <label>Year</label>
-          <input type="text"
-            value="${edu.year}"
-            oninput="state.education[${index}].year=this.value;render()">
-        </div>
-      </div>
-    `;
-  });
-}
-
-function addSkill() {
-  const input = document.getElementById('skill-input');
-
-  if (input.value.trim() !== '') {
-    state.skills.push(input.value.trim());
-
-    input.value = '';
-
-    renderSkills();
-    render();
-  }
-}
-
-function removeSkill(skill) {
-  state.skills = state.skills.filter(s => s !== skill);
-
-  renderSkills();
-  render();
-}
-
-function renderSkills() {
-  const container = document.getElementById('skills-chips');
-
-  container.innerHTML = '';
-
-  state.skills.forEach(skill => {
-    container.innerHTML += `
-      <div class="chip">
-        ${skill}
-        <button onclick="removeSkill('${skill}')">✕</button>
-      </div>
-    `;
-  });
-}
-
-function addLanguage() {
-  const input = document.getElementById('lang-input');
-
-  if (input.value.trim() !== '') {
-    state.languages.push(input.value.trim());
-
-    input.value = '';
-
-    renderLanguages();
-    render();
-  }
-}
-
-function removeLanguage(lang) {
-  state.languages = state.languages.filter(l => l !== lang);
-
-  renderLanguages();
-  render();
-}
-
-function renderLanguages() {
-  const container = document.getElementById('lang-chips');
-
-  container.innerHTML = '';
-
-  state.languages.forEach(lang => {
-    container.innerHTML += `
-      <div class="chip">
-        ${lang}
-        <button onclick="removeLanguage('${lang}')">✕</button>
-      </div>
-    `;
-  });
-}
-
-function getValue(id) {
-  return document.getElementById(id).value;
-}
-
-function render() {
-  const output = document.getElementById('resume-output');
-
-  const firstName = getValue('f-first');
-  const lastName = getValue('f-last');
-
-  const fullName = `${firstName} ${lastName}`;
-
-  const title = getValue('f-title');
-  const email = getValue('f-email');
-  const phone = getValue('f-phone');
-  const location = getValue('f-location');
-  const summary = getValue('f-summary');
-
-  output.innerHTML = `
-    <div class="tpl-${state.template}-resume">
-
-      <div class="r-header">
-        <div class="r-name">${fullName || 'Your Name'}</div>
-
-        <div class="r-title">
-          ${title || 'Professional Title'}
-        </div>
-
-        <div class="r-contact">
-          ${email}
-          ${phone ? ' • ' + phone : ''}
-          ${location ? ' • ' + location : ''}
-        </div>
-      </div>
-
-      <div class="r-body">
-
-        <div class="r-main">
-
-          <div class="r-section">
-            <div class="r-section-title">Professional Summary</div>
-
-            <div class="r-summary">
-              ${summary || 'Write your professional summary here...'}
-            </div>
-          </div>
-
-          <div class="r-section">
-            <div class="r-section-title">Experience</div>
-
-            ${
-              state.experience.map(exp => `
-                <div class="r-entry">
-                  <div class="r-entry-title">
-                    ${exp.title}
-                  </div>
-
-                  <div class="r-entry-sub">
-                    ${exp.company}
-                  </div>
-
-                  <div class="r-entry-date">
-                    ${exp.from}
-                  </div>
-
-                  <div class="r-entry-desc">
-                    ${exp.desc}
-                  </div>
-                </div>
-              `).join('')
-            }
-
-          </div>
-
-          <div class="r-section">
-            <div class="r-section-title">Education</div>
-
-            ${
-              state.education.map(edu => `
-                <div class="r-entry">
-                  <div class="r-entry-title">
-                    ${edu.degree}
-                  </div>
-
-                  <div class="r-entry-sub">
-                    ${edu.school}
-                  </div>
-
-                  <div class="r-entry-date">
-                    ${edu.year}
-                  </div>
-                </div>
-              `).join('')
-            }
-
-          </div>
-
-        </div>
-
-        <div class="r-sidebar">
-
-          <div class="r-section">
-            <div class="r-section-title">Skills</div>
-
-            <div class="r-chip-list">
-              ${
-                state.skills.map(skill => `
-                  <span class="r-chip">${skill}</span>
-                `).join('')
-              }
-            </div>
-          </div>
-
-          <div class="r-section">
-            <div class="r-section-title">Languages</div>
-
-            <div class="r-chip-list">
-              ${
-                state.languages.map(lang => `
-                  <span class="r-chip">${lang}</span>
-                `).join('')
-              }
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-  `;
-}
-
-function clearAll() {
-  location.reload();
-}
-
-function downloadPDF() {
-  window.print();
-}
-
-render();
 </script>
+
+</body>
+</html>
+```
