@@ -1,90 +1,157 @@
-<!-- ================= AI TOOLS SECTION ================= -->
-<section class="ai-tools-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Professional AI Tools</h2>
-            <p>Powerful free tools to boost productivity and career growth</p>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Biz Tools</title>
 
-        <div class="tools-grid">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-            <!-- Resume Generator -->
-            <div class="tool-card">
-                <div class="tool-icon">📄</div>
-                <h3>AI Resume Generator</h3>
-                <p>Create modern professional resumes with multiple templates and live preview.</p>
-                <a href="resume-generator.html" class="tool-btn">Open Tool</a>
-            </div>
-
-            <!-- Cover Letter -->
-            <div class="tool-card">
-                <div class="tool-icon">✉️</div>
-                <h3>Cover Letter Builder</h3>
-                <p>Create ATS-friendly cover letters for jobs in seconds.</p>
-                <button class="tool-btn" onclick="showComingSoon()">Coming Soon</button>
-            </div>
-
-            <!-- AI Content -->
-            <div class="tool-card">
-                <div class="tool-icon">🤖</div>
-                <h3>AI Content Writer</h3>
-                <p>Generate blogs, captions, ads, and business content instantly.</p>
-                <button class="tool-btn" onclick="showComingSoon()">Coming Soon</button>
-            </div>
-
-            <!-- Business Name -->
-            <div class="tool-card">
-                <div class="tool-icon">💡</div>
-                <h3>Business Name Generator</h3>
-                <p>Generate catchy startup and business names with one click.</p>
-                <button class="tool-btn" onclick="showComingSoon()">Coming Soon</button>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ================= NEWSLETTER SECTION ================= -->
-<section class="newsletter-section">
-    <div class="newsletter-box">
-        <h2>Join Free AI Newsletter</h2>
-        <p>Get latest AI tools, productivity hacks and business ideas weekly.</p>
-
-        <div class="newsletter-form">
-            <input type="email" id="newsletterEmail" placeholder="Enter your email">
-            <button onclick="subscribeNewsletter()">Subscribe</button>
-        </div>
-
-        <p id="newsletterMessage"></p>
-    </div>
-</section>
-
-<!-- ================= POPUP ================= -->
-<div id="popup" class="popup">
-    <div class="popup-content">
-        <span class="close-btn" onclick="closePopup()">×</span>
-        <h2>🚀 Feature Coming Soon</h2>
-        <p>This professional AI tool is under development.</p>
-    </div>
-</div>
-
-<!-- ================= STYLE ================= -->
 <style>
 
-.ai-tools-section{
-    padding:80px 20px;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
     background:#0f172a;
     color:white;
 }
 
+/* ================= NAVBAR ================= */
+
+.main-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    background:#0f172a;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 2px 20px rgba(0,0,0,0.4);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:700;
+    color:#3b82f6;
+}
+
+.navbar{
+    display:flex;
+    gap:30px;
+    align-items:center;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    transition:0.3s;
+    font-size:16px;
+}
+
+.navbar a:hover{
+    color:#3b82f6;
+}
+
+.nav-btn{
+    background:#3b82f6;
+    padding:12px 22px;
+    border-radius:8px;
+}
+
+.nav-btn:hover{
+    background:#2563eb;
+    color:white !important;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    min-height:95vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:50px 20px;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+}
+
+.hero-content{
+    max-width:900px;
+}
+
+.hero-content h1{
+    font-size:65px;
+    line-height:1.2;
+    margin-bottom:25px;
+}
+
+.hero-content span{
+    color:#3b82f6;
+}
+
+.hero-content p{
+    font-size:20px;
+    color:#cbd5e1;
+    line-height:1.8;
+    margin-bottom:40px;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.hero-btn{
+    padding:16px 34px;
+    background:#3b82f6;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    transition:0.3s;
+    font-size:18px;
+}
+
+.hero-btn:hover{
+    background:#2563eb;
+    transform:translateY(-4px);
+}
+
+.secondary-btn{
+    background:transparent;
+    border:2px solid #3b82f6;
+}
+
+.secondary-btn:hover{
+    background:#3b82f6;
+}
+
+/* ================= AI TOOLS ================= */
+
+.ai-tools-section{
+    padding:100px 8%;
+    background:#111827;
+}
+
 .section-header{
     text-align:center;
-    margin-bottom:50px;
+    margin-bottom:60px;
 }
 
 .section-header h2{
-    font-size:42px;
-    margin-bottom:10px;
+    font-size:48px;
+    margin-bottom:15px;
 }
 
 .section-header p{
@@ -94,98 +161,100 @@
 
 .tools-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
     gap:30px;
 }
 
 .tool-card{
     background:#1e293b;
-    padding:35px 25px;
+    padding:40px 30px;
     border-radius:20px;
     text-align:center;
-    transition:0.3s;
+    transition:0.4s;
     border:1px solid rgba(255,255,255,0.1);
 }
 
 .tool-card:hover{
     transform:translateY(-10px);
-    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    box-shadow:0 15px 40px rgba(0,0,0,0.5);
 }
 
 .tool-icon{
-    font-size:55px;
+    font-size:60px;
     margin-bottom:20px;
 }
 
 .tool-card h3{
-    margin-bottom:15px;
     font-size:24px;
+    margin-bottom:15px;
 }
 
 .tool-card p{
     color:#cbd5e1;
-    line-height:1.6;
+    line-height:1.7;
     margin-bottom:25px;
 }
 
 .tool-btn{
     display:inline-block;
+    padding:12px 24px;
     background:#3b82f6;
     color:white;
-    padding:12px 25px;
     border:none;
-    border-radius:10px;
-    cursor:pointer;
+    border-radius:8px;
     text-decoration:none;
+    cursor:pointer;
     transition:0.3s;
-    font-size:16px;
 }
 
 .tool-btn:hover{
     background:#2563eb;
 }
 
-/* Newsletter */
+/* ================= NEWSLETTER ================= */
 
 .newsletter-section{
-    background:#111827;
-    padding:80px 20px;
-    text-align:center;
-    color:white;
+    padding:100px 20px;
+    background:#0f172a;
 }
 
 .newsletter-box{
-    max-width:700px;
+    max-width:750px;
     margin:auto;
+    text-align:center;
+    background:#1e293b;
+    padding:60px 40px;
+    border-radius:25px;
 }
 
 .newsletter-box h2{
-    font-size:40px;
+    font-size:42px;
     margin-bottom:15px;
 }
 
 .newsletter-box p{
-    color:#d1d5db;
+    color:#cbd5e1;
     margin-bottom:30px;
+    font-size:18px;
 }
 
 .newsletter-form{
     display:flex;
-    gap:15px;
     justify-content:center;
+    gap:15px;
     flex-wrap:wrap;
 }
 
 .newsletter-form input{
-    padding:15px;
-    width:320px;
+    width:350px;
+    padding:16px;
     border:none;
     border-radius:10px;
     font-size:16px;
 }
 
 .newsletter-form button{
-    padding:15px 30px;
+    padding:16px 30px;
     border:none;
     background:#3b82f6;
     color:white;
@@ -201,60 +270,262 @@
 #newsletterMessage{
     margin-top:20px;
     color:#4ade80;
-    font-weight:bold;
+    font-weight:600;
 }
 
-/* Popup */
+/* ================= FOOTER ================= */
+
+footer{
+    background:#020617;
+    padding:40px 20px;
+    text-align:center;
+    color:#94a3b8;
+}
+
+/* ================= POPUP ================= */
 
 .popup{
     display:none;
     position:fixed;
-    z-index:999;
-    left:0;
     top:0;
+    left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.7);
+    background:rgba(0,0,0,0.8);
+    z-index:9999;
 }
 
 .popup-content{
     background:white;
     color:black;
     width:90%;
-    max-width:400px;
-    margin:10% auto;
-    padding:30px;
+    max-width:450px;
+    padding:40px;
     border-radius:20px;
     text-align:center;
-    position:relative;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+.popup-content h2{
+    margin-bottom:15px;
 }
 
 .close-btn{
     position:absolute;
-    right:15px;
     top:10px;
-    font-size:28px;
+    right:20px;
+    font-size:30px;
     cursor:pointer;
 }
 
+/* ================= MOBILE ================= */
+
 @media(max-width:768px){
 
+    .main-header{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .navbar{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .hero-content h1{
+        font-size:42px;
+    }
+
+    .hero-content p{
+        font-size:18px;
+    }
+
     .section-header h2{
-        font-size:30px;
+        font-size:34px;
     }
 
     .newsletter-box h2{
-        font-size:28px;
+        font-size:32px;
     }
 
 }
 
 </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="main-header">
+
+    <div class="logo">
+        AI Biz Tools
+    </div>
+
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+
+        <a href="resume-generator.html" class="nav-btn">
+            Resume Generator
+        </a>
+    </nav>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            Powerful <span>AI Tools</span><br>
+            For Modern Businesses
+        </h1>
+
+        <p>
+            Create resumes, generate content, boost productivity and grow your online business using premium AI-powered tools.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="resume-generator.html" class="hero-btn">
+                Build Resume
+            </a>
+
+            <a href="#tools" class="hero-btn secondary-btn">
+                Explore Tools
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= AI TOOLS ================= -->
+
+<section class="ai-tools-section" id="tools">
+
+    <div class="section-header">
+        <h2>Professional AI Tools</h2>
+        <p>Free premium tools for productivity and career growth</p>
+    </div>
+
+    <div class="tools-grid">
+
+        <div class="tool-card">
+            <div class="tool-icon">📄</div>
+            <h3>Resume Generator</h3>
+            <p>Create beautiful professional resumes with live preview and premium templates.</p>
+
+            <a href="resume-generator.html" class="tool-btn">
+                Open Tool
+            </a>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-icon">✉️</div>
+            <h3>Cover Letter AI</h3>
+            <p>Create job-winning cover letters using smart AI writing assistance.</p>
+
+            <button class="tool-btn" onclick="showPopup()">
+                Coming Soon
+            </button>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-icon">🤖</div>
+            <h3>AI Content Writer</h3>
+            <p>Generate blogs, ads, captions and business content instantly.</p>
+
+            <button class="tool-btn" onclick="showPopup()">
+                Coming Soon
+            </button>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-icon">💡</div>
+            <h3>Business Name Generator</h3>
+            <p>Create catchy startup and business names in seconds.</p>
+
+            <button class="tool-btn" onclick="showPopup()">
+                Coming Soon
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= NEWSLETTER ================= -->
+
+<section class="newsletter-section">
+
+    <div class="newsletter-box">
+
+        <h2>Join Free AI Newsletter</h2>
+
+        <p>
+            Get weekly AI tools, online business ideas and productivity tips directly in your inbox.
+        </p>
+
+        <div class="newsletter-form">
+
+            <input type="email" id="newsletterEmail" placeholder="Enter your email">
+
+            <button onclick="subscribeNewsletter()">
+                Subscribe
+            </button>
+
+        </div>
+
+        <p id="newsletterMessage"></p>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <p>
+        © 2026 AI Biz Tools — All Rights Reserved
+    </p>
+
+</footer>
+
+<!-- ================= POPUP ================= -->
+
+<div id="popup" class="popup">
+
+    <div class="popup-content">
+
+        <span class="close-btn" onclick="closePopup()">×</span>
+
+        <h2>🚀 Coming Soon</h2>
+
+        <p>
+            This AI tool is currently under development.
+        </p>
+
+    </div>
+
+</div>
 
 <!-- ================= SCRIPT ================= -->
+
 <script>
 
-function showComingSoon(){
+function showPopup(){
     document.getElementById("popup").style.display = "block";
 }
 
@@ -263,27 +534,38 @@ function closePopup(){
 }
 
 window.onclick = function(event){
+
     let popup = document.getElementById("popup");
+
     if(event.target == popup){
         popup.style.display = "none";
     }
+
 }
 
 function subscribeNewsletter(){
 
     let email = document.getElementById("newsletterEmail").value;
+
     let message = document.getElementById("newsletterMessage");
 
     if(email === ""){
+
         message.style.color = "red";
         message.innerHTML = "Please enter your email.";
+
         return;
     }
 
     message.style.color = "#4ade80";
+
     message.innerHTML = "Successfully subscribed!";
-    
+
     document.getElementById("newsletterEmail").value = "";
+
 }
 
 </script>
+
+</body>
+</html>
