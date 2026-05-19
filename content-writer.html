@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Content Writer | AI Biz Tools</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#081225;
+    color:white;
+}
+
+/* Navbar */
+
+.navbar{
+    width:100%;
+    padding:20px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#0b1730;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:700;
+    color:#4da3ff;
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:white;
+    font-size:15px;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:#4da3ff;
+}
+
+/* Hero */
+
+.hero{
+    text-align:center;
+    padding:70px 8%;
+}
+
+.hero h1{
+    font-size:55px;
+    margin-bottom:15px;
+}
+
+.hero p{
+    max-width:700px;
+    margin:auto;
+    color:#b8c4d6;
+    line-height:1.7;
+    font-size:17px;
+}
+
+/* Main Container */
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-bottom:60px;
+}
+
+/* Card */
+
+.card{
+    background:#12203d;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+/* Inputs */
+
+.card h2{
+    margin-bottom:20px;
+    font-size:28px;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#b8c4d6;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select{
+    width:100%;
+    padding:14px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:#081225;
+    color:white;
+    font-size:15px;
+}
+
+textarea{
+    resize:none;
+    height:140px;
+}
+
+/* Button */
+
+.generate-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#4da3ff;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.generate-btn:hover{
+    background:#2d8cff;
+}
+
+/* Output */
+
+.output-box{
+    background:#081225;
+    border-radius:15px;
+    padding:25px;
+    min-height:450px;
+    line-height:1.8;
+    color:#d7e3f4;
+    white-space:pre-wrap;
+}
+
+/* Footer */
+
+.footer{
+    text-align:center;
+    padding:25px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    color:#9db1cc;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .container{
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        font-size:40px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<div class="navbar">
+
+    <div class="logo">AI Biz Tools</div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+    </div>
+
+</div>
+
+<!-- Hero -->
+
+<section class="hero">
+
+    <h1>AI Content Writer</h1>
+
+    <p>
+        Generate professional blogs, ads, captions, product descriptions and business content instantly using AI-powered writing templates.
+    </p>
+
+</section>
+
+<!-- Main -->
+
+<div class="container">
+
+    <!-- Left -->
+
+    <div class="card">
+
+        <h2>Create Content</h2>
+
+        <div class="input-group">
+            <label>Content Type</label>
+
+            <select id="contentType">
+                <option>Blog Post</option>
+                <option>Instagram Caption</option>
+                <option>Facebook Ad</option>
+                <option>Product Description</option>
+                <option>Email</option>
+                <option>YouTube Script</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Topic</label>
+
+            <input type="text" id="topic" placeholder="Enter your topic">
+        </div>
+
+        <div class="input-group">
+            <label>Keywords</label>
+
+            <input type="text" id="keywords" placeholder="AI, marketing, business">
+        </div>
+
+        <div class="input-group">
+            <label>Description</label>
+
+            <textarea id="description" placeholder="Describe what you want AI to generate..."></textarea>
+        </div>
+
+        <button class="generate-btn" onclick="generateContent()">
+            Generate Content
+        </button>
+
+    </div>
+
+    <!-- Right -->
+
+    <div class="card">
+
+        <h2>Generated Content</h2>
+
+        <div class="output-box" id="output">
+
+Your AI generated content will appear here...
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+
+<div class="footer">
+
+    © 2026 AI Biz Tools — All Rights Reserved
+
+</div>
+
+<script>
+
+function generateContent(){
+
+    let type = document.getElementById("contentType").value;
+    let topic = document.getElementById("topic").value;
+    let keywords = document.getElementById("keywords").value;
+    let description = document.getElementById("description").value;
+
+    if(topic === "" || description === ""){
+
+        alert("Please fill all fields");
+        return;
+
+    }
+
+    let output = `
+
+CONTENT TYPE:
+${type}
+
+TOPIC:
+${topic}
+
+KEYWORDS:
+${keywords}
+
+GENERATED CONTENT:
+
+${topic} is becoming one of the fastest growing trends in modern business and digital marketing.
+
+This content was generated for ${type.toLowerCase()} purposes and focuses on improving engagement, audience reach and online visibility.
+
+Main Discussion:
+${description}
+
+Key Benefits:
+• Better audience engagement
+• Professional branding
+• Improved online presence
+• Stronger customer communication
+
+Conclusion:
+Businesses using smart AI-powered content strategies can grow faster, improve marketing performance and build stronger customer relationships.
+
+`;
+
+    document.getElementById("output").innerText = output;
+
+}
+
+</script>
+
+</body>
+</html>
