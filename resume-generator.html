@@ -7,9 +7,15 @@
 <title>Professional Resume Generator</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
 font-family:Arial,sans-serif;
-margin:0;
 background:#0f172a;
 color:white;
 }
@@ -18,8 +24,9 @@ header{
 background:#111827;
 padding:20px;
 text-align:center;
-font-size:28px;
+font-size:32px;
 font-weight:bold;
+border-bottom:2px solid #2563eb;
 }
 
 .container{
@@ -30,89 +37,164 @@ min-height:100vh;
 .left{
 width:40%;
 background:#1e293b;
-padding:20px;
-overflow:auto;
+padding:25px;
+overflow-y:auto;
 }
 
 .right{
 width:60%;
 background:#f8fafc;
-padding:30px;
-color:black;
+padding:40px;
+overflow-y:auto;
+}
+
+label{
+display:block;
+margin-top:15px;
+margin-bottom:6px;
+font-size:14px;
+font-weight:bold;
 }
 
 input,textarea{
 width:100%;
 padding:12px;
-margin-top:5px;
-margin-bottom:15px;
 border:none;
 border-radius:8px;
 font-size:15px;
+margin-bottom:10px;
+}
+
+textarea{
+resize:vertical;
 }
 
 button{
 background:#2563eb;
 color:white;
 border:none;
-padding:12px 20px;
+padding:12px 18px;
 border-radius:8px;
 cursor:pointer;
-font-size:15px;
+font-size:14px;
 margin-top:10px;
+margin-right:10px;
 }
 
 button:hover{
 background:#1d4ed8;
 }
 
-.resume{
-background:white;
-padding:40px;
+.dynamic-box{
+background:#334155;
+padding:15px;
 border-radius:10px;
-box-shadow:0 0 20px rgba(0,0,0,0.1);
+margin-bottom:15px;
 }
 
-.resume h1{
-margin:0;
-font-size:36px;
+.resume{
+background:white;
+color:black;
+padding:40px;
+border-radius:12px;
+box-shadow:0 0 20px rgba(0,0,0,0.2);
+min-height:90vh;
+}
+
+.resume-header{
+text-align:center;
+margin-bottom:30px;
+}
+
+.resume-header img{
+width:130px;
+height:130px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #2563eb;
+margin-bottom:15px;
+}
+
+.resume-header h1{
+font-size:38px;
 color:#111827;
 }
 
-.resume h2{
+.resume-header h3{
 color:#2563eb;
+margin-top:5px;
+}
+
+.resume-contact{
+margin-top:10px;
+font-size:14px;
+color:#555;
+}
+
+.resume-section{
 margin-top:30px;
+}
+
+.resume-section h2{
 border-bottom:2px solid #2563eb;
 padding-bottom:5px;
+margin-bottom:15px;
+color:#2563eb;
+}
+
+.resume-item{
+margin-bottom:20px;
 }
 
 .skill{
 display:inline-block;
 background:#dbeafe;
-padding:6px 12px;
-margin:5px;
+padding:8px 14px;
 border-radius:20px;
+margin:5px;
+font-size:14px;
 }
 
 .lang{
 display:inline-block;
 background:#dcfce7;
-padding:6px 12px;
-margin:5px;
+padding:8px 14px;
 border-radius:20px;
+margin:5px;
+font-size:14px;
 }
+
+@media(max-width:900px){
+
+.container{
+flex-direction:column;
+}
+
+.left{
+width:100%;
+}
+
+.right{
+width:100%;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-AI Resume Generator
+AI Professional Resume Generator
 </header>
 
 <div class="container">
 
 <div class="left">
+
+<label>Profile Picture</label>
+<input type="file" id="photo" accept="image/*" onchange="loadPhoto(event)">
 
 <label>Full Name</label>
 <input type="text" id="name" oninput="generateResume()">
@@ -138,13 +220,27 @@ AI Resume Generator
 <label>Languages (comma separated)</label>
 <input type="text" id="languages" oninput="generateResume()">
 
-<label>Experience</label>
-<textarea id="experience" rows="6" oninput="generateResume()"></textarea>
+<h2 style="margin-top:25px;">Experience</h2>
 
-<label>Education</label>
-<textarea id="education" rows="5" oninput="generateResume()"></textarea>
+<div id="experienceContainer"></div>
 
-<button onclick="window.print()">Download PDF</button>
+<button onclick="addExperience()">
++ Add Experience
+</button>
+
+<h2 style="margin-top:30px;">Education</h2>
+
+<div id="educationContainer"></div>
+
+<button onclick="addEducation()">
++ Add Education
+</button>
+
+<br><br>
+
+<button onclick="window.print()">
+Download PDF
+</button>
 
 </div>
 
@@ -152,9 +248,7 @@ AI Resume Generator
 
 <div class="resume" id="resumePreview">
 
-<h1>Your Name</h1>
-
-<p>Professional Title</p>
+<h1>Your Resume Preview</h1>
 
 </div>
 
@@ -164,60 +258,321 @@ AI Resume Generator
 
 <script>
 
+let profileImage = "";
+
+let experiences = [];
+
+let educations = [];
+
+function loadPhoto(event){
+
+const reader = new FileReader();
+
+reader.onload = function(){
+
+profileImage = reader.result;
+
+generateResume();
+
+};
+
+reader.readAsDataURL(event.target.files[0]);
+
+}
+
+function addExperience(){
+
+experiences.push({
+job:"",
+company:"",
+years:"",
+details:""
+});
+
+renderExperienceInputs();
+
+generateResume();
+
+}
+
+function removeExperience(index){
+
+experiences.splice(index,1);
+
+renderExperienceInputs();
+
+generateResume();
+
+}
+
+function renderExperienceInputs(){
+
+const container = document.getElementById("experienceContainer");
+
+container.innerHTML = "";
+
+experiences.forEach((exp,index)=>{
+
+container.innerHTML += `
+
+<div class="dynamic-box">
+
+<label>Job Title</label>
+<input type="text"
+value="${exp.job}"
+oninput="experiences[${index}].job=this.value;generateResume()">
+
+<label>Company</label>
+<input type="text"
+value="${exp.company}"
+oninput="experiences[${index}].company=this.value;generateResume()">
+
+<label>Years</label>
+<input type="text"
+value="${exp.years}"
+oninput="experiences[${index}].years=this.value;generateResume()">
+
+<label>Details</label>
+<textarea
+oninput="experiences[${index}].details=this.value;generateResume()"
+>${exp.details}</textarea>
+
+<button onclick="removeExperience(${index})">
+Remove
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+function addEducation(){
+
+educations.push({
+degree:"",
+institute:"",
+years:""
+});
+
+renderEducationInputs();
+
+generateResume();
+
+}
+
+function removeEducation(index){
+
+educations.splice(index,1);
+
+renderEducationInputs();
+
+generateResume();
+
+}
+
+function renderEducationInputs(){
+
+const container = document.getElementById("educationContainer");
+
+container.innerHTML = "";
+
+educations.forEach((edu,index)=>{
+
+container.innerHTML += `
+
+<div class="dynamic-box">
+
+<label>Degree</label>
+<input type="text"
+value="${edu.degree}"
+oninput="educations[${index}].degree=this.value;generateResume()">
+
+<label>Institute</label>
+<input type="text"
+value="${edu.institute}"
+oninput="educations[${index}].institute=this.value;generateResume()">
+
+<label>Years</label>
+<input type="text"
+value="${edu.years}"
+oninput="educations[${index}].years=this.value;generateResume()">
+
+<button onclick="removeEducation(${index})">
+Remove
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
 function generateResume(){
 
-const name=document.getElementById("name").value;
-const title=document.getElementById("title").value;
-const email=document.getElementById("email").value;
-const phone=document.getElementById("phone").value;
-const location=document.getElementById("location").value;
-const summary=document.getElementById("summary").value;
-const experience=document.getElementById("experience").value;
-const education=document.getElementById("education").value;
+const name = document.getElementById("name").value;
 
-const skills=document.getElementById("skills").value.split(",");
-const languages=document.getElementById("languages").value.split(",");
+const title = document.getElementById("title").value;
 
-let skillsHTML="";
+const email = document.getElementById("email").value;
+
+const phone = document.getElementById("phone").value;
+
+const location = document.getElementById("location").value;
+
+const summary = document.getElementById("summary").value;
+
+const skills = document.getElementById("skills").value.split(",");
+
+const languages = document.getElementById("languages").value.split(",");
+
+let skillsHTML = "";
+
 skills.forEach(skill=>{
+
 if(skill.trim()!==""){
-skillsHTML+=`<span class="skill">${skill}</span>`;
+
+skillsHTML += `
+<span class="skill">
+${skill}
+</span>
+`;
+
 }
+
 });
 
-let langHTML="";
+let langHTML = "";
+
 languages.forEach(lang=>{
+
 if(lang.trim()!==""){
-langHTML+=`<span class="lang">${lang}</span>`;
+
+langHTML += `
+<span class="lang">
+${lang}
+</span>
+`;
+
 }
+
 });
 
-document.getElementById("resumePreview").innerHTML=`
+let expHTML = "";
 
-<h1>${name || "Your Name"}</h1>
+experiences.forEach(exp=>{
 
-<p>${title || "Professional Title"}</p>
+expHTML += `
 
-<p>
+<div class="resume-item">
+
+<h3>${exp.job}</h3>
+
+<b>${exp.company}</b>
+
+<p>${exp.years}</p>
+
+<p>${exp.details}</p>
+
+</div>
+
+`;
+
+});
+
+let eduHTML = "";
+
+educations.forEach(edu=>{
+
+eduHTML += `
+
+<div class="resume-item">
+
+<h3>${edu.degree}</h3>
+
+<b>${edu.institute}</b>
+
+<p>${edu.years}</p>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("resumePreview").innerHTML = `
+
+<div class="resume-header">
+
+${profileImage ? `
+<img src="${profileImage}">
+` : ""}
+
+<h1>
+${name || "Your Name"}
+</h1>
+
+<h3>
+${title || "Professional Title"}
+</h3>
+
+<div class="resume-contact">
+
 ${email}
-${phone ? " | "+phone : ""}
-${location ? " | "+location : ""}
-</p>
+
+${phone ? " | " + phone : ""}
+
+${location ? " | " + location : ""}
+
+</div>
+
+</div>
+
+<div class="resume-section">
 
 <h2>Professional Summary</h2>
-<p>${summary}</p>
+
+<p>
+${summary || "Write your professional summary here."}
+</p>
+
+</div>
+
+<div class="resume-section">
 
 <h2>Skills</h2>
+
 ${skillsHTML}
 
+</div>
+
+<div class="resume-section">
+
 <h2>Languages</h2>
+
 ${langHTML}
 
+</div>
+
+<div class="resume-section">
+
 <h2>Experience</h2>
-<p>${experience.replace(/\n/g,"<br>")}</p>
+
+${expHTML}
+
+</div>
+
+<div class="resume-section">
 
 <h2>Education</h2>
-<p>${education.replace(/\n/g,"<br>")}</p>
+
+${eduHTML}
+
+</div>
 
 `;
 
