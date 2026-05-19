@@ -1005,7 +1005,9 @@ font-weight:bold;
           <p>Get weekly AI money tips delivered free to your inbox.</p>
           <form class="email-form" onsubmit="handleSignup(event)">
             <input type="email" placeholder="Your email" required>
-            <button type="submit">Subscribe Free →</button>
+            <button onclick="subscribeNow()" class="tool-btn">
+Subscribe Free
+</button>
           </form>
           <div class="email-disclaimer">No spam. Unsubscribe anytime.</div>
         </div>
@@ -1212,6 +1214,53 @@ function handleSignup(e) {
   btn.style.color = '#fff';
   setTimeout(() => { btn.textContent = 'Subscribe Free →'; btn.style.background = ''; btn.style.color = ''; }, 3000);
 }
+</script>
+<script>
+
+function generateBusinessNames(){
+
+let niche =
+document.getElementById("businessInput").value;
+
+let results =
+document.getElementById("businessResults");
+
+if(niche===""){
+results.innerHTML="Please enter a niche.";
+return;
+}
+
+results.innerHTML=`
+✅ ${niche} Hub<br>
+✅ NextGen ${niche}<br>
+✅ ${niche} Master<br>
+✅ Elite ${niche}<br>
+✅ Smart ${niche} Solutions
+`;
+}
+
+function generateCaptions(){
+
+let topic =
+document.getElementById("captionInput").value;
+
+let results =
+document.getElementById("captionResults");
+
+if(topic===""){
+results.innerHTML="Please enter a topic.";
+return;
+}
+
+results.innerHTML=`
+🔥 Level up your ${topic} game today!<br><br>
+
+🚀 Success starts with action.<br><br>
+
+💡 Stay consistent and grow faster in ${topic}.
+`;
+}
+
 </script>
 </body>
 </html>
