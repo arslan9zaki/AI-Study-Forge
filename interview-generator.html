@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Interview Questions Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+min-height:100vh;
+}
+
+header{
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#111827;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.logo{
+font-size:28px;
+font-weight:700;
+color:#38bdf8;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:25px;
+transition:0.3s;
+}
+
+nav a:hover{
+color:#38bdf8;
+}
+
+.hero{
+padding:70px 8%;
+text-align:center;
+}
+
+.hero h1{
+font-size:52px;
+margin-bottom:20px;
+}
+
+.hero span{
+color:#38bdf8;
+}
+
+.hero p{
+color:#cbd5e1;
+max-width:700px;
+margin:auto;
+line-height:1.7;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:40px 8%;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
+
+.form-box{
+background:#1e293b;
+padding:35px;
+border-radius:20px;
+}
+
+.form-box h2{
+margin-bottom:25px;
+}
+
+input,select,textarea{
+width:100%;
+padding:14px;
+margin-bottom:20px;
+border:none;
+border-radius:10px;
+background:#334155;
+color:white;
+font-size:15px;
+}
+
+textarea{
+height:140px;
+resize:none;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+background:#38bdf8;
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#0ea5e9;
+transform:translateY(-2px);
+}
+
+.result-box{
+background:#1e293b;
+padding:35px;
+border-radius:20px;
+}
+
+.result-box h2{
+margin-bottom:20px;
+}
+
+.question{
+background:#334155;
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
+line-height:1.6;
+}
+
+footer{
+margin-top:60px;
+padding:25px;
+text-align:center;
+background:#111827;
+color:#94a3b8;
+}
+
+@media(max-width:900px){
+
+.container{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:36px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">AI Insider</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h1>AI <span>Interview Questions</span> Generator</h1>
+
+<p>
+Prepare for interviews professionally using AI-powered interview questions for any industry or position.
+</p>
+
+</section>
+
+<div class="container">
+
+<div class="form-box">
+
+<h2>Generate Questions</h2>
+
+<input type="text" id="jobRole" placeholder="Enter Job Role">
+
+<select id="experience">
+<option>Fresher</option>
+<option>1-3 Years</option>
+<option>3-5 Years</option>
+<option>Senior Level</option>
+</select>
+
+<textarea id="skills" placeholder="Enter skills or technologies"></textarea>
+
+<button onclick="generateQuestions()">
+Generate Questions
+</button>
+
+</div>
+
+<div class="result-box">
+
+<h2>Interview Questions</h2>
+
+<div id="questionsOutput">
+
+<div class="question">
+Your interview questions will appear here...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+© 2026 AI Insider — Smart AI Career Tools
+
+</footer>
+
+<script>
+
+function generateQuestions(){
+
+const role=document.getElementById("jobRole").value;
+const exp=document.getElementById("experience").value;
+const skills=document.getElementById("skills").value;
+
+const output=document.getElementById("questionsOutput");
+
+if(role===""){
+
+output.innerHTML=`
+<div class="question">
+Please enter a job role first.
+</div>
+`;
+
+return;
+
+}
+
+output.innerHTML=`
+
+<div class="question">
+1. Tell us about your experience related to ${role}.
+</div>
+
+<div class="question">
+2. What are the biggest challenges in ${role} positions?
+</div>
+
+<div class="question">
+3. Explain your knowledge of ${skills || "industry tools"}.
+</div>
+
+<div class="question">
+4. How would you handle pressure in a ${role} role?
+</div>
+
+<div class="question">
+5. Why should we hire you as a ${role} professional?
+</div>
+
+<div class="question">
+6. What makes you suitable for a ${exp} level position?
+</div>
+
+<div class="question">
+7. Describe a difficult situation and how you solved it.
+</div>
+
+<div class="question">
+8. What are your future career goals?
+</div>
+
+`;
+
+}
+
+</script>
+
+</body>
+</html>
