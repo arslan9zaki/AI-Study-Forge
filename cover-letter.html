@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cover Letter Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+}
+
+/* HEADER */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    background:#111827;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    color:#3b82f6;
+}
+
+.back-btn{
+    text-decoration:none;
+    background:#3b82f6;
+    color:white;
+    padding:12px 22px;
+    border-radius:8px;
+}
+
+.back-btn:hover{
+    background:#2563eb;
+}
+
+/* MAIN */
+
+.container{
+    width:90%;
+    max-width:1400px;
+    margin:auto;
+    padding:50px 0;
+}
+
+.page-title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.page-title h1{
+    font-size:52px;
+    margin-bottom:15px;
+}
+
+.page-title p{
+    color:#cbd5e1;
+    font-size:18px;
+}
+
+/* GRID */
+
+.main-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+}
+
+/* FORM */
+
+.form-box{
+    background:#1e293b;
+    padding:35px;
+    border-radius:20px;
+}
+
+.form-box h2{
+    margin-bottom:25px;
+}
+
+.input-group{
+    margin-bottom:22px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:500;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#0f172a;
+    color:white;
+    font-size:15px;
+}
+
+.input-group textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.generate-btn{
+    width:100%;
+    padding:16px;
+    background:#3b82f6;
+    border:none;
+    color:white;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.generate-btn:hover{
+    background:#2563eb;
+}
+
+/* PREVIEW */
+
+.preview-box{
+    background:white;
+    color:black;
+    border-radius:20px;
+    padding:40px;
+    min-height:700px;
+    overflow:auto;
+}
+
+.preview-box h2{
+    margin-bottom:20px;
+    color:#0f172a;
+}
+
+#letterOutput{
+    white-space:pre-line;
+    line-height:1.8;
+    color:#111827;
+}
+
+/* ACTIONS */
+
+.actions{
+    margin-top:20px;
+    display:flex;
+    gap:15px;
+}
+
+.action-btn{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    background:#3b82f6;
+    color:white;
+}
+
+.action-btn:hover{
+    background:#2563eb;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .main-grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-title h1{
+        font-size:36px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        AI Biz Tools
+    </div>
+
+    <a href="index.html" class="back-btn">
+        ← Back Home
+    </a>
+
+</header>
+
+<div class="container">
+
+    <div class="page-title">
+        <h1>AI Cover Letter Generator</h1>
+        <p>Create professional job-winning cover letters instantly.</p>
+    </div>
+
+    <div class="main-grid">
+
+        <!-- LEFT FORM -->
+
+        <div class="form-box">
+
+            <h2>Fill Your Details</h2>
+
+            <div class="input-group">
+                <label>Your Name</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="input-group">
+                <label>Job Position</label>
+                <input type="text" id="position">
+            </div>
+
+            <div class="input-group">
+                <label>Company Name</label>
+                <input type="text" id="company">
+            </div>
+
+            <div class="input-group">
+                <label>Your Experience</label>
+                <textarea id="experience"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Skills</label>
+                <textarea id="skills"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Cover Letter Style</label>
+
+                <select id="style">
+
+                    <option>Professional</option>
+                    <option>Creative</option>
+                    <option>Formal</option>
+                    <option>Modern</option>
+
+                </select>
+            </div>
+
+            <button class="generate-btn" onclick="generateLetter()">
+                Generate Cover Letter
+            </button>
+
+        </div>
+
+        <!-- RIGHT OUTPUT -->
+
+        <div class="preview-box">
+
+            <h2>Generated Cover Letter</h2>
+
+            <div id="letterOutput">
+
+Your professional AI cover letter will appear here...
+
+            </div>
+
+            <div class="actions">
+
+                <button class="action-btn" onclick="copyLetter()">
+                    Copy
+                </button>
+
+                <button class="action-btn" onclick="window.print()">
+                    Print
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function generateLetter(){
+
+    let name = document.getElementById("name").value;
+    let position = document.getElementById("position").value;
+    let company = document.getElementById("company").value;
+    let experience = document.getElementById("experience").value;
+    let skills = document.getElementById("skills").value;
+    let style = document.getElementById("style").value;
+
+    let output = document.getElementById("letterOutput");
+
+    output.innerHTML = `
+
+Dear Hiring Manager,
+
+I am writing to express my strong interest in the ${position} position at ${company}.
+
+With my background in ${experience}, I believe I can bring valuable contribution to your organization.
+
+My key strengths include:
+${skills}
+
+I am highly motivated, passionate and committed to delivering professional results while continuously improving my skills.
+
+I would welcome the opportunity to further discuss how my experience and abilities align with your company goals.
+
+Thank you for considering my application.
+
+Sincerely,
+
+${name}
+
+(${style} Style Cover Letter)
+
+    `;
+
+}
+
+function copyLetter(){
+
+    let text = document.getElementById("letterOutput").innerText;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Cover letter copied successfully!");
+
+}
+
+</script>
+
+</body>
+</html>
