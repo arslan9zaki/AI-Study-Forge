@@ -3,235 +3,412 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AI Content Writer | AI Biz Tools</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* ── Reset ── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    font-family:'Poppins',sans-serif;
-    background:#081225;
-    color:white;
+/* ── Base ── */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #081225;
+    color: white;
+    min-height: 100vh;
 }
 
-/* Navbar */
-
-.navbar{
-    width:100%;
-    padding:20px 8%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#0b1730;
-    border-bottom:1px solid rgba(255,255,255,0.08);
+/* ── Navbar ── */
+.navbar {
+    width: 100%;
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0b1730;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.logo{
-    font-size:30px;
-    font-weight:700;
-    color:#4da3ff;
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: #4da3ff;
+    letter-spacing: -0.5px;
 }
 
-.nav-links{
-    display:flex;
-    gap:25px;
+.nav-links {
+    display: flex;
+    gap: 25px;
 }
 
-.nav-links a{
-    text-decoration:none;
-    color:white;
-    font-size:15px;
-    transition:0.3s;
+.nav-links a {
+    text-decoration: none;
+    color: #b8c4d6;
+    font-size: 15px;
+    transition: color 0.3s;
 }
 
-.nav-links a:hover{
-    color:#4da3ff;
+.nav-links a:hover {
+    color: #4da3ff;
 }
 
-/* Hero */
-
-.hero{
-    text-align:center;
-    padding:70px 8%;
+/* ── Hero ── */
+.hero {
+    text-align: center;
+    padding: 60px 8% 50px;
 }
 
-.hero h1{
-    font-size:55px;
-    margin-bottom:15px;
+.hero h1 {
+    font-size: 52px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #fff 0%, #4da3ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.hero p{
-    max-width:700px;
-    margin:auto;
-    color:#b8c4d6;
-    line-height:1.7;
-    font-size:17px;
+.hero p {
+    max-width: 680px;
+    margin: auto;
+    color: #b8c4d6;
+    line-height: 1.75;
+    font-size: 16px;
 }
 
-/* Main Container */
-
-.container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-    margin-bottom:60px;
+/* ── Main Grid ── */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
 }
 
-/* Card */
-
-.card{
-    background:#12203d;
-    padding:30px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
+/* ── Card ── */
+.card {
+    background: #12203d;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Inputs */
-
-.card h2{
-    margin-bottom:20px;
-    font-size:28px;
+.card h2 {
+    margin-bottom: 24px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #e4edf8;
 }
 
-.input-group{
-    margin-bottom:20px;
+/* ── Form Inputs ── */
+.input-group {
+    margin-bottom: 18px;
 }
 
-.input-group label{
-    display:block;
-    margin-bottom:8px;
-    font-size:14px;
-    color:#b8c4d6;
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8da4c0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .input-group input,
 .input-group textarea,
-.input-group select{
-    width:100%;
-    padding:14px;
-    border:none;
-    outline:none;
-    border-radius:12px;
-    background:#081225;
-    color:white;
-    font-size:15px;
+.input-group select {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid rgba(255,255,255,0.07);
+    outline: none;
+    border-radius: 12px;
+    background: #081225;
+    color: white;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;  /* FIX: font-family was missing on form elements */
+    transition: border-color 0.3s;
 }
 
-textarea{
-    resize:none;
-    height:140px;
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    border-color: #4da3ff;
 }
 
-/* Button */
-
-.generate-btn{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:12px;
-    background:#4da3ff;
-    color:white;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
+.input-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234da3ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
 }
 
-.generate-btn:hover{
-    background:#2d8cff;
+.input-group select option {
+    background: #12203d;
 }
 
-/* Output */
-
-.output-box{
-    background:#081225;
-    border-radius:15px;
-    padding:25px;
-    min-height:450px;
-    line-height:1.8;
-    color:#d7e3f4;
-    white-space:pre-wrap;
+/* FIX: textarea font-family & resize */
+.input-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+    line-height: 1.6;
 }
 
-/* Footer */
-
-.footer{
-    text-align:center;
-    padding:25px;
-    border-top:1px solid rgba(255,255,255,0.08);
-    color:#9db1cc;
+/* ── Error Message ── */
+.error-msg {
+    display: none;
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: -10px;
+    margin-bottom: 14px;
 }
 
-/* Responsive */
+.error-msg.visible {
+    display: block;
+}
 
-@media(max-width:900px){
+/* ── Generate Button ── */
+.generate-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: #4da3ff;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: background 0.3s, opacity 0.3s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
 
-    .container{
-        grid-template-columns:1fr;
+.generate-btn:hover:not(:disabled) {
+    background: #2d8cff;
+}
+
+.generate-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.generate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+}
+
+.generate-btn.loading .spinner {
+    display: block;
+}
+
+.generate-btn.loading .btn-text::after {
+    content: "Generating...";
+}
+
+.generate-btn:not(.loading) .btn-text::after {
+    content: "Generate Content";
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Output Card Header ── */
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.output-header h2 {
+    margin-bottom: 0;
+}
+
+.output-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.word-count {
+    font-size: 12px;
+    color: #5a7a9e;
+}
+
+/* ── Copy Button ── */
+.copy-btn {
+    padding: 7px 14px;
+    border: 1px solid rgba(77,163,255,0.4);
+    border-radius: 8px;
+    background: transparent;
+    color: #4da3ff;
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: none;
+}
+
+.copy-btn.visible {
+    display: inline-block;
+}
+
+.copy-btn:hover {
+    background: #4da3ff;
+    color: white;
+}
+
+/* ── Output Box ── */
+.output-box {
+    background: #081225;
+    border-radius: 14px;
+    padding: 22px;
+    min-height: 420px;
+    max-height: 520px;          /* FIX: long content now scrolls instead of clipping */
+    overflow-y: auto;
+    line-height: 1.85;
+    color: #d7e3f4;
+    white-space: pre-wrap;
+    font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+    scroll-behavior: smooth;
+}
+
+.output-box::-webkit-scrollbar {
+    width: 5px;
+}
+
+.output-box::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.output-box::-webkit-scrollbar-thumb {
+    background: #2a3f60;
+    border-radius: 10px;
+}
+
+/* Placeholder text */
+.output-placeholder {
+    color: #3a5070;
+    font-size: 14px;
+    margin-top: 60px;
+    text-align: center;
+}
+
+.output-placeholder svg {
+    margin-bottom: 14px;
+    opacity: 0.4;
+}
+
+/* Streaming cursor blink */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #4da3ff;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+}
+
+/* ── Footer ── */
+.footer {
+    text-align: center;
+    padding: 25px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: #9db1cc;
+    font-size: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
     }
 
-    .hero h1{
-        font-size:40px;
+    .hero h1 {
+        font-size: 36px;
     }
 
+    .nav-links {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 500px) {
+    .navbar {
+        padding: 16px 5%;
+    }
+
+    .hero {
+        padding: 40px 5% 30px;
+    }
+
+    .container {
+        width: 95%;
+    }
 }
 
 </style>
 </head>
-
 <body>
 
 <!-- Navbar -->
-
 <div class="navbar">
-
     <div class="logo">AI Biz Tools</div>
-
     <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="blog.html">Blog</a>
         <a href="contact.html">Contact</a>
     </div>
-
 </div>
 
 <!-- Hero -->
-
 <section class="hero">
-
     <h1>AI Content Writer</h1>
-
-    <p>
-        Generate professional blogs, ads, captions, product descriptions and business content instantly using AI-powered writing templates.
-    </p>
-
+    <p>Generate professional blogs, ads, captions, product descriptions and business content instantly using AI-powered writing templates.</p>
 </section>
 
 <!-- Main -->
-
 <div class="container">
 
-    <!-- Left -->
-
+    <!-- Left: Input Card -->
     <div class="card">
-
         <h2>Create Content</h2>
 
         <div class="input-group">
             <label>Content Type</label>
-
             <select id="contentType">
                 <option>Blog Post</option>
                 <option>Instagram Caption</option>
@@ -244,104 +421,202 @@ textarea{
 
         <div class="input-group">
             <label>Topic</label>
-
-            <input type="text" id="topic" placeholder="Enter your topic">
+            <input type="text" id="topic" placeholder="e.g. Benefits of AI in marketing">
         </div>
 
         <div class="input-group">
             <label>Keywords</label>
-
-            <input type="text" id="keywords" placeholder="AI, marketing, business">
+            <input type="text" id="keywords" placeholder="e.g. AI, marketing, business">
         </div>
 
         <div class="input-group">
             <label>Description</label>
-
-            <textarea id="description" placeholder="Describe what you want AI to generate..."></textarea>
+            <textarea id="description" placeholder="Describe what you want AI to write about..."></textarea>
         </div>
 
-        <button class="generate-btn" onclick="generateContent()">
-            Generate Content
-        </button>
+        <!-- FIX: inline error message instead of alert() -->
+        <div class="error-msg" id="errorMsg">⚠ Please fill in the Topic and Description fields.</div>
 
+        <button class="generate-btn" id="generateBtn" onclick="generateContent()">
+            <div class="spinner"></div>
+            <span class="btn-text"></span>
+        </button>
     </div>
 
-    <!-- Right -->
-
+    <!-- Right: Output Card -->
     <div class="card">
-
-        <h2>Generated Content</h2>
-
-        <div class="output-box" id="output">
-
-Your AI generated content will appear here...
-
+        <div class="output-header">
+            <h2>Generated Content</h2>
+            <div class="output-actions">
+                <span class="word-count" id="wordCount"></span>
+                <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Copy</button>
+            </div>
         </div>
 
+        <div class="output-box" id="output">
+            <div class="output-placeholder">
+                <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" color="#4da3ff">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p>Your AI-generated content will appear here.</p>
+            </div>
+        </div>
     </div>
 
 </div>
 
 <!-- Footer -->
-
 <div class="footer">
-
     © 2026 AI Biz Tools — All Rights Reserved
-
 </div>
 
 <script>
 
-function generateContent(){
+    let generatedText = "";
 
-    let type = document.getElementById("contentType").value;
-    let topic = document.getElementById("topic").value;
-    let keywords = document.getElementById("keywords").value;
-    let description = document.getElementById("description").value;
+    async function generateContent() {
 
-    if(topic === "" || description === ""){
+        const type        = document.getElementById("contentType").value;
+        const topic       = document.getElementById("topic").value.trim();
+        const keywords    = document.getElementById("keywords").value.trim();
+        const description = document.getElementById("description").value.trim();
+        const errorMsg    = document.getElementById("errorMsg");
+        const btn         = document.getElementById("generateBtn");
+        const outputBox   = document.getElementById("output");
+        const copyBtn     = document.getElementById("copyBtn");
+        const wordCountEl = document.getElementById("wordCount");
 
-        alert("Please fill all fields");
-        return;
+        // FIX: clean inline validation — no alert()
+        if (!topic || !description) {
+            errorMsg.classList.add("visible");
+            return;
+        }
+        errorMsg.classList.remove("visible");
 
+        // Loading state
+        btn.classList.add("loading");
+        btn.disabled = true;
+        copyBtn.classList.remove("visible");
+        wordCountEl.textContent = "";
+        generatedText = "";
+
+        // Clear output and show streaming cursor
+        outputBox.innerHTML = '<span id="streamText"></span><span class="cursor"></span>';
+
+        // Build prompt based on content type
+        const prompts = {
+            "Blog Post":            `Write a complete, well-structured blog post about "${topic}". Include an intro, 3-4 subheadings with paragraphs, and a conclusion. Keywords to include: ${keywords || "none"}. Additional context: ${description}`,
+            "Instagram Caption":    `Write an engaging Instagram caption for the topic "${topic}". Make it punchy, include a call-to-action, and relevant hashtags. Keywords: ${keywords || "none"}. Details: ${description}`,
+            "Facebook Ad":          `Write a compelling Facebook ad copy for "${topic}". Include a headline, body text, and call-to-action. Keywords: ${keywords || "none"}. Context: ${description}`,
+            "Product Description":  `Write a professional product description for "${topic}". Highlight benefits, features, and include a persuasive closing. Keywords: ${keywords || "none"}. Details: ${description}`,
+            "Email":                `Write a professional email about "${topic}". Include subject line, greeting, body, and sign-off. Keywords: ${keywords || "none"}. Context: ${description}`,
+            "YouTube Script":       `Write a YouTube video script for "${topic}". Include an engaging hook, main content sections, and a subscribe CTA. Keywords: ${keywords || "none"}. Details: ${description}`
+        };
+
+        const prompt = prompts[type] || prompts["Blog Post"];
+
+        try {
+            const response = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 1000,
+                    stream: true,
+                    messages: [
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ],
+                    system: `You are a professional content writer specializing in ${type} creation. Write clear, engaging, and polished content suitable for business use. Do not include any explanations about what you're doing — just write the content directly.`
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            // Stream the response
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            const streamText = document.getElementById("streamText");
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split("\n");
+
+                for (const line of lines) {
+                    if (line.startsWith("data: ")) {
+                        const data = line.slice(6).trim();
+                        if (data === "[DONE]") continue;
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.type === "content_block_delta" && parsed.delta?.text) {
+                                generatedText += parsed.delta.text;
+                                streamText.textContent = generatedText;
+                                // Auto-scroll output
+                                outputBox.scrollTop = outputBox.scrollHeight;
+                            }
+                        } catch (_) {
+                            // skip malformed JSON lines
+                        }
+                    }
+                }
+            }
+
+            // Remove cursor when done
+            const cursor = outputBox.querySelector(".cursor");
+            if (cursor) cursor.remove();
+
+            // Word count
+            const words = generatedText.trim().split(/\s+/).filter(Boolean).length;
+            wordCountEl.textContent = `${words} words`;
+
+            // Show copy button
+            copyBtn.classList.add("visible");
+
+        } catch (err) {
+            outputBox.innerHTML = "";
+            outputBox.textContent = "⚠ Error: " + (err.message || "Something went wrong. Please try again.");
+        }
+
+        // Reset button
+        btn.classList.remove("loading");
+        btn.disabled = false;
     }
 
-    let output = `
+    function copyOutput() {
+        if (!generatedText) return;
 
-CONTENT TYPE:
-${type}
-
-TOPIC:
-${topic}
-
-KEYWORDS:
-${keywords}
-
-GENERATED CONTENT:
-
-${topic} is becoming one of the fastest growing trends in modern business and digital marketing.
-
-This content was generated for ${type.toLowerCase()} purposes and focuses on improving engagement, audience reach and online visibility.
-
-Main Discussion:
-${description}
-
-Key Benefits:
-• Better audience engagement
-• Professional branding
-• Improved online presence
-• Stronger customer communication
-
-Conclusion:
-Businesses using smart AI-powered content strategies can grow faster, improve marketing performance and build stronger customer relationships.
-
-`;
-
-    document.getElementById("output").innerText = output;
-
-}
+        navigator.clipboard.writeText(generatedText).then(() => {
+            const btn = document.getElementById("copyBtn");
+            btn.textContent = "Copied!";
+            btn.style.background = "#4da3ff";
+            btn.style.color = "white";
+            setTimeout(() => {
+                btn.textContent = "Copy";
+                btn.style.background = "";
+                btn.style.color = "";
+            }, 2000);
+        }).catch(() => {
+            // Fallback for older browsers
+            const el = document.createElement("textarea");
+            el.value = generatedText;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand("copy");
+            document.body.removeChild(el);
+        });
+    }
 
 </script>
-
 </body>
 </html>
