@@ -508,6 +508,7 @@ footer {
     .preview-header { padding: 18px 20px 14px; }
 }
 
+
 </style>
 </head>
 <body>
@@ -524,6 +525,7 @@ footer {
     <h1>AI Cover Letter <span>Generator</span></h1>
     <p>Create professional, job-winning cover letters tailored to any role — in seconds.</p>
 </section>
+
 
 <!-- Main -->
 <div class="main-wrap">
@@ -691,7 +693,7 @@ async function generateLetter() {
     // Show output area, hide placeholder
     pholder.style.display = "none";
     output.style.display = "block";
-    output.innerHTML = '<span id="streamSpan"></span><span class="cursor"></span>';
+    output.innerHTML = '<span style="color:#64748b;font-size:14px">⏳ Generating your cover letter…</span>';
     footer.style.display = "none";
     copyBtn.classList.remove("copied");
     copyBtn.innerHTML = "📋 Copy";
@@ -710,53 +712,32 @@ async function generateLetter() {
 
 Write a complete, compelling cover letter. Start with the date and applicant's name at the top, then "Dear Hiring Manager," — include 3–4 well-written paragraphs that open with a strong hook, discuss relevant experience and skills, show genuine interest in ${company}, and close with a confident call to action. End with "Sincerely," and the applicant's name. Do NOT add any explanations or meta-commentary — output only the letter text itself.`;
 
+    const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
+    const systemPrompt = "You are a professional career coach and expert cover letter writer. Write polished, personalized cover letters that help candidates stand out. Output only the letter — no preamble, no commentary.";
+
     try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        const response = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                model: "claude-sonnet-4-20250514",
-                max_tokens: 1000,
-                stream: true,
-                messages: [{ role: "user", content: prompt }],
-                system: "You are a professional career coach and expert cover letter writer. Write polished, personalized cover letters that help candidates stand out. Output only the letter — no preamble, no commentary."
+                model: "gemini-2.0-flash",
+                prompt,
+                systemPrompt
             })
         });
 
-        if (!response.ok) throw new Error("API error " + response.status);
+        const data = await response.json();
 
-        const reader  = response.body.getReader();
-        const decoder = new TextDecoder();
-        const streamSpan = document.getElementById("streamSpan");
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            for (const line of chunk.split("\n")) {
-                if (!line.startsWith("data: ")) continue;
-                const data = line.slice(6).trim();
-                if (data === "[DONE]") continue;
-                try {
-                    const parsed = JSON.parse(data);
-                    if (parsed.type === "content_block_delta" && parsed.delta?.text) {
-                        generatedText += parsed.delta.text;
-                        streamSpan.textContent = generatedText;
-                        // Auto-scroll letter doc
-                        const doc = document.getElementById("letterDoc");
-                        doc.scrollTop = doc.scrollHeight;
-                    }
-                } catch (_) { /* skip malformed SSE lines */ }
-            }
+        if (!response.ok) {
+            throw new Error(data.error || "Worker error " + response.status);
         }
 
-        // Remove cursor
-        const cursor = output.querySelector(".cursor");
-        if (cursor) cursor.remove();
+        generatedText = (data.text || "").trim();
+        output.innerHTML = "";
+        output.textContent = generatedText;
 
         // Word count
-        const words = generatedText.trim().split(/\s+/).filter(Boolean).length;
+        const words = generatedText.split(/\s+/).filter(Boolean).length;
         wordCount.textContent = words + " words";
         footer.style.display = "flex";
 
