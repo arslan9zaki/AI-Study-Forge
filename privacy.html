@@ -3,157 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy | AI Biz Tools</title>
+<meta name="description" content="Read the AI Biz Tools privacy policy — how we collect, use and protect your information when you use our free AI tools.">
 
-<title>Privacy Policy | AI Insider</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#0f1117;
-color:white;
-line-height:1.8;
-}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+html { scroll-behavior:smooth; }
+body { background:#0f172a; color:white; min-height:100vh; display:flex; flex-direction:column; line-height:1.8; }
 
-header{
-background:black;
-padding:20px;
-text-align:center;
-border-bottom:1px solid #222;
-}
+.main-header { display:flex; justify-content:space-between; align-items:center; padding:18px 8%; background:rgba(15,23,42,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:1000; border-bottom:1px solid rgba(59,130,246,0.15); }
+.logo { font-size:24px; font-weight:800; color:#3b82f6; text-decoration:none; letter-spacing:-0.5px; }
+.logo span { color:white; }
+.navbar { display:flex; gap:26px; align-items:center; }
+.navbar a { color:#cbd5e1; text-decoration:none; font-size:15px; font-weight:500; transition:0.3s; }
+.navbar a:hover { color:#3b82f6; }
+.nav-btn { background:#3b82f6; color:white !important; padding:10px 20px; border-radius:8px; font-weight:600 !important; font-size:14px !important; }
+.nav-btn:hover { background:#2563eb !important; }
 
-header h1{
-margin:0;
-color:gold;
-font-size:40px;
-}
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
+.hamburger span { display:block; width:25px; height:2px; background:white; border-radius:2px; transition:0.3s; }
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; flex-direction:column; background:#1e293b; border-top:1px solid rgba(59,130,246,0.2); }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:#cbd5e1; text-decoration:none; padding:14px 8%; font-size:15px; font-weight:500; border-bottom:1px solid rgba(255,255,255,0.05); transition:0.2s; }
+.mobile-menu a:hover { background:rgba(59,130,246,0.1); color:#3b82f6; }
+.mobile-menu .nav-btn { margin:12px 8%; border-radius:8px; text-align:center; border-bottom:none; padding:13px; }
 
-nav{
-margin-top:12px;
-}
+.page-hero { text-align:center; padding:56px 20px 36px; background:linear-gradient(135deg,#0f172a,#1e293b); }
+.badge { display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); color:#93c5fd; font-size:12px; font-weight:600; padding:7px 16px; border-radius:50px; margin-bottom:18px; }
+.page-hero h1 { font-size:clamp(28px,4vw,46px); font-weight:800; margin-bottom:10px; letter-spacing:-0.5px; }
+.page-hero p { color:#64748b; font-size:15px; max-width:460px; margin:0 auto; }
 
-nav a{
-color:white;
-text-decoration:none;
-margin:0 15px;
-transition:0.3s;
-}
+.main-wrap { flex:1; width:90%; max-width:900px; margin:0 auto; padding:52px 0 72px; }
 
-nav a:hover{
-color:gold;
-}
+.policy-box { background:#1e293b; border-radius:20px; border:1px solid rgba(255,255,255,0.07); padding:48px; }
 
-.container{
-max-width:1000px;
-margin:auto;
-padding:60px 20px;
-}
+.policy-box h2 { font-size:18px; font-weight:700; color:#3b82f6; margin-top:36px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(59,130,246,0.15); }
+.policy-box h2:first-child { margin-top:0; }
+.policy-box p { color:#94a3b8; font-size:14px; line-height:1.85; margin-bottom:8px; }
+.policy-box .last-updated { color:#475569; font-size:13px; margin-bottom:32px; }
 
-.container h2{
-color:gold;
-margin-top:40px;
-}
+footer { padding:24px; text-align:center; border-top:1px solid rgba(255,255,255,0.07); color:#475569; font-size:14px; display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; }
+.footer-links { display:flex; gap:20px; }
+.footer-links a { color:#475569; text-decoration:none; transition:0.2s; }
+.footer-links a:hover { color:#3b82f6; }
 
-.container p{
-color:#ddd;
-}
-
-.policy-box{
-background:#1a1d26;
-padding:40px;
-border-radius:12px;
-box-shadow:0 0 20px rgba(0,0,0,0.3);
-}
-
-footer{
-background:black;
-padding:25px;
-text-align:center;
-margin-top:40px;
-border-top:1px solid #222;
+@media(max-width:768px){
+    .navbar { display:none; }
+    .hamburger { display:flex; }
+    .policy-box { padding:28px 20px; }
 }
 
 </style>
 </head>
-
 <body>
 
-<header>
-
-<h1>AI Insider</h1>
-
-<nav>
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="blog.html">Blog</a>
-<a href="contact.html">Contact</a>
-<a href="privacy.html">Privacy Policy</a>
+<header class="main-header">
+    <a href="index.html" class="logo">AI <span>Biz</span> Tools</a>
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="resume-generator.html" class="nav-btn">🚀 Try Free Tools</a>
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
+    <a href="resume-generator.html" class="nav-btn">🚀 Try Free Tools</a>
 </nav>
 
-</header>
+<section class="page-hero">
+    <div class="badge">🔒 Your Privacy Matters</div>
+    <h1>Privacy Policy</h1>
+    <p>Last updated: May 2026</p>
+</section>
 
-<div class="container">
+<div class="main-wrap">
+    <div class="policy-box">
 
-<div class="policy-box">
+        <p class="last-updated">Effective Date: May 1, 2026 · Last Updated: May 20, 2026</p>
 
-<h2>Privacy Policy</h2>
+        <h2>Overview</h2>
+        <p>AI Biz Tools ("we", "our", "us") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains what data we collect, how we use it, and your rights regarding that data.</p>
 
-<p>
-At AI Insider, we respect your privacy and are committed to protecting your personal information.
-This Privacy Policy explains how we collect, use and safeguard your information when you visit our website.
-</p>
+        <h2>Information We Collect</h2>
+        <p>We may collect basic information such as your name and email address when you contact us or subscribe to our newsletter. Our AI tools process the text you enter solely to generate your requested output — this input is not stored on our servers.</p>
 
-<h2>Information We Collect</h2>
+        <h2>How We Use Your Information</h2>
+        <p>Collected information is used only to respond to your inquiries, deliver newsletters you have opted into, and improve the quality of our tools and content. We do not sell or rent your personal data to any third party.</p>
 
-<p>
-We may collect basic information such as your name, email address and browsing behavior when you interact with our website or contact us.
-</p>
+        <h2>API Keys & Local Storage</h2>
+        <p>If any of our tools allow you to save an API key, that key is stored exclusively in your browser's local storage on your own device. It is never transmitted to our servers or shared with any third party.</p>
 
-<h2>How We Use Information</h2>
+        <h2>Cookies</h2>
+        <p>Our website may use cookies to improve user experience and analyze site traffic through tools such as Google Analytics. You can disable cookies at any time through your browser settings without affecting the core functionality of our tools.</p>
 
-<p>
-The collected information helps us improve our website, provide better content and respond to user inquiries effectively.
-</p>
+        <h2>Third-Party Services</h2>
+        <p>We use third-party services including Google Fonts, Google Analytics, and Web3Forms for contact and newsletter submissions. Each of these services operates under their own privacy policies.</p>
 
-<h2>Cookies</h2>
+        <h2>Data Protection</h2>
+        <p>We take reasonable technical and organizational measures to protect your information from unauthorized access, disclosure, alteration or destruction.</p>
 
-<p>
-Our website may use cookies to improve user experience and analyze website traffic.
-You can disable cookies through your browser settings if desired.
-</p>
+        <h2>Children's Privacy</h2>
+        <p>Our services are not directed at children under 13. We do not knowingly collect personal information from children. If you believe a child has submitted personal data to us, please contact us immediately.</p>
 
-<h2>Third-Party Services</h2>
+        <h2>Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date. Continued use of the site after changes constitutes acceptance.</p>
 
-<p>
-We may use third-party tools such as Google Analytics or advertising services that may collect non-personal information according to their own privacy policies.
-</p>
+        <h2>Contact Us</h2>
+        <p>If you have questions about this Privacy Policy, please contact us through our <a href="contact.html" style="color:#3b82f6;text-decoration:none;">Contact page</a>.</p>
 
-<h2>Data Protection</h2>
-
-<p>
-We take reasonable security measures to protect your information from unauthorized access or misuse.
-</p>
-
-<h2>Changes to This Policy</h2>
-
-<p>
-AI Insider may update this Privacy Policy from time to time. Any changes will be posted on this page.
-</p>
-
-<h2>Contact Us</h2>
-
-<p>
-If you have questions regarding this Privacy Policy, please contact us through our Contact page.
-</p>
-
-</div>
-
+    </div>
 </div>
 
 <footer>
-© 2026 AI Insider — All Rights Reserved
+    <span>© 2026 AI Biz Tools — All Rights Reserved</span>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="terms.html">Terms</a>
+    </div>
 </footer>
 
+<script>
+function toggleMenu(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+document.querySelectorAll('.mobile-menu a').forEach(function(l){
+    l.addEventListener('click',function(){
+        document.getElementById('mobileMenu').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+</script>
 </body>
 </html>
