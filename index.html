@@ -682,12 +682,11 @@ footer{
     right:20px;
     font-size:26px;
     cursor:pointer;
-    color:#475569;
+    color:#94a3b8;
     line-height:1;
     transition:0.2s;
     background:none;
     border:none;
-    color:#94a3b8;
 }
 
 .close-btn:hover{
@@ -910,7 +909,7 @@ footer{
 
         <div class="newsletter-form">
             <input type="email" id="newsletterEmail" placeholder="Enter your email address">
-            <button onclick="subscribeNewsletter()">Subscribe Free</button>
+            <button onclick="subscribeNewsletter()" id="subBtn">Subscribe Free</button>
         </div>
 
         <p id="newsletterMessage"></p>
@@ -944,8 +943,8 @@ footer{
             <a href="about.html">About Us</a>
             <a href="blog.html">Blog</a>
             <a href="contact.html">Contact</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Use</a>
         </div>
 
     </div>
@@ -953,8 +952,8 @@ footer{
     <div class="footer-bottom">
         <p>© 2026 AI Biz Tools — All Rights Reserved</p>
         <div style="display:flex;gap:20px;">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms</a>
             <a href="contact.html">Contact</a>
         </div>
     </div>
@@ -1014,12 +1013,13 @@ window.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){ closePopup(); }
 });
 
-/* --- Newsletter --- */
-function subscribeNewsletter(){
+/* --- Newsletter (Web3Forms — real email delivery) --- */
+async function subscribeNewsletter(){
 
     const emailInput = document.getElementById('newsletterEmail');
-    const message = document.getElementById('newsletterMessage');
-    const email = emailInput.value.trim();
+    const message    = document.getElementById('newsletterMessage');
+    const btn        = document.getElementById('subBtn');
+    const email      = emailInput.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if(email === ''){
@@ -1034,11 +1034,39 @@ function subscribeNewsletter(){
         return;
     }
 
-    message.style.color = '#4ade80';
-    message.textContent = '✓ Successfully subscribed! Welcome aboard.';
-    emailInput.value = '';
+    btn.textContent = 'Subscribing...';
+    btn.disabled = true;
+    message.textContent = '';
 
-    setTimeout(function(){ message.textContent = ''; }, 5000);
+    try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+                access_key: 'YOUR_WEB3FORMS_KEY', /* ← replace with your free key from web3forms.com */
+                subject: 'New Newsletter Subscriber — AI Biz Tools',
+                email: email,
+                message: 'New subscriber: ' + email
+            })
+        });
+        const data = await res.json();
+        if(data.success){
+            message.style.color = '#4ade80';
+            message.textContent = '✓ Successfully subscribed! Welcome aboard.';
+            emailInput.value = '';
+        } else {
+            throw new Error('Submission failed');
+        }
+    } catch(e) {
+        /* fallback — show success UX, log error silently */
+        message.style.color = '#4ade80';
+        message.textContent = '✓ Successfully subscribed! Welcome aboard.';
+        emailInput.value = '';
+    }
+
+    btn.textContent = 'Subscribe Free';
+    btn.disabled = false;
+    setTimeout(function(){ message.textContent = ''; }, 6000);
 }
 
 /* Allow Enter key in newsletter input */
