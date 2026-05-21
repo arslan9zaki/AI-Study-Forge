@@ -3,166 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | AI Biz Tools</title>
+<meta name="description" content="Learn about AI Biz Tools — our mission to provide free AI-powered tools that help people build careers, create content and grow businesses online.">
 
-<title>About Us | AI Insider</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#0f1117;
-color:white;
-}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+html { scroll-behavior:smooth; }
+body { background:#0f172a; color:white; min-height:100vh; display:flex; flex-direction:column; }
 
-header{
-background:black;
-padding:20px;
-text-align:center;
-border-bottom:1px solid #222;
-}
+/* ── Header ── */
+.main-header { display:flex; justify-content:space-between; align-items:center; padding:18px 8%; background:rgba(15,23,42,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:1000; border-bottom:1px solid rgba(59,130,246,0.15); }
+.logo { font-size:24px; font-weight:800; color:#3b82f6; text-decoration:none; letter-spacing:-0.5px; }
+.logo span { color:white; }
+.navbar { display:flex; gap:26px; align-items:center; }
+.navbar a { color:#cbd5e1; text-decoration:none; font-size:15px; font-weight:500; transition:0.3s; }
+.navbar a:hover { color:#3b82f6; }
+.nav-btn { background:#3b82f6; color:white !important; padding:10px 20px; border-radius:8px; font-weight:600 !important; font-size:14px !important; }
+.nav-btn:hover { background:#2563eb !important; }
 
-header h1{
-margin:0;
-color:gold;
-font-size:40px;
-}
+/* Hamburger */
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
+.hamburger span { display:block; width:25px; height:2px; background:white; border-radius:2px; transition:0.3s; }
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; flex-direction:column; background:#1e293b; border-top:1px solid rgba(59,130,246,0.2); }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:#cbd5e1; text-decoration:none; padding:14px 8%; font-size:15px; font-weight:500; border-bottom:1px solid rgba(255,255,255,0.05); transition:0.2s; }
+.mobile-menu a:hover { background:rgba(59,130,246,0.1); color:#3b82f6; }
+.mobile-menu .nav-btn { margin:12px 8%; border-radius:8px; text-align:center; border-bottom:none; padding:13px; }
 
-nav{
-margin-top:12px;
-}
+/* ── Hero ── */
+.page-hero { text-align:center; padding:64px 20px 44px; background:linear-gradient(135deg,#0f172a,#1e293b); position:relative; overflow:hidden; }
+.page-hero::before { content:''; position:absolute; width:500px; height:500px; background:radial-gradient(circle,rgba(59,130,246,0.09),transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+.badge { display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); color:#93c5fd; font-size:12px; font-weight:600; padding:7px 16px; border-radius:50px; margin-bottom:18px; }
+.page-hero h1 { font-size:clamp(30px,5vw,52px); font-weight:800; margin-bottom:14px; letter-spacing:-0.5px; }
+.page-hero h1 span { background:linear-gradient(135deg,#3b82f6,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-hero p { color:#64748b; font-size:17px; max-width:600px; margin:0 auto; line-height:1.8; }
 
-nav a{
-color:white;
-text-decoration:none;
-margin:0 15px;
-font-size:16px;
-transition:0.3s;
-}
+/* ── Content ── */
+.main-wrap { flex:1; width:90%; max-width:1200px; margin:0 auto; padding:56px 0 72px; }
 
-nav a:hover{
-color:gold;
-}
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; margin-bottom:72px; }
 
-.hero{
-padding:80px 20px;
-text-align:center;
-background:linear-gradient(to right,#111,#1c1f2b);
-}
+.about-card { background:#1e293b; padding:32px 28px; border-radius:16px; border:1px solid rgba(255,255,255,0.07); transition:0.3s; }
+.about-card:hover { transform:translateY(-5px); border-color:rgba(59,130,246,0.25); box-shadow:0 16px 40px rgba(0,0,0,0.35); }
+.card-icon { font-size:32px; margin-bottom:16px; }
+.about-card h3 { font-size:18px; font-weight:700; color:#e2e8f0; margin-bottom:12px; }
+.about-card p { color:#64748b; font-size:14px; line-height:1.75; }
 
-.hero h2{
-font-size:48px;
-color:gold;
-margin-bottom:20px;
-}
+/* Story section */
+.story-section { background:#1e293b; border-radius:20px; border:1px solid rgba(255,255,255,0.07); padding:48px; margin-bottom:56px; }
+.story-section h2 { font-size:24px; font-weight:800; margin-bottom:18px; color:#e2e8f0; }
+.story-section p { color:#64748b; font-size:15px; line-height:1.9; margin-bottom:16px; }
+.story-section p:last-child { margin-bottom:0; }
 
-.hero p{
-max-width:800px;
-margin:auto;
-font-size:20px;
-line-height:1.8;
-color:#ddd;
-}
+/* Stats */
+.stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:20px; }
+.stat-box { background:#1e293b; border-radius:14px; border:1px solid rgba(255,255,255,0.07); padding:28px 20px; text-align:center; }
+.stat-box .num { font-size:32px; font-weight:800; color:#3b82f6; display:block; margin-bottom:6px; }
+.stat-box .lbl { font-size:13px; color:#64748b; }
 
-.section{
-max-width:1100px;
-margin:auto;
-padding:60px 20px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:30px;
-}
+/* ── Footer ── */
+footer { padding:24px; text-align:center; border-top:1px solid rgba(255,255,255,0.07); color:#475569; font-size:14px; display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; }
+.footer-links { display:flex; gap:20px; }
+.footer-links a { color:#475569; text-decoration:none; transition:0.2s; }
+.footer-links a:hover { color:#3b82f6; }
 
-.card{
-background:#1a1d26;
-padding:30px;
-border-radius:12px;
-transition:0.3s;
-box-shadow:0 0 20px rgba(0,0,0,0.3);
-}
-
-.card:hover{
-transform:translateY(-5px);
-}
-
-.card h3{
-color:gold;
-margin-bottom:15px;
-}
-
-.card p{
-line-height:1.8;
-color:#ccc;
-}
-
-footer{
-background:black;
-padding:25px;
-text-align:center;
-margin-top:40px;
-border-top:1px solid #222;
+@media(max-width:768px){
+    .navbar { display:none; }
+    .hamburger { display:flex; }
+    .story-section { padding:28px 20px; }
 }
 
 </style>
 </head>
-
 <body>
 
-<header>
-
-<h1>AI Insider</h1>
-
-<nav>
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="blog.html">Blog</a>
-<a href="contact.html">Contact</a>
+<!-- Header -->
+<header class="main-header">
+    <a href="index.html" class="logo">AI <span>Biz</span> Tools</a>
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="resume-generator.html" class="nav-btn">🚀 Try Free Tools</a>
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
+    <a href="resume-generator.html" class="nav-btn">🚀 Try Free Tools</a>
 </nav>
 
-</header>
-
-<section class="hero">
-
-<h2>About AI Insider</h2>
-
-<p>
-AI Insider is a modern platform dedicated to helping people discover the best AI tools, online earning methods, blogging strategies and digital business ideas.
-We simplify technology for beginners and help users grow online with practical and powerful resources.
-</p>
-
+<!-- Hero -->
+<section class="page-hero">
+    <div class="badge">👋 Our Story</div>
+    <h1>About <span>AI Biz Tools</span></h1>
+    <p>We build free AI-powered tools that help everyone — from students to entrepreneurs — grow their careers and businesses online.</p>
 </section>
 
-<section class="section">
+<!-- Main Content -->
+<div class="main-wrap">
 
-<div class="card">
-<h3>Our Mission</h3>
+    <!-- Cards -->
+    <div class="cards-grid">
+        <div class="about-card">
+            <div class="card-icon">🎯</div>
+            <h3>Our Mission</h3>
+            <p>To make powerful AI tools accessible to everyone — students, job seekers, freelancers and business owners — completely free, with no technical knowledge required.</p>
+        </div>
+        <div class="about-card">
+            <div class="card-icon">🛠</div>
+            <h3>What We Build</h3>
+            <p>We publish practical AI tools for resumes, cover letters, interview prep, content writing and business naming — all running instantly in your browser.</p>
+        </div>
+        <div class="about-card">
+            <div class="card-icon">⭐</div>
+            <h3>Why Choose Us</h3>
+            <p>No signups, no paywalls, no tricks. Just clean, fast, professional AI tools built with modern technology and a focus on real results for real people.</p>
+        </div>
+    </div>
 
-<p>
-Our mission is to help beginners and professionals understand artificial intelligence, automation and online income opportunities through easy guides and trusted resources.
-</p>
+    <!-- Story -->
+    <div class="story-section">
+        <h2>Our Story</h2>
+        <p>AI Biz Tools was built with one simple belief: everyone deserves access to powerful AI tools, regardless of their budget or technical background. We saw too many great tools locked behind expensive subscriptions and decided to change that.</p>
+        <p>We started with a handful of career tools — a resume generator and cover letter writer — and quickly grew into a full suite of free AI tools used by thousands of people every month around the world.</p>
+        <p>Every tool is designed to be simple enough for a beginner yet powerful enough for professionals. We keep everything free by focusing on quality, not quantity, and continuously improving based on your feedback.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-box"><span class="num">50K+</span><span class="lbl">Tools Used</span></div>
+        <div class="stat-box"><span class="num">5</span><span class="lbl">Free AI Tools</span></div>
+        <div class="stat-box"><span class="num">$0</span><span class="lbl">Cost Forever</span></div>
+        <div class="stat-box"><span class="num">4.9★</span><span class="lbl">User Rating</span></div>
+    </div>
+
 </div>
 
-<div class="card">
-<h3>What We Share</h3>
-
-<p>
-We publish articles about AI tools, blogging, freelancing, affiliate marketing, automation software and smart ways to build income online.
-</p>
-</div>
-
-<div class="card">
-<h3>Why Choose Us</h3>
-
-<p>
-AI Insider focuses on quality content, modern design and beginner-friendly learning experiences to help users succeed in the digital world.
-</p>
-</div>
-
-</section>
-
+<!-- Footer -->
 <footer>
-© 2026 AI Insider — All Rights Reserved
+    <span>© 2026 AI Biz Tools — All Rights Reserved</span>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+    </div>
 </footer>
 
+<script>
+function toggleMenu(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+document.querySelectorAll('.mobile-menu a').forEach(function(l){
+    l.addEventListener('click',function(){
+        document.getElementById('mobileMenu').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+</script>
 </body>
 </html>
