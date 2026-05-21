@@ -3,150 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Blog — Tools, Tips & Online Earning | AI Biz Tools</title>
+<meta name="description" content="Read the latest guides on AI tools, online earning methods, blogging strategies, freelancing and automation for 2026.">
 
-<title>AI Blog | AI Insider</title>
-
-<meta name="description" content="Latest AI tools, online earning methods, blogging, freelancing and automation guides.">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
-body{
-margin:0;
-font-family:Arial;
-background:#0f1117;
-color:white;
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+html { scroll-behavior:smooth; }
+body { background:#0f172a; color:white; min-height:100vh; display:flex; flex-direction:column; }
+
+/* ── Header ── */
+.main-header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 8%; background:rgba(15,23,42,0.95); backdrop-filter:blur(12px);
+    position:sticky; top:0; z-index:1000; border-bottom:1px solid rgba(59,130,246,0.15);
+}
+.logo { font-size:24px; font-weight:800; color:#3b82f6; text-decoration:none; letter-spacing:-0.5px; }
+.logo span { color:white; }
+.navbar { display:flex; gap:26px; align-items:center; }
+.navbar a { color:#cbd5e1; text-decoration:none; font-size:15px; font-weight:500; transition:0.3s; }
+.navbar a:hover { color:#3b82f6; }
+.nav-btn { background:#3b82f6; color:white !important; padding:10px 20px; border-radius:8px; font-weight:600 !important; font-size:14px !important; }
+.nav-btn:hover { background:#2563eb !important; }
+
+/* Hamburger */
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
+.hamburger span { display:block; width:25px; height:2px; background:white; border-radius:2px; transition:0.3s; }
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; flex-direction:column; background:#1e293b; border-top:1px solid rgba(59,130,246,0.2); }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:#cbd5e1; text-decoration:none; padding:14px 8%; font-size:15px; font-weight:500; border-bottom:1px solid rgba(255,255,255,0.05); transition:0.2s; }
+.mobile-menu a:hover { background:rgba(59,130,246,0.1); color:#3b82f6; }
+.mobile-menu .nav-btn { margin:12px 8%; border-radius:8px; text-align:center; border-bottom:none; padding:13px; }
+
+/* ── Hero ── */
+.page-hero { text-align:center; padding:60px 20px 40px; background:linear-gradient(135deg,#0f172a,#1e293b); }
+.badge { display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); color:#93c5fd; font-size:12px; font-weight:600; padding:7px 16px; border-radius:50px; margin-bottom:18px; }
+.page-hero h1 { font-size:clamp(28px,5vw,48px); font-weight:800; margin-bottom:12px; letter-spacing:-0.5px; }
+.page-hero h1 span { background:linear-gradient(135deg,#3b82f6,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-hero p { color:#64748b; font-size:16px; max-width:500px; margin:0 auto; line-height:1.75; }
+
+/* ── Blog Grid ── */
+.container { flex:1; max-width:1200px; margin:0 auto; padding:52px 5% 72px; width:90%; }
+
+.blog-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(320px,1fr));
+    gap:28px;
 }
 
-header{
-background:black;
-padding:20px;
-text-align:center;
+.blog-card {
+    background:#1e293b;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.07);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:0.3s;
 }
 
-header h1{
-color:gold;
-margin:0;
+.blog-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(0,0,0,0.4); border-color:rgba(59,130,246,0.25); }
+
+.card-thumb {
+    height:160px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:52px;
 }
 
-nav{
-margin-top:10px;
-}
+.thumb-blue   { background:linear-gradient(135deg,#1e3a5f,#1e293b); }
+.thumb-purple { background:linear-gradient(135deg,#2d1b5e,#1e293b); }
+.thumb-green  { background:linear-gradient(135deg,#0f3328,#1e293b); }
 
-nav a{
-color:white;
-margin:0 15px;
-text-decoration:none;
-}
+.card-body { padding:24px; flex:1; display:flex; flex-direction:column; }
 
-.container{
-max-width:1100px;
-margin:auto;
-padding:40px 20px;
-}
+.card-tag { display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:4px 10px; border-radius:4px; margin-bottom:14px; background:rgba(59,130,246,0.12); color:#60a5fa; }
 
-.blog-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:25px;
-}
+.blog-card h2 { font-size:18px; font-weight:700; line-height:1.4; margin-bottom:10px; color:#e2e8f0; }
 
-.blog-card{
-background:#1a1d26;
-padding:20px;
-border-radius:10px;
-transition:0.3s;
-}
+.blog-card p { color:#64748b; line-height:1.7; font-size:14px; flex:1; margin-bottom:20px; }
 
-.blog-card:hover{
-transform:translateY(-5px);
+.read-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:11px 20px; background:#3b82f6; color:white;
+    text-decoration:none; border-radius:8px; font-size:14px; font-weight:600;
+    transition:0.3s; align-self:flex-start;
 }
+.read-btn:hover { background:#2563eb; transform:translateY(-1px); }
 
-.blog-card h2{
-color:gold;
-}
+/* Coming Soon badge on placeholder posts */
+.coming-soon { background:rgba(100,116,139,0.12); color:#94a3b8; border:1px solid rgba(100,116,139,0.2); cursor:default; }
+.coming-soon:hover { background:rgba(100,116,139,0.18); transform:none; }
 
-.blog-card p{
-line-height:1.7;
-color:#ccc;
-}
+/* ── Footer ── */
+footer { padding:24px; text-align:center; border-top:1px solid rgba(255,255,255,0.07); color:#475569; font-size:14px; display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; }
+.footer-links { display:flex; gap:20px; }
+.footer-links a { color:#475569; text-decoration:none; transition:0.2s; }
+.footer-links a:hover { color:#3b82f6; }
 
-.read-btn{
-display:inline-block;
-margin-top:15px;
-padding:10px 20px;
-background:gold;
-color:black;
-text-decoration:none;
-border-radius:5px;
-font-weight:bold;
-}
-
-footer{
-background:black;
-padding:20px;
-text-align:center;
-margin-top:40px;
+@media(max-width:768px){
+    .navbar { display:none; }
+    .hamburger { display:flex; }
+    .blog-grid { grid-template-columns:1fr; }
 }
 
 </style>
 </head>
-
 <body>
 
-<header>
-
-<h1>AI Insider Blog</h1>
-
-<nav>
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="contact.html">Contact</a>
-<a href="blog.html">Blog</a>
+<!-- Header -->
+<header class="main-header">
+    <a href="index.html" class="logo">AI <span>Biz</span> Tools</a>
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="resume-generator.html" class="nav-btn">🚀 Try Free Tools</a>
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
+    <a href="resume-generator.html" class="nav-btn">🚀 Try Free Tools</a>
 </nav>
 
-</header>
+<!-- Hero -->
+<section class="page-hero">
+    <div class="badge">📝 Latest Articles</div>
+    <h1>AI Biz <span>Blog</span></h1>
+    <p>Guides on AI tools, online earning, blogging strategies and automation for 2026.</p>
+</section>
 
+<!-- Blog Grid -->
 <div class="container">
+    <div class="blog-grid">
 
-<div class="blog-grid">
+        <div class="blog-card">
+            <div class="card-thumb thumb-blue">🤖</div>
+            <div class="card-body">
+                <span class="card-tag">AI Tools</span>
+                <h2>Best Free AI Tools for Beginners in 2026</h2>
+                <p>Discover the most powerful free AI tools that help beginners create content, earn money online and automate their daily work in 2026.</p>
+                <a href="content-writer.html" class="read-btn">Try the Tool →</a>
+            </div>
+        </div>
 
-<div class="blog-card">
-<h2>Best AI Tools for Beginners</h2>
+        <div class="blog-card">
+            <div class="card-thumb thumb-purple">✍️</div>
+            <div class="card-body">
+                <span class="card-tag">Career</span>
+                <h2>How to Write a Job-Winning Cover Letter with AI</h2>
+                <p>Learn how to use AI to craft professional, personalized cover letters that get you interviews faster — with real examples.</p>
+                <a href="cover-letter.html" class="read-btn">Try the Tool →</a>
+            </div>
+        </div>
 
-<p>
-Discover powerful AI tools that help beginners earn money online, create content and automate work in 2026.
-</p>
+        <div class="blog-card">
+            <div class="card-thumb thumb-green">💰</div>
+            <div class="card-body">
+                <span class="card-tag">Earning Online</span>
+                <h2>Top Online Earning Methods Using AI in 2026</h2>
+                <p>Explore proven online income methods including freelancing, AI content creation, affiliate marketing and digital products.</p>
+                <a href="business-name-generator.html" class="read-btn">Try the Tool →</a>
+            </div>
+        </div>
 
-<a href="#" class="read-btn">Read More</a>
+        <div class="blog-card">
+            <div class="card-thumb thumb-blue">📄</div>
+            <div class="card-body">
+                <span class="card-tag">Career</span>
+                <h2>How to Build a Professional Resume That Gets Hired</h2>
+                <p>Step-by-step guide to crafting a modern resume using AI — from formatting to keywords that pass applicant tracking systems.</p>
+                <a href="resume-generator.html" class="read-btn">Try the Tool →</a>
+            </div>
+        </div>
+
+        <div class="blog-card">
+            <div class="card-thumb thumb-purple">🎤</div>
+            <div class="card-body">
+                <span class="card-tag">Interview Prep</span>
+                <h2>How to Prepare for Any Job Interview Using AI</h2>
+                <p>Use AI-generated interview questions to practice for any role, any level and any industry — and walk in with full confidence.</p>
+                <a href="interview-generator.html" class="read-btn">Try the Tool →</a>
+            </div>
+        </div>
+
+        <div class="blog-card">
+            <div class="card-thumb thumb-green">🚀</div>
+            <div class="card-body">
+                <span class="card-tag">Coming Soon</span>
+                <h2>How to Start an AI-Powered Blog and Earn in 2026</h2>
+                <p>Full guide on how to create an AI blog, write SEO articles, rank on Google and earn with ads and affiliate marketing programs.</p>
+                <span class="read-btn coming-soon">Coming Soon</span>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<div class="blog-card">
-<h2>How to Start AI Blogging</h2>
-
-<p>
-Learn how to create an AI blog, write articles, rank on Google and earn with ads and affiliate marketing.
-</p>
-
-<a href="#" class="read-btn">Read More</a>
-</div>
-
-<div class="blog-card">
-<h2>Top Online Earning Methods</h2>
-
-<p>
-Explore easy online income methods including freelancing, blogging, AI automation and digital products.
-</p>
-
-<a href="#" class="read-btn">Read More</a>
-</div>
-
-</div>
-
-</div>
-
+<!-- Footer -->
 <footer>
-© 2026 AI Insider — All Rights Reserved
+    <span>© 2026 AI Biz Tools — All Rights Reserved</span>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+    </div>
 </footer>
 
+<script>
+function toggleMenu(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+document.querySelectorAll('.mobile-menu a').forEach(function(l){
+    l.addEventListener('click',function(){
+        document.getElementById('mobileMenu').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+</script>
 </body>
 </html>
