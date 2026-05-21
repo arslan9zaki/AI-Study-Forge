@@ -1,6 +1,26 @@
-# wrangler files
-.wrangler
-.dev.vars*
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+.dev.vars.*
 !.dev.vars.example
-.env*
+
+# Environment variables — NEVER commit real keys
+.env
+.env.*
 !.env.example
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.user
