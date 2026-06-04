@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business Name Generator — AI Biz Tools</title>
+<meta name="description" content="Generate catchy, creative and brandable business names instantly using AI. Free tool — no signup required.">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+html{ scroll-behavior:smooth; }
+
+body{
+    background:#0f172a;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+/* ================= HEADER ================= */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:rgba(15,23,42,0.95);
+    backdrop-filter:blur(12px);
+    position:sticky;
+    top:0;
+    z-index:100;
+    border-bottom:1px solid rgba(59,130,246,0.15);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    color:#3b82f6;
+    text-decoration:none;
+    letter-spacing:-0.5px;
+}
+
+.logo span{ color:white; }
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.header-right a{
+    color:#94a3b8;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    transition:0.2s;
+}
+
+.header-right a:hover{ color:#3b82f6; }
+
+.back-btn{
+    text-decoration:none;
+    background:transparent;
+    border:1px solid rgba(59,130,246,0.4);
+    color:#93c5fd !important;
+    padding:10px 20px;
+    border-radius:8px;
+    font-size:14px !important;
+    font-weight:600 !important;
+    transition:0.3s;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+.back-btn:hover{
+    background:rgba(59,130,246,0.1);
+    border-color:#3b82f6;
+}
+
+/* ================= HERO ================= */
+
+.page-hero{
+    text-align:center;
+    padding:64px 20px 40px;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    position:relative;
+    overflow:hidden;
+}
+
+.page-hero::before{
+    content:'';
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:radial-gradient(circle,rgba(59,130,246,0.1),transparent 70%);
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+}
+
+.page-hero .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(59,130,246,0.12);
+    border:1px solid rgba(59,130,246,0.25);
+    color:#93c5fd;
+    font-size:12px;
+    font-weight:600;
+    padding:7px 16px;
+    border-radius:50px;
+    margin-bottom:22px;
+    letter-spacing:0.3px;
+}
+
+.page-hero h1{
+    font-size:clamp(32px,5vw,56px);
+    font-weight:800;
+    line-height:1.15;
+    margin-bottom:16px;
+    letter-spacing:-1px;
+}
+
+.page-hero h1 span{
+    color:#3b82f6;
+    background:linear-gradient(135deg,#3b82f6,#60a5fa);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+
+.page-hero p{
+    color:#64748b;
+    font-size:17px;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.75;
+}
+
+/* ================= MAIN ================= */
+
+.main-wrap{
+    flex:1;
+    width:90%;
+    max-width:1100px;
+    margin:0 auto;
+    padding:48px 0 72px;
+}
+
+/* ================= GENERATOR BOX ================= */
+
+.generator-box{
+    background:#1e293b;
+    padding:44px 40px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.07);
+    margin-bottom:40px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-bottom:28px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:600;
+    color:#cbd5e1;
+    letter-spacing:0.3px;
+}
+
+.input-group label span{
+    color:#64748b;
+    font-weight:400;
+    font-size:13px;
+}
+
+.input-group input,
+.input-group select{
+    width:100%;
+    padding:15px 16px;
+    border:1px solid rgba(59,130,246,0.2);
+    border-radius:10px;
+    background:#0f172a;
+    color:white;
+    font-size:15px;
+    font-family:'Poppins',sans-serif;
+    outline:none;
+    transition:0.3s;
+    appearance:none;
+    -webkit-appearance:none;
+}
+
+.input-group input::placeholder{ color:#475569; }
+
+.input-group input:focus,
+.input-group select:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 0 3px rgba(59,130,246,0.12);
+}
+
+.select-wrap{ position:relative; }
+
+.select-wrap::after{
+    content:'▾';
+    position:absolute;
+    right:16px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#64748b;
+    pointer-events:none;
+    font-size:14px;
+}
+
+.input-group select option{ background:#1e293b; }
+
+/* Style options row */
+.style-options{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:28px;
+}
+
+.style-options label{
+    font-size:13px;
+    font-weight:600;
+    color:#94a3b8;
+    margin-bottom:10px;
+    display:block;
+    width:100%;
+}
+
+.style-chip{
+    padding:9px 18px;
+    border-radius:50px;
+    border:1px solid rgba(255,255,255,0.1);
+    background:transparent;
+    color:#94a3b8;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+    font-family:'Poppins',sans-serif;
+}
+
+.style-chip:hover{ border-color:#3b82f6; color:#93c5fd; }
+
+.style-chip.active{
+    background:rgba(59,130,246,0.15);
+    border-color:#3b82f6;
+    color:#93c5fd;
+}
+
+/* Generate Button */
+.generate-btn{
+    width:100%;
+    padding:17px;
+    background:#3b82f6;
+    border:none;
+    border-radius:12px;
+    color:white;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:'Poppins',sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    letter-spacing:0.2px;
+}
+
+.generate-btn:hover{
+    background:#2563eb;
+    transform:translateY(-2px);
+    box-shadow:0 10px 30px rgba(59,130,246,0.3);
+}
+
+.generate-btn:active{ transform:translateY(0); }
+
+.generate-btn:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+}
+
+.btn-spinner{
+    width:18px;
+    height:18px;
+    border:2px solid rgba(255,255,255,0.3);
+    border-top-color:white;
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+    display:none;
+}
+
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* Error message */
+.error-msg{
+    margin-top:14px;
+    color:#f87171;
+    font-size:14px;
+    font-weight:500;
+    display:none;
+    align-items:center;
+    gap:8px;
+}
+
+/* ================= RESULTS ================= */
+
+.results-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    display:none;
+}
+
+.results-header h2{
+    font-size:20px;
+    font-weight:700;
+}
+
+.results-header span{
+    font-size:13px;
+    color:#64748b;
+}
+
+.results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:16px;
+}
+
+.name-card{
+    background:#111827;
+    padding:24px 20px;
+    border-radius:14px;
+    text-align:center;
+    transition:0.3s;
+    border:1px solid rgba(255,255,255,0.06);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    animation:fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+.name-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(59,130,246,0.25);
+    box-shadow:0 12px 32px rgba(0,0,0,0.3);
+}
+
+.name-card .name-emoji{ font-size:26px; }
+
+.name-card h3{
+    color:#e2e8f0;
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:-0.3px;
+}
+
+.name-card .name-style{
+    background:rgba(59,130,246,0.12);
+    color:#60a5fa;
+    font-size:11px;
+    font-weight:600;
+    padding:3px 10px;
+    border-radius:50px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+}
+
+.name-card .name-desc{
+    color:#475569;
+    font-size:12px;
+    line-height:1.6;
+    flex:1;
+}
+
+.copy-btn{
+    background:transparent;
+    border:1px solid rgba(59,130,246,0.35);
+    padding:9px 20px;
+    color:#93c5fd;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    font-family:'Poppins',sans-serif;
+    transition:0.2s;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+}
+
+.copy-btn:hover{
+    background:rgba(59,130,246,0.15);
+    border-color:#3b82f6;
+}
+
+.copy-btn.copied{
+    background:rgba(74,222,128,0.12);
+    border-color:#4ade80;
+    color:#4ade80;
+}
+
+/* ================= TIPS SECTION ================= */
+
+.tips-section{
+    margin-top:56px;
+}
+
+.tips-section h2{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#e2e8f0;
+}
+
+.tips-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+}
+
+.tip-card{
+    background:#1e293b;
+    border-radius:14px;
+    padding:24px 20px;
+    border:1px solid rgba(255,255,255,0.06);
+}
+
+.tip-card .tip-icon{ font-size:24px; margin-bottom:12px; }
+
+.tip-card h4{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#e2e8f0;
+}
+
+.tip-card p{
+    color:#475569;
+    font-size:13px;
+    line-height:1.7;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    background:#020617;
+    padding:28px 8%;
+    text-align:center;
+    color:#334155;
+    font-size:13px;
+    border-top:1px solid rgba(255,255,255,0.04);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+footer a{
+    color:#334155;
+    text-decoration:none;
+    transition:0.2s;
+}
+
+footer a:hover{ color:#3b82f6; }
+
+.footer-links{ display:flex; gap:20px; }
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+    .form-grid{ grid-template-columns:1fr; gap:18px; }
+    .generator-box{ padding:28px 20px; }
+    .page-hero{ padding:48px 20px 32px; }
+    .main-wrap{ width:95%; padding:32px 0 48px; }
+    .header-right a:not(.back-btn){ display:none; }
+    footer{ flex-direction:column; text-align:center; }
+
+}
+
+@media(max-width:480px){
+    .results-grid{ grid-template-columns:1fr 1fr; }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+    <a href="../../index.html" class="logo">AI <span>Biz</span> Tools</a>
+    <div class="header-right">
+        <a href="../../index.html">Home</a>
+        <a href="../../blog/index.html">Blog</a>
+        <a href="../../index.html" class="back-btn">← Back Home</a>
+    </div>
+</header>
+
+<!-- ================= HERO ================= -->
+
+<div class="page-hero">
+    <div class="badge">💡 Free AI Tool — No Signup Needed</div>
+    <h1>AI Business <span>Name Generator</span></h1>
+    <p>Enter a keyword and instantly get creative, catchy business names tailored to your industry.</p>
+</div>
+
+<!-- ================= MAIN ================= -->
+
+<div class="main-wrap">
+
+    <div class="generator-box">
+
+        <div class="form-grid">
+
+            <div class="input-group">
+                <label>Business Keyword <span>(required)</span></label>
+                <input
+                    type="text"
+                    id="keyword"
+                    placeholder="e.g. Tech, Food, Fit, Smart"
+                    maxlength="30"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="input-group">
+                <label>Business Category</label>
+                <div class="select-wrap">
+                    <select id="category">
+                        <option value="Technology">Technology</option>
+                        <option value="Food & Restaurant">Food & Restaurant</option>
+                        <option value="Fashion & Style">Fashion & Style</option>
+                        <option value="Health & Wellness">Health & Wellness</option>
+                        <option value="Education">Education</option>
+                        <option value="Finance">Finance</option>
+                        <option value="E-Commerce">E-Commerce</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Real Estate">Real Estate</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+            <label style="font-size:14px;font-weight:600;color:#cbd5e1;display:block;margin-bottom:12px;">Name Style</label>
+            <div class="style-options">
+                <button class="style-chip active" data-style="modern" onclick="selectStyle(this)">⚡ Modern</button>
+                <button class="style-chip" data-style="creative" onclick="selectStyle(this)">🎨 Creative</button>
+                <button class="style-chip" data-style="professional" onclick="selectStyle(this)">💼 Professional</button>
+                <button class="style-chip" data-style="catchy" onclick="selectStyle(this)">🔥 Catchy</button>
+                <button class="style-chip" data-style="minimal" onclick="selectStyle(this)">✦ Minimal</button>
+            </div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn" onclick="generateNames()">
+            <div class="btn-spinner" id="spinner"></div>
+            <span id="btnText">✨ Generate Business Names</span>
+        </button>
+
+        <div class="error-msg" id="errorMsg">
+            ⚠ <span id="errorText">Please enter a keyword.</span>
+        </div>
+
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-header" id="resultsHeader">
+        <h2>Generated Names</h2>
+        <span id="resultsCount"></span>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+
+    <!-- TIPS -->
+    <div class="tips-section">
+        <h2>💡 Tips for Choosing a Business Name</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon">🔍</div>
+                <h4>Check Domain Availability</h4>
+                <p>After picking a name, search for it on GoDaddy or Namecheap to see if the .com domain is available.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">📱</div>
+                <h4>Keep It Short</h4>
+                <p>Names under 12 characters are easier to remember, type and brand. Avoid hyphens and numbers.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🌍</div>
+                <h4>Easy to Pronounce</h4>
+                <p>If people can't say it, they can't recommend it. Test it by saying it out loud to a friend.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">™️</div>
+                <h4>Check for Trademarks</h4>
+                <p>Before finalizing, search the name on your country's trademark registry to avoid legal issues.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+    <span>© 2026 AI Biz Tools — All Rights Reserved</span>
+    <div class="footer-links">
+        <a href="../../index.html">Home</a>
+        <a href="../../pages/about.html">About</a>
+        <a href="../../pages/contact.html">Contact</a>
+        <a href="#">Privacy Policy</a>
+    </div>
+</footer>
+
+<!-- ================= SCRIPT ================= */
+
+<script>
+
+/* ---- Name data ---- */
+const namePrefixes = ["Neo","Apex","Nova","Flux","Zen","Arc","Peak","Vibe","Bold","Swift","Bright","Edge","Rise","Core","Spark","Glow","Mint","Zest","Pulse","Elite"];
+const nameSuffixes = ["Hub","ify","Labs","Flow","Verse","Nest","ly","Base","Spot","Works","Zone","Hive","Sync","Link","Pro","AI","360","Up","IQ","Go"];
+const creativeMixers = ["X","io","co","ai","ux","ly","fy"];
+
+const styleDescriptions = {
+    modern:       ["Modern & forward-thinking",  "Clean, scalable startup name"],
+    creative:     ["Creative & memorable",        "Unique identity for standout brands"],
+    professional: ["Professional & trustworthy",  "Ideal for B2B & corporate brands"],
+    catchy:       ["Catchy & viral-ready",         "Easy to share & remember"],
+    minimal:      ["Minimal & elegant",            "Simple, refined brand identity"]
+};
+
+const categoryEmojis = {
+    "Technology":"🤖","Food & Restaurant":"🍽️","Fashion & Style":"👗",
+    "Health & Wellness":"💚","Education":"📚","Finance":"💰",
+    "E-Commerce":"🛒","Marketing":"📣","Travel":"✈️","Real Estate":"🏠"
+};
+
+let selectedStyle = "modern";
+
+function selectStyle(el){
+    document.querySelectorAll('.style-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedStyle = el.dataset.style;
+}
+
+function buildNames(kw, style){
+    const k = kw.charAt(0).toUpperCase() + kw.slice(1).toLowerCase();
+    const pool = [];
+
+    // Core combinations
+    pool.push({ name: k + "Hub",      desc: styleDescriptions[style][0] });
+    pool.push({ name: k + "ify",      desc: "Verb-style name — action-driven brand" });
+    pool.push({ name: "Next" + k,     desc: "Forward-looking, next-generation brand" });
+    pool.push({ name: k + "Labs",     desc: "Innovation-focused, R&D feel" });
+    pool.push({ name: k + "Flow",     desc: "Smooth, seamless & productive" });
+    pool.push({ name: k + "Verse",    desc: "Universe of possibilities" });
+    pool.push({ name: k + "Nest",     desc: "Warm, community-focused brand" });
+    pool.push({ name: k + "Sync",     desc: "Connected & always in harmony" });
+    pool.push({ name: "Go" + k,       desc: "Action-ready, energetic brand name" });
+    pool.push({ name: k + "IQ",       desc: "Smart, data-driven, intelligent" });
+    pool.push({ name: k + "Pro",      desc: "Expert-level, premium offering" });
+    pool.push({ name: k + "ly",       desc: styleDescriptions[style][1] });
+
+    // Style-specific extras
+    if(style === "minimal"){
+        pool.push({ name: k + "co",   desc: "Clean, minimal — popular with startups" });
+        pool.push({ name: k + "io",   desc: "Tech-forward, minimal domain style" });
+        pool.push({ name: k + ".ai",  desc: "AI-era minimal brand name" });
+        pool.push({ name: k + "ux",   desc: "Design & experience focused" });
+    } else if(style === "creative"){
+        const rndPre = namePrefixes[Math.floor(Math.random()*namePrefixes.length)];
+        const rndPre2 = namePrefixes[Math.floor(Math.random()*namePrefixes.length)];
+        pool.push({ name: rndPre + k,      desc: "Blend name — creative & bold" });
+        pool.push({ name: rndPre2 + k + "x", desc: "Unique combination name" });
+        pool.push({ name: k + "ova",       desc: "Nova-style — space, innovation feel" });
+        pool.push({ name: k + "zap",       desc: "Energetic & punchy" });
+    } else if(style === "professional"){
+        pool.push({ name: k + " Solutions", desc: "Professional service provider feel" });
+        pool.push({ name: k + " Group",     desc: "Enterprise, corporate brand" });
+        pool.push({ name: k + " Partners",  desc: "Trust-focused, partnership-oriented" });
+        pool.push({ name: k + " Ventures",  desc: "Investment & growth-focused" });
+    } else if(style === "catchy"){
+        pool.push({ name: k + "Boom",  desc: "Explosive, viral-ready brand" });
+        pool.push({ name: k + "Spark", desc: "Ignite attention instantly" });
+        pool.push({ name: k + "Blaze", desc: "Hot, trending, unstoppable" });
+        pool.push({ name: k + "Rush",  desc: "Fast-moving, exciting brand" });
+    }
+
+    // Shuffle and return first 12
+    for(let i = pool.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 12);
+}
+
+function generateNames(){
+    const keywordRaw = document.getElementById('keyword').value.trim();
+    const category   = document.getElementById('category').value;
+    const errorEl    = document.getElementById('errorMsg');
+    const errorText  = document.getElementById('errorText');
+    const btn        = document.getElementById('generateBtn');
+    const btnText    = document.getElementById('btnText');
+    const spinner    = document.getElementById('spinner');
+    const grid       = document.getElementById('resultsGrid');
+    const header     = document.getElementById('resultsHeader');
+    const countEl    = document.getElementById('resultsCount');
+
+    // Validation
+    errorEl.style.display = 'none';
+
+    if(keywordRaw === ''){
+        errorText.textContent = 'Please enter a business keyword.';
+        errorEl.style.display = 'flex';
+        document.getElementById('keyword').focus();
+        return;
+    }
+
+    if(keywordRaw.length < 2){
+        errorText.textContent = 'Keyword must be at least 2 characters.';
+        errorEl.style.display = 'flex';
+        return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    btnText.textContent = 'Generating...';
+    spinner.style.display = 'block';
+    grid.innerHTML = '';
+    header.style.display = 'none';
+
+    setTimeout(function(){
+
+        const names = buildNames(keywordRaw, selectedStyle);
+        const emoji = categoryEmojis[category] || '💼';
+
+        grid.innerHTML = '';
+
+        names.forEach(function(item, i){
+            const card = document.createElement('div');
+            card.className = 'name-card';
+            card.style.animationDelay = (i * 0.05) + 's';
+
+            // Safe text insertion — no innerHTML with user input
+            const emojiDiv  = document.createElement('div');
+            emojiDiv.className = 'name-emoji';
+            emojiDiv.textContent = emoji;
+
+            const nameH3 = document.createElement('h3');
+            nameH3.textContent = item.name;
+
+            const styleBadge = document.createElement('span');
+            styleBadge.className = 'name-style';
+            styleBadge.textContent = selectedStyle;
+
+            const descP = document.createElement('p');
+            descP.className = 'name-desc';
+            descP.textContent = item.desc;
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.innerHTML = '📋 Copy Name';
+            copyBtn.addEventListener('click', function(){ copyName(item.name, copyBtn); });
+
+            card.appendChild(emojiDiv);
+            card.appendChild(nameH3);
+            card.appendChild(styleBadge);
+            card.appendChild(descP);
+            card.appendChild(copyBtn);
+            grid.appendChild(card);
+        });
+
+        header.style.display = 'flex';
+        countEl.textContent = names.length + ' names generated for "' + keywordRaw + '"';
+
+        // Reset button
+        btn.disabled = false;
+        btnText.textContent = '✨ Generate Again';
+        spinner.style.display = 'none';
+
+        // Scroll to results
+        grid.scrollIntoView({ behavior:'smooth', block:'start' });
+
+    }, 800);
+}
+
+function copyName(name, btn){
+    navigator.clipboard.writeText(name).then(function(){
+        btn.classList.add('copied');
+        btn.innerHTML = '✓ Copied!';
+        setTimeout(function(){
+            btn.classList.remove('copied');
+            btn.innerHTML = '📋 Copy Name';
+        }, 2000);
+    }).catch(function(){
+        // Fallback for browsers without clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = name;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.classList.add('copied');
+        btn.innerHTML = '✓ Copied!';
+        setTimeout(function(){
+            btn.classList.remove('copied');
+            btn.innerHTML = '📋 Copy Name';
+        }, 2000);
+    });
+}
+
+// Enter key support
+document.getElementById('keyword').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ generateNames(); }
+});
+
+</script>
+
+</body>
+</html>

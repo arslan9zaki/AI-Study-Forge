@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Blog — Tools, Tips & Online Earning | AI Biz Tools</title>
+<meta name="description" content="Read the latest guides on AI tools, online earning methods, blogging strategies, freelancing and automation for 2026.">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+html { scroll-behavior:smooth; }
+body { background:#0f172a; color:white; min-height:100vh; display:flex; flex-direction:column; }
+
+/* Header */
+.main-header { display:flex; justify-content:space-between; align-items:center; padding:18px 8%; background:rgba(15,23,42,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:1000; border-bottom:1px solid rgba(59,130,246,0.15); }
+.logo { font-size:24px; font-weight:800; color:#3b82f6; text-decoration:none; letter-spacing:-0.5px; }
+.logo span { color:white; }
+.navbar { display:flex; gap:26px; align-items:center; }
+.navbar a { color:#cbd5e1; text-decoration:none; font-size:15px; font-weight:500; transition:0.3s; }
+.navbar a:hover { color:#3b82f6; }
+.nav-btn { background:#3b82f6; color:white !important; padding:10px 20px; border-radius:8px; font-weight:600 !important; font-size:14px !important; transition:0.2s; }
+.nav-btn:hover { background:#2563eb !important; }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
+.hamburger span { display:block; width:25px; height:2px; background:white; border-radius:2px; transition:0.3s; }
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; flex-direction:column; background:#1e293b; border-top:1px solid rgba(59,130,246,0.2); }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:#cbd5e1; text-decoration:none; padding:14px 8%; font-size:15px; font-weight:500; border-bottom:1px solid rgba(255,255,255,0.05); transition:0.2s; }
+.mobile-menu a:hover { background:rgba(59,130,246,0.1); color:#3b82f6; }
+.mobile-menu .nav-btn { margin:12px 8%; border-radius:8px; text-align:center; border-bottom:none; padding:13px; }
+
+/* Hero */
+.page-hero { text-align:center; padding:60px 20px 40px; background:linear-gradient(135deg,#0f172a,#1e293b); position:relative; overflow:hidden; }
+.page-hero::before { content:''; position:absolute; width:500px; height:500px; background:radial-gradient(circle,rgba(59,130,246,0.08),transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+.badge { display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); color:#93c5fd; font-size:12px; font-weight:600; padding:7px 16px; border-radius:50px; margin-bottom:18px; }
+.page-hero h1 { font-size:clamp(28px,5vw,48px); font-weight:800; margin-bottom:12px; letter-spacing:-0.5px; }
+.page-hero h1 span { background:linear-gradient(135deg,#3b82f6,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-hero p { color:#64748b; font-size:16px; max-width:500px; margin:0 auto; line-height:1.75; }
+
+/* Filter tabs */
+.filter-bar { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; padding:28px 5% 0; }
+.filter-btn { padding:8px 18px; border-radius:50px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:#94a3b8; font-size:13px; font-weight:500; cursor:pointer; font-family:'Poppins',sans-serif; transition:0.2s; }
+.filter-btn:hover { border-color:#3b82f6; color:#93c5fd; }
+.filter-btn.active { background:rgba(59,130,246,0.15); border-color:#3b82f6; color:#93c5fd; }
+
+/* Blog grid */
+.container { flex:1; max-width:1200px; margin:0 auto; padding:36px 5% 72px; width:100%; }
+.post-count { font-size:13px; color:#475569; margin-bottom:24px; }
+.blog-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:28px; }
+
+/* Blog card */
+.blog-card { background:#1e293b; border-radius:16px; border:1px solid rgba(255,255,255,0.07); overflow:hidden; display:flex; flex-direction:column; transition:0.3s; cursor:pointer; }
+.blog-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(0,0,0,0.4); border-color:rgba(59,130,246,0.3); }
+.card-thumb { height:160px; display:flex; align-items:center; justify-content:center; font-size:52px; }
+.thumb-blue   { background:linear-gradient(135deg,#1e3a5f,#1e293b); }
+.thumb-purple { background:linear-gradient(135deg,#2d1b5e,#1e293b); }
+.thumb-green  { background:linear-gradient(135deg,#0f3328,#1e293b); }
+.thumb-orange { background:linear-gradient(135deg,#3d2000,#1e293b); }
+.thumb-red    { background:linear-gradient(135deg,#3d0a00,#1e293b); }
+.card-body { padding:24px; flex:1; display:flex; flex-direction:column; }
+.card-meta { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+.card-tag { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:4px 10px; border-radius:4px; background:rgba(59,130,246,0.12); color:#60a5fa; }
+.card-date { font-size:12px; color:#475569; }
+.card-read { font-size:12px; color:#475569; }
+.blog-card h2 { font-size:17px; font-weight:700; line-height:1.45; margin-bottom:10px; color:#e2e8f0; }
+.blog-card p { color:#64748b; line-height:1.7; font-size:14px; flex:1; margin-bottom:20px; }
+.read-btn { display:inline-flex; align-items:center; gap:6px; padding:10px 18px; background:#3b82f6; color:white; text-decoration:none; border-radius:8px; font-size:13px; font-weight:600; transition:0.3s; align-self:flex-start; border:none; cursor:pointer; font-family:'Poppins',sans-serif; }
+.read-btn:hover { background:#2563eb; }
+
+/* No results */
+.no-results { text-align:center; padding:60px 20px; color:#475569; }
+.no-results p { font-size:16px; margin-top:12px; }
+
+/* Footer */
+footer { padding:24px; text-align:center; border-top:1px solid rgba(255,255,255,0.07); color:#475569; font-size:14px; display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; }
+.footer-links { display:flex; gap:20px; }
+.footer-links a { color:#475569; text-decoration:none; transition:0.2s; }
+.footer-links a:hover { color:#3b82f6; }
+
+@media(max-width:768px){
+    .navbar { display:none; }
+    .hamburger { display:flex; }
+    .blog-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="main-header">
+    <a href="../index.html" class="logo">AI <span>Biz</span> Tools</a>
+    <nav class="navbar">
+        <a href="../index.html">Home</a>
+        <a href="../pages/about.html">About</a>
+        <a href="index.html">Blog</a>
+        <a href="../pages/contact.html">Contact</a>
+        <a href="../tools/content-writer/index.html" class="nav-btn">🚀 Try Free Tools</a>
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">Home</a>
+    <a href="../pages/about.html">About</a>
+    <a href="index.html">Blog</a>
+    <a href="../pages/contact.html">Contact</a>
+    <a href="../tools/content-writer/index.html" class="nav-btn">🚀 Try Free Tools</a>
+</nav>
+
+<section class="page-hero">
+    <div class="badge">📝 Latest Articles</div>
+    <h1>AI Biz <span>Blog</span></h1>
+    <p>Guides on AI tools, online earning, career tips and automation for 2026.</p>
+</section>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="container">
+    <p class="post-count" id="postCount"></p>
+    <div class="blog-grid" id="blogGrid"></div>
+</div>
+
+<footer>
+    <span>© 2026 AI Biz Tools — All Rights Reserved</span>
+    <div class="footer-links">
+        <a href="../index.html">Home</a>
+        <a href="../pages/about.html">About</a>
+        <a href="../pages/privacy.html">Privacy</a>
+        <a href="../pages/terms.html">Terms</a>
+    </div>
+</footer>
+
+<script>
+const THUMBS = ['thumb-blue','thumb-purple','thumb-green','thumb-orange','thumb-red'];
+let allPosts = [];
+let activeFilter = 'All';
+
+function toggleMenu(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+
+function renderPosts(posts) {
+    const grid  = document.getElementById('blogGrid');
+    const count = document.getElementById('postCount');
+    count.textContent = `${posts.length} article${posts.length !== 1 ? 's' : ''}`;
+
+    if (posts.length === 0) {
+        grid.innerHTML = `<div class="no-results"><div style="font-size:48px">🔍</div><p>No articles found in this category.</p></div>`;
+        return;
+    }
+
+    grid.innerHTML = posts.map((post, i) => `
+        <div class="blog-card" onclick="openPost('${post.id}')">
+            <div class="card-thumb ${THUMBS[i % THUMBS.length]}">${post.emoji}</div>
+            <div class="card-body">
+                <div class="card-meta">
+                    <span class="card-tag">${post.category}</span>
+                    <span class="card-date">${post.date}</span>
+                    <span class="card-read">⏱ ${post.readTime}</span>
+                </div>
+                <h2>${post.title}</h2>
+                <p>${post.excerpt}</p>
+                <button class="read-btn">Read Article →</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderFilters(posts) {
+    const categories = ['All', ...new Set(posts.map(p => p.category))];
+    const bar = document.getElementById('filterBar');
+    bar.innerHTML = categories.map(cat => `
+        <button class="filter-btn ${cat === 'All' ? 'active' : ''}"
+            onclick="filterPosts('${cat}', this)">${cat}</button>
+    `).join('');
+}
+
+function filterPosts(category, btn) {
+    activeFilter = category;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = category === 'All' ? allPosts : allPosts.filter(p => p.category === category);
+    renderPosts(filtered);
+}
+
+function openPost(id) {
+    window.location.href = `post.html?id=${id}`;
+}
+
+// Load posts from JSON
+fetch('posts.json')
+    .then(r => r.json())
+    .then(posts => {
+        allPosts = posts;
+        renderFilters(posts);
+        renderPosts(posts);
+    })
+    .catch(() => {
+        document.getElementById('blogGrid').innerHTML =
+            `<div class="no-results"><p>Could not load posts. Make sure posts.json is in the same folder.</p></div>`;
+    });
+</script>
+</body>
+</html>

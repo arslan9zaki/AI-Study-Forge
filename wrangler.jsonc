@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aibiztools",
+  "compatibility_date": "2026-05-20",
+
+  // Worker entry point — required so Cloudflare runs worker.js instead of serving static assets
+  "main": "worker.js",
+
+  // No "assets" block — static files are served by GitHub Pages / Cloudflare Pages separately
+  // The Worker is a pure API proxy only
+
+  "observability": {
+    "enabled": true
+  },
+
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
