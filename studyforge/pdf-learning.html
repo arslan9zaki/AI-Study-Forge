@@ -21,8 +21,6 @@
 </script>
 
 <!-- StudyForge Core -->
-<script src="../assets/js/rag-config.js"></script>
-<script src="../assets/js/ai-integration.js"></script>
 <script src="../assets/js/studyforge-core.js"></script>
 <script src="../assets/js/visual-engine.js"></script>
 <script src="../assets/js/presentation-generator.js"></script>
@@ -679,21 +677,6 @@ body{
             </div>
         </div>
 
-        <div class="sidebar-section">
-            <h4 class="sidebar-title">🔑 API Configuration</h4>
-            <div style="display:flex;flex-direction:column;gap:var(--spacing-3);">
-                <div>
-                    <label style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--spacing-1);display:block;">Gemini API Key</label>
-                    <input type="password" id="geminiApiKey" placeholder="Enter Gemini API key" style="width:100%;padding:var(--spacing-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-bg-primary);color:var(--color-text-primary);font-size:var(--font-size-xs);" onchange="saveAPIKey('gemini', this.value)">
-                </div>
-                <div>
-                    <label style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--spacing-1);display:block;">OpenRouter API Key</label>
-                    <input type="password" id="openrouterApiKey" placeholder="Enter OpenRouter API key" style="width:100%;padding:var(--spacing-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-bg-primary);color:var(--color-text-primary);font-size:var(--font-size-xs);" onchange="saveAPIKey('openrouter', this.value)">
-                </div>
-                <p style="font-size:var(--font-size-xs);color:var(--color-text-tertiary);margin-top:var(--spacing-1);">Keys are stored locally in your browser.</p>
-            </div>
-        </div>
-
     </aside>
 
     <!-- ================= CONTENT AREA ================= -->
@@ -910,7 +893,6 @@ let selectedLanguage = 'english';
 let uploadedFile = null;
 let selectedTopics = [];
 let extractedPDFData = null;
-let studyForge = null;
 let visualEngine = null;
 let presentationGenerator = null;
 
@@ -920,32 +902,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('curriculumDisplay').textContent = formatCurriculum(selectedCurriculum);
     setupDragAndDrop();
     
-    // Initialize StudyForge AI instance
-    studyForge = new StudyForgeAI();
-    
     // Initialize Visual Learning Engine
     visualEngine = new VisualLearningEngine();
     
     // Initialize Presentation Generator
     presentationGenerator = new PresentationGenerator();
-    
-    // Set AI integration for presentation generator
-    if (studyForge.aiIntegration) {
-        presentationGenerator.setAIIntegration(studyForge.aiIntegration);
-    }
-    
-    // Load API keys from localStorage if available
-    const geminiKey = localStorage.getItem('gemini_api_key');
-    const openrouterKey = localStorage.getItem('openrouter_api_key');
-    
-    if (geminiKey) {
-        studyForge.aiIntegration.setAPIKey('gemini', geminiKey);
-        document.getElementById('geminiApiKey').value = geminiKey;
-    }
-    if (openrouterKey) {
-        studyForge.aiIntegration.setAPIKey('openrouter', openrouterKey);
-        document.getElementById('openrouterApiKey').value = openrouterKey;
-    }
 });
 
 function formatSubject(subject){
@@ -980,14 +941,6 @@ function selectLanguage(lang){
     selectedLanguage = lang;
     document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
     event.target.classList.add('active');
-}
-
-/* --- API Key Management --- */
-function saveAPIKey(provider, key){
-    localStorage.setItem(`${provider}_api_key`, key);
-    if (studyForge && studyForge.aiIntegration) {
-        studyForge.aiIntegration.setAPIKey(provider, key);
-    }
 }
 
 /* --- File Upload --- */
@@ -1392,13 +1345,50 @@ async function generateContent(type){
                 content = svg;
             }
         } else {
-            // Use StudyForge AI to generate content with RAG context
-            content = await studyForge.generateContent(
-                type,
-                extractedPDFData.fullText,
-                selectedLanguage,
-                extractedPDFData.chunks
-            );
+            // Use existing backend architecture for content generation
+            const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
+            const prompt = `Generate ${type} for the uploaded PDF content. Subject: ${selectedSubject}. Curriculum: ${selectedCurriculum}. Topics: ${extractedPDFData.topics.map(t => t.title).join(', ')}. Language: ${selectedLanguage}.`;
+            const systemPrompt = `You are an expert educational AI for StudyForge AI. Generate ${type} content for ${selectedCurriculum} level ${selectedSubject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
+
+            const response = await fetch(WORKER_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "gemini-2.0-flash",
+                    prompt,
+                    systemPrompt
+                })
+            });
+
+            // FIX: always read raw text first — never call .json() on a potentially empty body
+            const rawText = await response.text();
+
+            // FIX: check HTTP status before trying to parse
+            if (!response.ok) {
+                let errMsg = `Server error (${response.status})`;
+                try {
+                    const errData = JSON.parse(rawText);
+                    errMsg = errData.error || errMsg;
+                } catch (_) {
+                    // rawText was not JSON (empty body, HTML error page, etc.)
+                    if (rawText.trim()) errMsg = rawText.trim().slice(0, 120);
+                }
+                throw new Error(errMsg);
+            }
+
+            // FIX: safe JSON parse with meaningful error if body is empty / malformed
+            if (!rawText || !rawText.trim()) {
+                throw new Error("Worker returned an empty response. Check that the Worker is deployed.");
+            }
+
+            let data;
+            try {
+                data = JSON.parse(rawText);
+            } catch (_) {
+                throw new Error("Worker returned invalid JSON. Raw response: " + rawText.slice(0, 100));
+            }
+
+            content = (data.text || "").trim();
             
             // Integrate visual with notes if applicable
             if (type === 'notes' && visualEngine) {
@@ -1418,7 +1408,6 @@ async function generateContent(type){
             <div style="color:var(--color-error);padding:var(--spacing-4);">
                 <h4>Error generating content</h4>
                 <p>${error.message}</p>
-                <p style="font-size:var(--font-size-sm);margin-top:var(--spacing-2);">Please ensure you have configured API keys or try again later.</p>
             </div>
         `;
     }

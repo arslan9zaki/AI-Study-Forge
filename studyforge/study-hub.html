@@ -382,45 +382,20 @@ body{background:var(--color-bg-primary);color:var(--color-text-primary);overflow
           </div>
         </div>
         <div class="actions-grid">
-          <div class="action-tile" onclick="generateContent('notes')">
-            <div class="action-icon">📝</div>
-            <h4>Study Notes</h4>
-            <p>Comprehensive notes with key concepts, definitions, and summaries</p>
+          <div class="action-tile" onclick="generateContent('lecture')">
+            <div class="action-icon">🎓</div>
+            <h4>Get Lecture</h4>
+            <p>Full lecture with explanations and examples</p>
           </div>
-          <div class="action-tile" onclick="generateContent('mcq')">
-            <div class="action-icon">❓</div>
-            <h4>MCQs</h4>
-            <p>Multiple choice questions with answers and explanations</p>
-          </div>
-          <div class="action-tile" onclick="generateContent('flashcards')">
-            <div class="action-icon">🎴</div>
-            <h4>Flashcards</h4>
-            <p>Interactive flip-cards for fast memorization</p>
-          </div>
-          <div class="action-tile" onclick="generateContent('quiz')">
+          <div class="action-tile" onclick="generateContent('presentation')">
             <div class="action-icon">📊</div>
-            <h4>Practice Quiz</h4>
-            <p>Scored quiz with mixed question types</p>
+            <h4>Presentation Generator</h4>
+            <p>Create slides for lessons and revision</p>
           </div>
-          <div class="action-tile" onclick="generateContent('short-questions')">
-            <div class="action-icon">✏️</div>
-            <h4>Short Questions</h4>
-            <p>Exam-style short answer questions with model answers</p>
-          </div>
-          <div class="action-tile" onclick="generateContent('long-questions')">
-            <div class="action-icon">📄</div>
-            <h4>Long Questions</h4>
-            <p>Essay-style questions with structured answers</p>
-          </div>
-          <div class="action-tile" onclick="generateContent('revision')">
-            <div class="action-icon">🔄</div>
-            <h4>Revision Summary</h4>
-            <p>Quick-fire bullet summary for last-minute revision</p>
-          </div>
-          <div class="action-tile" onclick="generateContent('explanation')">
-            <div class="action-icon">💡</div>
-            <h4>Deep Explanation</h4>
-            <p>Detailed topic breakdown with examples and analogies</p>
+          <div class="action-tile" onclick="generateContent('visual')">
+            <div class="action-icon">🎨</div>
+            <h4>Visual Learning</h4>
+            <p>Diagrams, flowcharts, and concept maps</p>
           </div>
         </div>
         <div class="step-nav">
@@ -515,10 +490,6 @@ body{background:var(--color-bg-primary);color:var(--color-text-primary);overflow
 </div>
 
 <!-- ===== SCRIPTS ===== -->
-<script src="../assets/js/rag-config.js"></script>
-<script src="../assets/js/ai-integration.js"></script>
-<script src="../assets/js/studyforge-core.js"></script>
-
 <script>
 /* ======================================================
    STUDYFORGE STUDY HUB — CURRICULUM-FIRST ARCHITECTURE
@@ -693,10 +664,9 @@ async function generateContent(type) {
   scrollToPanel('panel-output');
 
   const titles = {
-    'notes': 'Study Notes', 'mcq': 'Multiple Choice Questions',
-    'flashcards': 'Flashcards', 'quiz': 'Practice Quiz',
-    'short-questions': 'Short Answer Questions', 'long-questions': 'Long Answer Questions',
-    'revision': 'Revision Summary', 'explanation': 'Deep Explanation'
+    'lecture': 'Lecture',
+    'presentation': 'Presentation',
+    'visual': 'Visual Learning'
   };
 
   document.getElementById('outputTitle').textContent = `${titles[type] || type} — ${state.topics.join(', ')}`;
@@ -714,21 +684,64 @@ async function generateContent(type) {
     </div>`;
 
   try {
+    // Use existing AI Biz Tools backend architecture
+    const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
     const prompt = buildPrompt(type);
-    const ai = new AIIntegration();
-    const result = await ai.generateContent(prompt, {
-      type: type,
-      language: state.language,
-      context: `Curriculum: ${state.curriculum.name}. Subject: ${state.subject.name}. Topics: ${state.topics.join(', ')}.`
+    const systemPrompt = `You are an expert educational AI for StudyForge AI. Generate ${type} content for ${state.curriculum.name} level ${state.subject.name}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
+
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gemini-2.0-flash",
+        prompt,
+        systemPrompt
+      })
     });
+
+    // FIX: always read raw text first — never call .json() on a potentially empty body
+    const rawText = await response.text();
+
+    // FIX: check HTTP status before trying to parse
+    if (!response.ok) {
+      let errMsg = `Server error (${response.status})`;
+      try {
+        const errData = JSON.parse(rawText);
+        errMsg = errData.error || errMsg;
+      } catch (_) {
+        // rawText was not JSON (empty body, HTML error page, etc.)
+        if (rawText.trim()) errMsg = rawText.trim().slice(0, 120);
+      }
+      throw new Error(errMsg);
+    }
+
+    // FIX: safe JSON parse with meaningful error if body is empty / malformed
+    if (!rawText || !rawText.trim()) {
+      throw new Error("Worker returned an empty response. Check that the Worker is deployed.");
+    }
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (_) {
+      throw new Error("Worker returned invalid JSON. Raw response: " + rawText.slice(0, 100));
+    }
+
+    const result = (data.text || "").trim();
+
+    if (!result) {
+      throw new Error("AI returned no content. Try a different topic or rephrase your request.");
+    }
+
     renderOutput(result, type);
     saveSession();
   } catch (err) {
+    console.error('Error generating content:', err);
     document.getElementById('outputContent').innerHTML = `
       <div style="padding:var(--spacing-6);text-align:center;">
         <div style="font-size:48px;margin-bottom:var(--spacing-4);">⚠️</div>
-        <h3 style="margin-bottom:var(--spacing-3);">AI API not configured</h3>
-        <p style="color:var(--color-text-secondary);margin-bottom:var(--spacing-5);">Configure your Gemini or OpenRouter API key to generate real content. Demo content shown below.</p>
+        <h3 style="margin-bottom:var(--spacing-3);">Error generating content</h3>
+        <p style="color:var(--color-text-secondary);margin-bottom:var(--spacing-5);">${err.message}</p>
         ${getDemoContent(type)}
       </div>`;
   }
@@ -747,17 +760,12 @@ Difficulty: appropriate for ${state.curriculum.name} level
 IMPORTANT: Keep all scientific/technical terms (DNA, photosynthesis, force, etc.) in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy.`;
 
   const taskMap = {
-    'notes': `Generate comprehensive study notes covering: ${state.topics.join(', ')}. Include key concepts, definitions, formulas (if applicable), examples, and bullet-point summaries. Use headings and subheadings.`,
-    'mcq': `Generate 10 multiple choice questions (A,B,C,D) covering ${state.topics.join(', ')} at ${state.curriculum.name} level. For each question include: the question, 4 options, the correct answer letter, and a brief explanation.`,
-    'flashcards': `Generate 12 flashcard pairs (FRONT: term/concept | BACK: definition/answer) covering ${state.topics.join(', ')} at ${state.curriculum.name} level. Format each as: CARD N\nFRONT: ...\nBACK: ...`,
-    'quiz': `Generate a 15-question mixed quiz (MCQ + short answer) on ${state.topics.join(', ')} at ${state.curriculum.name} level. Include a scoring guide at the end.`,
-    'short-questions': `Generate 10 exam-style short answer questions (2-4 marks each) on ${state.topics.join(', ')} at ${state.curriculum.name} level. Include model answers.`,
-    'long-questions': `Generate 5 exam-style structured essay questions (10-15 marks each) on ${state.topics.join(', ')} at ${state.curriculum.name} level. Include mark schemes.`,
-    'revision': `Create a rapid-revision summary for ${state.topics.join(', ')} at ${state.curriculum.name} level. Use bullet points, key facts, formulae, and memory aids. Keep it concise.`,
-    'explanation': `Provide a deep, clear explanation of ${state.topics.join(', ')} suitable for ${state.curriculum.name} level. Include examples, analogies, real-world applications, and diagrams described in text.`
+    'lecture': `Generate a comprehensive lecture on ${state.topics.join(', ')} suitable for ${state.curriculum.name} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language.`,
+    'presentation': `Generate a presentation outline for ${state.topics.join(', ')} at ${state.curriculum.name} level. Include 8-10 slides with: slide titles, bullet points for content, and speaker notes. Structure: Title slide, content slides, summary slide.`,
+    'visual': `Generate visual learning content for ${state.topics.join(', ')} at ${state.curriculum.name} level. Describe diagrams, flowcharts, or concept maps that would help visualize these topics. Include descriptions of visual elements and their relationships.`
   };
 
-  return `${base}\n\nTASK: ${taskMap[type] || taskMap['notes']}`;
+  return `${base}\n\nTASK: ${taskMap[type] || taskMap['lecture']}`;
 }
 
 /* ---- RENDER OUTPUT ---- */
@@ -824,18 +832,68 @@ function renderMCQ(text) {
 function getDemoContent(type) {
   const topic = state.topics[0] || 'Topic';
   const subj = state.subject ? state.subject.name : 'Subject';
-  if (type === 'notes') return `
+  
+  if (type === 'lecture') return `
     <div style="text-align:left">
-      <h2 style="color:var(--color-primary);margin-bottom:1rem">📝 ${topic} — Study Notes</h2>
+      <h2 style="color:var(--color-primary);margin-bottom:1rem">🎓 Lecture: ${topic}</h2>
+      <p><strong>Subject:</strong> ${subj} | <strong>Curriculum:</strong> ${state.curriculum.name} | <strong>Level:</strong> ${state.curriculum.level}</p>
+      <h3>Introduction</h3>
+      <p>Welcome to today's lecture on ${topic}. This topic is fundamental to understanding ${subj} at the ${state.curriculum.name} level.</p>
       <h3>Key Concepts</h3>
-      <ul><li><strong>Definition:</strong> ${topic} is a fundamental concept in ${subj} studied at ${state.curriculum.name} level.</li>
-      <li><strong>Importance:</strong> Understanding ${topic} is essential for mastering related topics.</li>
-      <li><strong>Core Principles:</strong> The main principles include foundational theory, application, and analysis.</li></ul>
+      <ul><li><strong>Concept 1:</strong> The foundational principle of ${topic}</li>
+      <li><strong>Concept 2:</strong> How ${topic} applies in real-world scenarios</li>
+      <li><strong>Concept 3:</strong> Advanced applications and analysis</li></ul>
+      <h3>Examples</h3>
+      <p>Consider the example of ${topic} in practice. This demonstrates the practical application of the theoretical concepts we've discussed.</p>
       <h3>Summary</h3>
-      <p>This is a demo — configure your Gemini or OpenRouter API key in the settings to generate real AI content tailored to your ${state.curriculum.name} ${subj} curriculum.</p>
+      <p>In this lecture, we've covered the essential aspects of ${topic} including its definition, applications, and importance in ${subj}.</p>
+      <p style="margin-top:1rem;color:var(--color-text-secondary);">This is a demo — real lectures will be generated by the backend.</p>
     </div>`;
-  if (type === 'flashcards') return renderFlashcards(`CARD 1\nFRONT: What is ${topic}?\nBACK: ${topic} is a core concept in ${subj} covered in ${state.curriculum.name}.\nCARD 2\nFRONT: Why is ${topic} important?\nBACK: It forms the basis of several related topics and is frequently examined.\nCARD 3\nFRONT: Key formula / rule for ${topic}\nBACK: Connect your API key to generate the actual formula from your curriculum.`);
-  return `<div style="text-align:left"><h3>Demo: ${topic}</h3><p>Real AI content will appear here once you configure your API key. This section covers ${topic} for ${subj} at ${state.curriculum.name} level.</p></div>`;
+  
+  if (type === 'presentation') return `
+    <div style="text-align:left">
+      <h2 style="color:var(--color-primary);margin-bottom:1rem">� Presentation: ${topic}</h2>
+      <p><strong>Total Slides:</strong> 10 | <strong>Subject:</strong> ${subj} | <strong>Curriculum:</strong> ${state.curriculum.name}</p>
+      <h3>Slide 1: Title Slide</h3>
+      <p><strong>Title:</strong> ${topic}</p>
+      <p><strong>Subtitle:</strong> ${subj} — ${state.curriculum.name}</p>
+      <p><strong>Speaker Notes:</strong> Welcome to this presentation on ${topic}. We'll explore the key concepts and applications.</p>
+      <h3>Slide 2: Introduction</h3>
+      <p><strong>Content:</strong></p>
+      <ul><li>Definition of ${topic}</li>
+<li>Importance in ${subj}</li>
+<li>Learning objectives</li></ul>
+      <p><strong>Speaker Notes:</strong> Introduce the topic and set expectations for the presentation.</p>
+      <h3>Slide 3: Key Concepts</h3>
+      <p><strong>Content:</strong></p>
+      <ul><li>Main principle 1</li>
+<li>Main principle 2</li>
+<li>Main principle 3</li></ul>
+      <p><strong>Speaker Notes:</strong> Explain each concept with examples.</p>
+      <p style="margin-top:1rem;color:var(--color-text-secondary);">This is a demo — real presentations will be generated by the backend.</p>
+    </div>`;
+  
+  if (type === 'visual') return `
+    <div style="text-align:left">
+      <h2 style="color:var(--color-primary);margin-bottom:1rem">🎨 Visual Learning: ${topic}</h2>
+      <p><strong>Subject:</strong> ${subj} | <strong>Curriculum:</strong> ${state.curriculum.name}</p>
+      <h3>Diagram: Concept Map</h3>
+      <p>A concept map showing the relationships between ${topic} and related concepts in ${subj}.</p>
+      <ul><li><strong>Central Node:</strong> ${topic}</li>
+      <li><strong>Connected Concepts:</strong> Related topics, applications, examples</li>
+      <li><strong>Relationships:</strong> Arrows showing how concepts connect</li></ul>
+      <h3>Flowchart: Process</h3>
+      <p>A flowchart illustrating the process or workflow related to ${topic}.</p>
+      <ul><li><strong>Start:</strong> Initial state or input</li>
+      <li><strong>Steps:</strong> Sequential steps in the process</li>
+      <li><strong>Decision Points:</strong> Branches based on conditions</li>
+      <li><strong>End:</strong> Final state or output</li></ul>
+      <h3>Chart: Data Visualization</h3>
+      <p>A chart or graph showing data related to ${topic} (if applicable).</p>
+      <p style="margin-top:1rem;color:var(--color-text-secondary);">This is a demo — real visual content will be generated by the backend.</p>
+    </div>`;
+  
+  return `<div style="text-align:left"><h3>Demo: ${topic}</h3><p>Real AI content will appear here once the backend is configured. This section covers ${topic} for ${subj} at ${state.curriculum.name} level.</p></div>`;
 }
 
 /* ---- HELPERS ---- */
