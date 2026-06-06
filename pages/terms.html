@@ -4,74 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Terms & Conditions | AI Insider</title>
+<title>Terms & Conditions | AI Biz Tools</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<link rel="stylesheet" href="../assets/css/components.css">
 
 <style>
 
 body{
 margin:0;
-font-family:Arial, sans-serif;
-background:#0f1117;
-color:white;
-line-height:1.8;
+font-family:var(--font-family-base);
+background:var(--color-bg-primary);
+color:var(--color-text-primary);
+line-height:var(--line-height-relaxed);
 }
 
 header{
-background:black;
-padding:20px;
+background:var(--color-bg-secondary);
+padding:var(--spacing-5);
 text-align:center;
-border-bottom:1px solid #222;
+border-bottom:1px solid var(--color-border);
 }
 
 header h1{
 margin:0;
-color:gold;
-font-size:40px;
+color:var(--color-primary);
+font-size:var(--font-size-4xl);
+font-weight:var(--font-weight-bold);
 }
 
 nav{
-margin-top:12px;
+margin-top:var(--spacing-3);
 }
 
 nav a{
-color:white;
+color:var(--color-text-secondary);
 text-decoration:none;
-margin:0 15px;
-transition:0.3s;
+margin:0 var(--spacing-4);
+font-size:var(--font-size-base);
+transition:var(--transition-default);
 }
 
 nav a:hover{
-color:gold;
+color:var(--color-primary);
 }
 
 .container{
 max-width:1000px;
 margin:auto;
-padding:60px 20px;
+padding:var(--spacing-16) var(--spacing-5);
 }
 
 .terms-box{
-background:#1a1d26;
-padding:40px;
-border-radius:12px;
-box-shadow:0 0 20px rgba(0,0,0,0.3);
+background:var(--color-bg-elevated);
+padding:var(--spacing-10);
+border-radius:var(--radius-3xl);
+box-shadow:var(--shadow-lg);
+border:1px solid var(--color-border);
 }
 
 h2{
-color:gold;
-margin-top:35px;
+color:var(--color-primary);
+margin-top:var(--spacing-9);
+font-weight:var(--font-weight-bold);
 }
 
 p{
-color:#ddd;
+color:var(--color-text-secondary);
 }
 
 footer{
-background:black;
-padding:25px;
+background:var(--color-bg-secondary);
+padding:var(--spacing-6);
 text-align:center;
-margin-top:40px;
-border-top:1px solid #222;
+margin-top:var(--spacing-10);
+border-top:1px solid var(--color-border);
+color:var(--color-text-secondary);
+font-size:var(--font-size-sm);
 }
 
 </style>
@@ -81,7 +95,7 @@ border-top:1px solid #222;
 
 <header>
 
-<h1>AI Insider</h1>
+<h1>AI Biz Tools</h1>
 
 <nav>
 <a href="../index.html">Home</a>
@@ -101,7 +115,7 @@ border-top:1px solid #222;
 <h2>Terms & Conditions</h2>
 
 <p>
-Welcome to AI Insider. By accessing and using this website, you agree to comply with the following terms and conditions.
+Welcome to AI Biz Tools. By accessing and using this website, you agree to comply with the following terms and conditions.
 </p>
 
 <h2>Website Usage</h2>
@@ -113,7 +127,7 @@ The content provided on this website is for informational and educational purpos
 <h2>Intellectual Property</h2>
 
 <p>
-All content, branding, logos, articles and design elements on AI Insider are protected by copyright and may not be copied or redistributed without permission.
+All content, branding, logos, articles and design elements on AI Biz Tools are protected by copyright and may not be copied or redistributed without permission.
 </p>
 
 <h2>Third-Party Links</h2>
@@ -125,7 +139,7 @@ Our website may contain links to third-party websites or tools. We are not respo
 <h2>Limitation of Liability</h2>
 
 <p>
-AI Insider is not responsible for any losses, damages or issues resulting from the use of information, tools or services mentioned on this website.
+AI Biz Tools is not responsible for any losses, damages or issues resulting from the use of information, tools or services mentioned on this website.
 </p>
 
 <h2>Changes to Terms</h2>
@@ -145,8 +159,11 @@ If you have questions regarding these Terms & Conditions, please contact us thro
 </div>
 
 <footer>
-© 2026 AI Insider — All Rights Reserved
+© 2026 AI Biz Tools — All Rights Reserved
 </footer>
+
+<!-- Theme System -->
+<script src="../assets/js/theme.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — StudyForge AI</title>
+<meta name="description" content="Track your learning progress, view saved notes and flashcards, and access your study history.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:var(--font-family-base);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--color-bg-primary);
+    color:var(--color-text-primary);
+    overflow-x:hidden;
+}
+
+/* ================= NAVBAR ================= */
+
+.main-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:var(--spacing-4) 8%;
+    background:var(--color-surface-backdrop);
+    backdrop-filter:blur(20px);
+    position:sticky;
+    top:0;
+    z-index:var(--z-sticky);
+    border-bottom:1px solid var(--color-border);
+    box-shadow:var(--shadow-sm);
+}
+
+.logo{
+    font-size:var(--font-size-2xl);
+    font-weight:var(--font-weight-extrabold);
+    color:var(--color-primary);
+    letter-spacing:var(--letter-spacing-tight);
+    text-decoration:none;
+}
+
+.logo span{
+    color:var(--color-text-primary);
+}
+
+.navbar{
+    display:flex;
+    gap:var(--spacing-6);
+    align-items:center;
+}
+
+.navbar a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    transition:var(--transition-default);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+}
+
+.navbar a:hover{
+    color:var(--color-primary);
+}
+
+.nav-btn{
+    background:var(--color-primary);
+    color:var(--color-text-inverse) !important;
+    padding:var(--spacing-3) var(--spacing-5);
+    border-radius:var(--radius-lg);
+    font-weight:var(--font-weight-semibold) !important;
+    font-size:var(--font-size-sm) !important;
+    white-space:nowrap;
+    transition:var(--transition-default);
+}
+
+.nav-btn:hover{
+    background:var(--color-primary-hover) !important;
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-primary);
+}
+
+.hamburger{
+    display:none;
+    flex-direction:column;
+    gap:var(--spacing-1);
+    cursor:pointer;
+    padding:var(--spacing-1);
+    background:none;
+    border:none;
+}
+
+.hamburger span{
+    display:block;
+    width:25px;
+    height:2px;
+    background:var(--color-text-primary);
+    border-radius:var(--radius-sm);
+    transition:var(--transition-base);
+}
+
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+.mobile-menu{
+    display:none;
+    flex-direction:column;
+    gap:0;
+    background:var(--color-bg-secondary);
+    border-top:1px solid var(--color-border);
+    padding:var(--spacing-2) 0;
+}
+
+.mobile-menu.open{
+    display:flex;
+}
+
+.mobile-menu a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    padding:var(--spacing-3) 8%;
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+    border-bottom:1px solid var(--color-border-light);
+    transition:var(--transition-base);
+}
+
+.mobile-menu a:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.mobile-menu .nav-btn{
+    margin:var(--spacing-3) 8%;
+    text-align:center;
+    border-radius:var(--radius-lg);
+    padding:var(--spacing-3);
+    border-bottom:none;
+}
+
+/* ================= DASHBOARD LAYOUT ================= */
+
+.dashboard-container{
+    max-width:1400px;
+    margin:0 auto;
+    padding:var(--spacing-12) 8%;
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:var(--spacing-10);
+    min-height:calc(100vh - 80px);
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:sticky;
+    top:100px;
+    height:fit-content;
+}
+
+.user-profile{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-6);
+    border:1px solid var(--color-border);
+    margin-bottom:var(--spacing-6);
+    text-align:center;
+}
+
+.user-avatar{
+    width:80px;
+    height:80px;
+    background:linear-gradient(135deg,var(--color-primary),var(--color-primary-hover));
+    border-radius:var(--radius-full);
+    margin:0 auto var(--spacing-4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+}
+
+.user-profile h3{
+    font-size:var(--font-size-lg);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-1);
+}
+
+.user-profile p{
+    color:var(--color-text-secondary);
+    font-size:var(--font-size-sm);
+}
+
+.sidebar-nav{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-4);
+    border:1px solid var(--color-border);
+}
+
+.nav-item{
+    padding:var(--spacing-3) var(--spacing-4);
+    border-radius:var(--radius-lg);
+    cursor:pointer;
+    transition:var(--transition-default);
+    margin-bottom:var(--spacing-1);
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+    display:flex;
+    align-items:center;
+    gap:var(--spacing-3);
+}
+
+.nav-item:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.nav-item.active{
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+}
+
+/* ================= MAIN CONTENT ================= */
+
+.main-content{
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-8);
+}
+
+/* ================= STATS CARDS ================= */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:var(--spacing-5);
+}
+
+.stat-card{
+    background:var(--color-bg-elevated);
+    padding:var(--spacing-6);
+    border-radius:var(--radius-2xl);
+    border:1px solid var(--color-border);
+    text-align:center;
+}
+
+.stat-icon{
+    font-size:40px;
+    margin-bottom:var(--spacing-3);
+}
+
+.stat-number{
+    font-size:var(--font-size-3xl);
+    font-weight:var(--font-weight-extrabold);
+    color:var(--color-primary);
+    margin-bottom:var(--spacing-1);
+}
+
+.stat-label{
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+}
+
+/* ================= SECTION ================= */
+
+.section{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-8);
+    border:1px solid var(--color-border);
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:var(--spacing-6);
+}
+
+.section-header h3{
+    font-size:var(--font-size-xl);
+    font-weight:var(--font-weight-bold);
+}
+
+.section-header .view-all{
+    color:var(--color-primary);
+    text-decoration:none;
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-semibold);
+}
+
+/* ================= SAVED ITEMS ================= */
+
+.items-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:var(--spacing-5);
+}
+
+.item-card{
+    background:var(--color-bg-primary);
+    padding:var(--spacing-5);
+    border-radius:var(--radius-xl);
+    border:1px solid var(--color-border);
+    transition:var(--transition-default);
+    cursor:pointer;
+}
+
+.item-card:hover{
+    border-color:var(--color-primary);
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-lg);
+}
+
+.item-type{
+    font-size:24px;
+    margin-bottom:var(--spacing-3);
+}
+
+.item-card h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    margin-bottom:var(--spacing-2);
+}
+
+.item-card p{
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+    margin-bottom:var(--spacing-3);
+}
+
+.item-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:var(--font-size-xs);
+    color:var(--color-text-tertiary);
+}
+
+/* ================= PROGRESS SECTION ================= */
+
+.progress-item{
+    margin-bottom:var(--spacing-5);
+}
+
+.progress-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:var(--spacing-2);
+}
+
+.progress-header h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+}
+
+.progress-header span{
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+}
+
+.progress-bar{
+    height:8px;
+    background:var(--color-bg-tertiary);
+    border-radius:var(--radius-full);
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--color-primary),var(--color-primary-hover));
+    border-radius:var(--radius-full);
+    transition:width 0.3s ease;
+}
+
+/* ================= QUIZ HISTORY ================= */
+
+.quiz-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:var(--spacing-4);
+    background:var(--color-bg-primary);
+    border-radius:var(--radius-xl);
+    border:1px solid var(--color-border);
+    margin-bottom:var(--spacing-3);
+}
+
+.quiz-info h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    margin-bottom:var(--spacing-1);
+}
+
+.quiz-info p{
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+}
+
+.quiz-score{
+    text-align:center;
+}
+
+.quiz-score .score{
+    font-size:var(--font-size-2xl);
+    font-weight:var(--font-weight-extrabold);
+    color:var(--color-primary);
+}
+
+.quiz-score .label{
+    font-size:var(--font-size-xs);
+    color:var(--color-text-tertiary);
+}
+
+/* ================= EMPTY STATE ================= */
+
+.empty-state{
+    text-align:center;
+    padding:var(--spacing-12);
+    color:var(--color-text-secondary);
+}
+
+.empty-state .icon{
+    font-size:64px;
+    margin-bottom:var(--spacing-4);
+}
+
+.empty-state h4{
+    font-size:var(--font-size-lg);
+    font-weight:var(--font-weight-semibold);
+    margin-bottom:var(--spacing-2);
+}
+
+.empty-state p{
+    font-size:var(--font-size-sm);
+    margin-bottom:var(--spacing-6);
+}
+
+.empty-state .cta-btn{
+    padding:var(--spacing-3) var(--spacing-6);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    border:none;
+    border-radius:var(--radius-lg);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-semibold);
+    cursor:pointer;
+    transition:var(--transition-default);
+}
+
+.empty-state .cta-btn:hover{
+    background:var(--color-primary-hover);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1024px){
+    .dashboard-container{
+        grid-template-columns:1fr;
+        padding:var(--spacing-8) 5%;
+    }
+    .sidebar{
+        position:relative;
+        top:0;
+    }
+}
+
+@media(max-width:768px){
+    .navbar{ display:none; }
+    .hamburger{ display:flex; }
+    .dashboard-container{
+        padding:var(--spacing-6) 4%;
+    }
+    .stats-grid{
+        grid-template-columns:1fr 1fr;
+    }
+    .items-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="main-header">
+
+    <a href="index.html" class="logo">StudyForge <span>AI</span></a>
+
+    <nav class="navbar">
+        <a href="../index.html">AI Biz Tools</a>
+        <a href="index.html">Home</a>
+        <a href="pdf-learning.html">PDF Learning</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="pdf-learning.html" class="nav-btn">📚 Learn Now</a>
+    </nav>
+
+    <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+</header>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">AI Biz Tools</a>
+    <a href="index.html">Home</a>
+    <a href="pdf-learning.html">PDF Learning</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="pdf-learning.html" class="nav-btn">📚 Learn Now</a>
+</nav>
+
+<!-- ================= DASHBOARD ================= -->
+
+<div class="dashboard-container">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="user-profile">
+            <div class="user-avatar">👤</div>
+            <h3>Student</h3>
+            <p>Free Plan</p>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-item active" onclick="showSection('overview')">
+                <span>📊</span> Overview
+            </div>
+            <div class="nav-item" onclick="showSection('notes')">
+                <span>📝</span> Saved Notes
+            </div>
+            <div class="nav-item" onclick="showSection('flashcards')">
+                <span>🎴</span> Flashcards
+            </div>
+            <div class="nav-item" onclick="showSection('quizzes')">
+                <span>📊</span> Quiz History
+            </div>
+            <div class="nav-item" onclick="showSection('progress')">
+                <span>📈</span> Progress
+            </div>
+            <div class="nav-item" onclick="showSection('settings')">
+                <span>⚙️</span> Settings
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- ================= STATS ================= -->
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">PDFs Processed</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Notes Generated</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🎴</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Flashcards Created</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Quizzes Completed</div>
+            </div>
+
+        </div>
+
+        <!-- ================= OVERVIEW SECTION ================= -->
+
+        <div class="section" id="overviewSection">
+
+            <div class="section-header">
+                <h3>Recent Activity</h3>
+            </div>
+
+            <div class="empty-state">
+                <div class="icon">📚</div>
+                <h4>No Activity Yet</h4>
+                <p>Start learning by uploading your first PDF to generate study materials.</p>
+                <button class="cta-btn" onclick="window.location.href='pdf-learning.html'">Upload PDF →</button>
+            </div>
+
+        </div>
+
+        <!-- ================= SAVED NOTES SECTION ================= -->
+
+        <div class="section" id="notesSection" style="display:none;">
+
+            <div class="section-header">
+                <h3>Saved Notes</h3>
+            </div>
+
+            <div class="empty-state">
+                <div class="icon">📝</div>
+                <h4>No Saved Notes</h4>
+                <p>Generate and save notes from your PDFs to access them here.</p>
+                <button class="cta-btn" onclick="window.location.href='pdf-learning.html'">Generate Notes →</button>
+            </div>
+
+        </div>
+
+        <!-- ================= FLASHCARDS SECTION ================= -->
+
+        <div class="section" id="flashcardsSection" style="display:none;">
+
+            <div class="section-header">
+                <h3>Saved Flashcards</h3>
+            </div>
+
+            <div class="empty-state">
+                <div class="icon">🎴</div>
+                <h4>No Flashcards Yet</h4>
+                <p>Create flashcard decks from your study materials for quick revision.</p>
+                <button class="cta-btn" onclick="window.location.href='pdf-learning.html'">Create Flashcards →</button>
+            </div>
+
+        </div>
+
+        <!-- ================= QUIZ HISTORY SECTION ================= -->
+
+        <div class="section" id="quizzesSection" style="display:none;">
+
+            <div class="section-header">
+                <h3>Quiz History</h3>
+            </div>
+
+            <div class="empty-state">
+                <div class="icon">📊</div>
+                <h4>No Quizzes Completed</h4>
+                <p>Take quizzes to track your performance and see your history here.</p>
+                <button class="cta-btn" onclick="window.location.href='pdf-learning.html'">Take a Quiz →</button>
+            </div>
+
+        </div>
+
+        <!-- ================= PROGRESS SECTION ================= -->
+
+        <div class="section" id="progressSection" style="display:none;">
+
+            <div class="section-header">
+                <h3>Learning Progress</h3>
+            </div>
+
+            <div class="empty-state">
+                <div class="icon">📈</div>
+                <h4>No Progress Data</h4>
+                <p>Start learning to track your progress across different subjects and topics.</p>
+                <button class="cta-btn" onclick="window.location.href='pdf-learning.html'">Start Learning →</button>
+            </div>
+
+        </div>
+
+        <!-- ================= SETTINGS SECTION ================= -->
+
+        <div class="section" id="settingsSection" style="display:none;">
+
+            <div class="section-header">
+                <h3>Settings</h3>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-4);">
+
+                <div style="padding:var(--spacing-4);background:var(--color-bg-primary);border-radius:var(--radius-xl);border:1px solid var(--color-border);">
+                    <h4 style="font-size:var(--font-size-base);font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-2);">Default Language</h4>
+                    <select style="width:100%;padding:var(--spacing-3);border-radius:var(--radius-lg);border:1px solid var(--color-border);background:var(--color-bg-primary);color:var(--color-text-primary);">
+                        <option>English</option>
+                        <option>Simple English</option>
+                        <option>Roman Urdu</option>
+                    </select>
+                </div>
+
+                <div style="padding:var(--spacing-4);background:var(--color-bg-primary);border-radius:var(--radius-xl);border:1px solid var(--color-border);">
+                    <h4 style="font-size:var(--font-size-base);font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-2);">Default Curriculum</h4>
+                    <select style="width:100%;padding:var(--spacing-3);border-radius:var(--radius-lg);border:1px solid var(--color-border);background:var(--color-bg-primary);color:var(--color-text-primary);">
+                        <option>Grade 9</option>
+                        <option>Grade 10</option>
+                        <option>O Level</option>
+                        <option>A Level</option>
+                        <option>GCSE</option>
+                        <option>AP</option>
+                        <option>University</option>
+                    </select>
+                </div>
+
+                <div style="padding:var(--spacing-4);background:var(--color-bg-primary);border-radius:var(--radius-xl);border:1px solid var(--color-border);">
+                    <h4 style="font-size:var(--font-size-base);font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-2);">Clear Data</h4>
+                    <button style="padding:var(--spacing-3) var(--spacing-6);background:var(--color-error);color:var(--color-text-inverse);border:none;border-radius:var(--radius-lg);font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);cursor:pointer;">Clear All Data</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+/* --- Hamburger Menu --- */
+function toggleMenu(){
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+/* --- Section Navigation --- */
+function showSection(sectionId){
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Show selected section
+    document.getElementById(sectionId + 'Section').style.display = 'block';
+    
+    // Update nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+}
+
+</script>
+
+<!-- Theme System -->
+<script src="../assets/js/theme.js"></script>
+
+</body>
+</html>

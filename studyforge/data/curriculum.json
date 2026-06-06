@@ -1,0 +1,53 @@
+{
+  "curricula": [
+    {
+      "id": "grade-9",
+      "name": "Grade 9",
+      "level": "secondary",
+      "description": "Secondary school year 9 curriculum",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "english", "computer-science"]
+    },
+    {
+      "id": "grade-10",
+      "name": "Grade 10",
+      "level": "secondary",
+      "description": "Secondary school year 10 curriculum",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "english", "computer-science"]
+    },
+    {
+      "id": "o-level",
+      "name": "O Level",
+      "level": "secondary",
+      "description": "Cambridge O Level curriculum",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "english", "economics", "business-studies"]
+    },
+    {
+      "id": "a-level",
+      "name": "A Level",
+      "level": "pre-university",
+      "description": "Cambridge A Level curriculum",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "economics", "computer-science"]
+    },
+    {
+      "id": "gcse",
+      "name": "GCSE",
+      "level": "secondary",
+      "description": "General Certificate of Secondary Education",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "english", "business-studies", "economics"]
+    },
+    {
+      "id": "ap",
+      "name": "AP",
+      "level": "pre-university",
+      "description": "Advanced Placement curriculum",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "computer-science", "economics"]
+    },
+    {
+      "id": "university",
+      "name": "University",
+      "level": "university",
+      "description": "University level curriculum",
+      "subjects": ["biology", "mathematics", "chemistry", "physics", "computer-science", "economics", "business-studies"]
+    }
+  ]
+}

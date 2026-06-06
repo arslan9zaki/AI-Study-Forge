@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentation Generator — StudyForge AI</title>
+<meta name="description" content="Generate lesson slides, revision slides, and topic presentations from your study materials.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../../assets/css/design-system.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+
+<!-- Presentation Generator -->
+<script src="../assets/js/rag-config.js"></script>
+<script src="../assets/js/ai-integration.js"></script>
+<script src="../assets/js/presentation-generator.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:var(--font-family-base);
+}
+
+body{
+    background:var(--color-bg-primary);
+    color:var(--color-text-primary);
+    overflow-x:hidden;
+}
+
+.main-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:var(--spacing-4) 8%;
+    background:var(--color-surface-backdrop);
+    backdrop-filter:blur(20px);
+    position:sticky;
+    top:0;
+    z-index:var(--z-sticky);
+    border-bottom:1px solid var(--color-border);
+    box-shadow:var(--shadow-sm);
+}
+
+.logo{
+    font-size:var(--font-size-2xl);
+    font-weight:var(--font-weight-extrabold);
+    color:var(--color-primary);
+    letter-spacing:var(--letter-spacing-tight);
+    text-decoration:none;
+}
+
+.logo span{
+    color:var(--color-text-primary);
+}
+
+.navbar{
+    display:flex;
+    gap:var(--spacing-6);
+    align-items:center;
+}
+
+.navbar a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    transition:var(--transition-default);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+}
+
+.navbar a:hover{
+    color:var(--color-primary);
+}
+
+.nav-btn{
+    background:var(--color-primary);
+    color:var(--color-text-inverse) !important;
+    padding:var(--spacing-3) var(--spacing-5);
+    border-radius:var(--radius-lg);
+    font-weight:var(--font-weight-semibold) !important;
+    font-size:var(--font-size-sm) !important;
+    white-space:nowrap;
+    transition:var(--transition-default);
+}
+
+.nav-btn:hover{
+    background:var(--color-primary-hover) !important;
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-primary);
+}
+
+.hamburger{
+    display:none;
+    flex-direction:column;
+    gap:var(--spacing-1);
+    cursor:pointer;
+    padding:var(--spacing-1);
+    background:none;
+    border:none;
+}
+
+.hamburger span{
+    display:block;
+    width:25px;
+    height:2px;
+    background:var(--color-text-primary);
+    border-radius:var(--radius-sm);
+    transition:var(--transition-base);
+}
+
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+.mobile-menu{
+    display:none;
+    flex-direction:column;
+    gap:0;
+    background:var(--color-bg-secondary);
+    border-top:1px solid var(--color-border);
+    padding:var(--spacing-2) 0;
+}
+
+.mobile-menu.open{
+    display:flex;
+}
+
+.mobile-menu a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    padding:var(--spacing-3) 8%;
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+    border-bottom:1px solid var(--color-border-light);
+    transition:var(--transition-base);
+}
+
+.mobile-menu a:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.mobile-menu .nav-btn{
+    margin:var(--spacing-3) 8%;
+    text-align:center;
+    border-radius:var(--radius-lg);
+    padding:var(--spacing-3);
+    border-bottom:none;
+}
+
+.main-container{
+    max-width:1400px;
+    margin:0 auto;
+    padding:var(--spacing-12) 8%;
+    display:grid;
+    grid-template-columns:350px 1fr;
+    gap:var(--spacing-10);
+}
+
+.page-header{
+    grid-column:1 / -1;
+    text-align:center;
+    margin-bottom:var(--spacing-8);
+}
+
+.page-header h1{
+    font-size:clamp(36px,5vw,56px);
+    font-weight:var(--font-weight-extrabold);
+    margin-bottom:var(--spacing-4);
+}
+
+.page-header p{
+    font-size:var(--font-size-lg);
+    color:var(--color-text-secondary);
+    max-width:600px;
+    margin:0 auto;
+}
+
+.config-panel{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-6);
+    border:1px solid var(--color-border);
+    height:fit-content;
+    position:sticky;
+    top:100px;
+}
+
+.config-section{
+    margin-bottom:var(--spacing-6);
+}
+
+.config-section h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-4);
+}
+
+.presentation-type{
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-2);
+}
+
+.type-option{
+    padding:var(--spacing-3) var(--spacing-4);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-lg);
+    cursor:pointer;
+    transition:var(--transition-default);
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+}
+
+.type-option:hover{
+    border-color:var(--color-primary);
+    color:var(--color-primary);
+}
+
+.type-option.active{
+    background:var(--color-primary);
+    border-color:var(--color-primary);
+    color:var(--color-text-inverse);
+}
+
+.slide-count{
+    display:flex;
+    align-items:center;
+    gap:var(--spacing-3);
+}
+
+.slide-count input{
+    flex:1;
+    padding:var(--spacing-3);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-lg);
+    background:var(--color-bg-primary);
+    color:var(--color-text-primary);
+    font-size:var(--font-size-sm);
+}
+
+.generate-btn{
+    width:100%;
+    padding:var(--spacing-4);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    border:none;
+    border-radius:var(--radius-xl);
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    cursor:pointer;
+    transition:var(--transition-default);
+    box-shadow:var(--shadow-md);
+}
+
+.generate-btn:hover{
+    background:var(--color-primary-hover);
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-lg);
+}
+
+.preview-panel{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-8);
+    border:1px solid var(--color-border);
+}
+
+.preview-panel h3{
+    font-size:var(--font-size-xl);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-6);
+}
+
+.slides-container{
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-6);
+}
+
+.slide-preview{
+    background:var(--color-bg-primary);
+    border-radius:var(--radius-xl);
+    padding:var(--spacing-8);
+    border:1px solid var(--color-border);
+    min-height:300px;
+}
+
+.slide-number{
+    font-size:var(--font-size-xs);
+    color:var(--color-text-tertiary);
+    margin-bottom:var(--spacing-3);
+}
+
+.slide-title{
+    font-size:var(--font-size-2xl);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-4);
+    color:var(--color-primary);
+}
+
+.slide-content{
+    line-height:var(--line-height-relaxed);
+}
+
+.slide-content ul{
+    margin-left:var(--spacing-6);
+    margin-bottom:var(--spacing-4);
+}
+
+.slide-content li{
+    margin-bottom:var(--spacing-2);
+}
+
+.slide-notes{
+    margin-top:var(--spacing-6);
+    padding-top:var(--spacing-4);
+    border-top:1px solid var(--color-border-light);
+}
+
+.slide-notes h5{
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-semibold);
+    margin-bottom:var(--spacing-2);
+    color:var(--color-text-tertiary);
+}
+
+.slide-notes p{
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+    font-style:italic;
+}
+
+.actions-bar{
+    display:flex;
+    gap:var(--spacing-3);
+    margin-top:var(--spacing-6);
+}
+
+.action-btn{
+    padding:var(--spacing-3) var(--spacing-6);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    border:none;
+    border-radius:var(--radius-lg);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-semibold);
+    cursor:pointer;
+    transition:var(--transition-default);
+}
+
+.action-btn:hover{
+    background:var(--color-primary-hover);
+}
+
+.action-btn.secondary{
+    background:transparent;
+    border:1px solid var(--color-border);
+    color:var(--color-text-primary);
+}
+
+.action-btn.secondary:hover{
+    border-color:var(--color-primary);
+    color:var(--color-primary);
+}
+
+.placeholder-content{
+    text-align:center;
+    color:var(--color-text-secondary);
+    padding:var(--spacing-16);
+}
+
+.placeholder-content .icon{
+    font-size:64px;
+    margin-bottom:var(--spacing-4);
+}
+
+@media(max-width:1024px){
+    .main-container{
+        grid-template-columns:1fr;
+        padding:var(--spacing-8) 5%;
+    }
+    .config-panel{
+        position:relative;
+        top:0;
+    }
+}
+
+@media(max-width:768px){
+    .navbar{ display:none; }
+    .hamburger{ display:flex; }
+    .main-container{
+        padding:var(--spacing-6) 4%;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<header class="main-header">
+    <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+    <nav class="navbar">
+        <a href="../../index.html">AI Biz Tools</a>
+        <a href="../index.html">Home</a>
+        <a href="../pdf-learning.html">PDF Learning</a>
+        <a href="../dashboard.html">Dashboard</a>
+        <a href="../pdf-learning.html" class="nav-btn">📚 Learn Now</a>
+    </nav>
+    <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../../index.html">AI Biz Tools</a>
+    <a href="../index.html">Home</a>
+    <a href="../pdf-learning.html">PDF Learning</a>
+    <a href="../dashboard.html">Dashboard</a>
+    <a href="../pdf-learning.html" class="nav-btn">📚 Learn Now</a>
+</nav>
+
+<div class="main-container">
+
+    <div class="page-header">
+        <h1>Presentation Generator</h1>
+        <p>Create professional lesson slides, revision slides, and topic presentations from your study materials.</p>
+    </div>
+
+    <aside class="config-panel">
+
+        <div class="config-section">
+            <h4>Presentation Type</h4>
+            <div class="presentation-type">
+                <div class="type-option active" onclick="selectType('lesson')">
+                    📚 Lesson Slides
+                </div>
+                <div class="type-option" onclick="selectType('revision')">
+                    🔄 Revision Slides
+                </div>
+                <div class="type-option" onclick="selectType('topic')">
+                    🎯 Topic Presentation
+                </div>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h4>Number of Slides</h4>
+            <div class="slide-count">
+                <input type="number" id="slideCount" value="10" min="5" max="20">
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h4>Include Speaker Notes</h4>
+            <div class="presentation-type">
+                <div class="type-option active" onclick="toggleNotes(true)">Yes</div>
+                <div class="type-option" onclick="toggleNotes(false)">No</div>
+            </div>
+        </div>
+
+        <button class="generate-btn" onclick="generatePresentation()">🎨 Generate Presentation</button>
+
+    </aside>
+
+    <main class="preview-panel">
+
+        <h3>Slide Preview</h3>
+
+        <div class="slides-container" id="slidesContainer">
+
+            <div class="placeholder-content">
+                <div class="icon">📊</div>
+                <h4>No Presentation Generated Yet</h4>
+                <p>Configure your presentation settings and click generate to create slides.</p>
+            </div>
+
+        </div>
+
+        <div class="actions-bar" id="actionsBar" style="display:none;">
+            <button class="action-btn" onclick="downloadPresentation()">⬇️ Download PPTX</button>
+            <button class="action-btn secondary" onclick="downloadPDF()">📄 Download PDF</button>
+            <button class="action-btn secondary" onclick="copyContent()">📋 Copy Content</button>
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+function toggleMenu(){
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+let selectedType = 'lesson';
+let includeNotes = true;
+let presentationGenerator = null;
+let generatedPresentation = null;
+
+// Initialize presentation generator
+document.addEventListener('DOMContentLoaded', () => {
+    presentationGenerator = new PresentationGenerator();
+    
+    // Set AI integration if available
+    if (typeof aiIntegration !== 'undefined') {
+        presentationGenerator.setAIIntegration(aiIntegration);
+    }
+    
+    // Load API keys from localStorage if available
+    const geminiKey = localStorage.getItem('gemini_api_key');
+    const openrouterKey = localStorage.getItem('openrouter_api_key');
+    
+    if (geminiKey && presentationGenerator.aiIntegration) {
+        presentationGenerator.aiIntegration.setAPIKey('gemini', geminiKey);
+    }
+    if (openrouterKey && presentationGenerator.aiIntegration) {
+        presentationGenerator.aiIntegration.setAPIKey('openrouter', openrouterKey);
+    }
+});
+
+function selectType(type){
+    selectedType = type;
+    document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+function toggleNotes(include){
+    includeNotes = include;
+    const options = event.currentTarget.parentElement.querySelectorAll('.type-option');
+    options.forEach(opt => opt.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+async function generatePresentation(){
+    const slideCount = document.getElementById('slideCount').value;
+    const container = document.getElementById('slidesContainer');
+    
+    container.innerHTML = '<p style="color:var(--color-text-secondary);">Generating presentation... This will use the uploaded PDF content if available.</p>';
+    
+    try {
+        // Get content from localStorage (from PDF Learning Center)
+        const pdfData = localStorage.getItem('studyforge_pdf_data');
+        let content = '';
+        
+        if (pdfData) {
+            const data = JSON.parse(pdfData);
+            content = data.fullText || '';
+        }
+        
+        // Generate presentation using the presentation generator
+        generatedPresentation = await presentationGenerator.generatePresentation(
+            content,
+            selectedType,
+            parseInt(slideCount),
+            includeNotes,
+            'english'
+        );
+        
+        // Render the presentation
+        container.innerHTML = presentationGenerator.renderToHTML(generatedPresentation);
+        document.getElementById('actionsBar').style.display = 'flex';
+    } catch (error) {
+        console.error('Error generating presentation:', error);
+        container.innerHTML = `
+            <div style="color:var(--color-error);padding:var(--spacing-4);">
+                <h4>Error generating presentation</h4>
+                <p>${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+function downloadPresentation(){
+    if (!generatedPresentation) {
+        alert('Please generate a presentation first.');
+        return;
+    }
+    
+    // Prepare for PPTX export
+    const pptxData = presentationGenerator.prepareForPPTX(generatedPresentation);
+    
+    // Download as JSON for now (PPTX requires library integration)
+    const jsonStr = JSON.stringify(pptxData.data, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'presentation.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    alert('Presentation downloaded as JSON. PPTX export requires PptxGenJS library integration.');
+}
+
+function downloadPDF(){
+    if (!generatedPresentation) {
+        alert('Please generate a presentation first.');
+        return;
+    }
+    
+    // Prepare for PDF export
+    const pdfData = presentationGenerator.prepareForPDF(generatedPresentation);
+    
+    // Download as JSON for now (PDF requires library integration)
+    const jsonStr = JSON.stringify(pdfData.data, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'presentation-pdf.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    alert('Presentation structure downloaded. PDF export requires jsPDF library integration.');
+}
+
+function copyContent(){
+    if (!generatedPresentation) {
+        alert('Please generate a presentation first.');
+        return;
+    }
+    
+    const content = presentationGenerator.exportAsJSON(generatedPresentation);
+    navigator.clipboard.writeText(content);
+    alert('Presentation content copied to clipboard!');
+}
+
+</script>
+
+<script src="../../assets/js/theme.js"></script>
+
+</body>
+</html>

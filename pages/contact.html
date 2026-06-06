@@ -4,82 +4,95 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Contact Us | AI Insider</title>
+<title>Contact Us | AI Biz Tools</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<link rel="stylesheet" href="../assets/css/components.css">
 
 <style>
 
 body{
 margin:0;
-font-family:Arial, sans-serif;
-background:#0f1117;
-color:white;
+font-family:var(--font-family-base);
+background:var(--color-bg-primary);
+color:var(--color-text-primary);
 }
 
 header{
-background:black;
-padding:20px;
+background:var(--color-bg-secondary);
+padding:var(--spacing-5);
 text-align:center;
-border-bottom:1px solid #222;
+border-bottom:1px solid var(--color-border);
 }
 
 header h1{
 margin:0;
-color:gold;
-font-size:40px;
+color:var(--color-primary);
+font-size:var(--font-size-4xl);
+font-weight:var(--font-weight-bold);
 }
 
 nav{
-margin-top:12px;
+margin-top:var(--spacing-3);
 }
 
 nav a{
-color:white;
+color:var(--color-text-secondary);
 text-decoration:none;
-margin:0 15px;
-transition:0.3s;
+margin:0 var(--spacing-4);
+font-size:var(--font-size-base);
+transition:var(--transition-default);
 }
 
 nav a:hover{
-color:gold;
+color:var(--color-primary);
 }
 
 .contact-section{
 max-width:700px;
-margin:80px auto;
-padding:40px;
-background:#1a1d26;
-border-radius:12px;
-box-shadow:0 0 20px rgba(0,0,0,0.3);
+margin:var(--spacing-20) auto;
+padding:var(--spacing-10);
+background:var(--color-bg-elevated);
+border-radius:var(--radius-3xl);
+box-shadow:var(--shadow-lg);
+border:1px solid var(--color-border);
 }
 
 .contact-section h2{
 text-align:center;
-color:gold;
-margin-bottom:20px;
-font-size:40px;
+color:var(--color-primary);
+margin-bottom:var(--spacing-5);
+font-size:var(--font-size-4xl);
+font-weight:var(--font-weight-bold);
 }
 
 .contact-section p{
 text-align:center;
-color:#ccc;
-margin-bottom:40px;
-line-height:1.7;
+color:var(--color-text-secondary);
+margin-bottom:var(--spacing-10);
+line-height:var(--line-height-relaxed);
 }
 
 form{
 display:flex;
 flex-direction:column;
-gap:20px;
+gap:var(--spacing-5);
 }
 
 input,
 textarea{
-padding:15px;
-border:none;
-border-radius:8px;
-background:#0f1117;
-color:white;
-font-size:16px;
+padding:var(--spacing-4);
+border:1px solid var(--color-border);
+border-radius:var(--radius-2xl);
+background:var(--color-bg-primary);
+color:var(--color-text-primary);
+font-size:var(--font-size-base);
+font-family:var(--font-family-base);
 }
 
 textarea{
@@ -88,26 +101,29 @@ resize:none;
 }
 
 button{
-padding:15px;
-background:gold;
+padding:var(--spacing-4);
+background:var(--color-primary);
 border:none;
-border-radius:8px;
-font-size:18px;
-font-weight:bold;
+border-radius:var(--radius-2xl);
+font-size:var(--font-size-lg);
+font-weight:var(--font-weight-bold);
 cursor:pointer;
-transition:0.3s;
+transition:var(--transition-default);
+color:var(--color-text-inverse);
 }
 
 button:hover{
-opacity:0.9;
+background:var(--color-primary-hover);
 }
 
 footer{
-background:black;
-padding:25px;
+background:var(--color-bg-secondary);
+padding:var(--spacing-6);
 text-align:center;
-margin-top:40px;
-border-top:1px solid #222;
+margin-top:var(--spacing-10);
+border-top:1px solid var(--color-border);
+color:var(--color-text-secondary);
+font-size:var(--font-size-sm);
 }
 
 </style>
@@ -117,7 +133,7 @@ border-top:1px solid #222;
 
 <header>
 
-<h1>AI Insider</h1>
+<h1>AI Biz Tools</h1>
 
 <nav>
 <a href="../index.html">Home</a>
@@ -134,7 +150,7 @@ border-top:1px solid #222;
 
 <p>
 Have questions, suggestions or business inquiries?
-Feel free to contact the AI Insider team anytime.
+Feel free to contact the AI Biz Tools team anytime.
 </p>
 
 <form>
@@ -152,8 +168,11 @@ Feel free to contact the AI Insider team anytime.
 </section>
 
 <footer>
-© 2026 AI Insider — All Rights Reserved
+© 2026 AI Biz Tools — All Rights Reserved
 </footer>
+
+<!-- Theme System -->
+<script src="../assets/js/theme.js"></script>
 
 </body>
 </html>

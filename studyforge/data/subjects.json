@@ -1,0 +1,132 @@
+{
+  "subjects": [
+    {
+      "id": "biology",
+      "name": "Biology",
+      "icon": "🧬",
+      "description": "Life sciences & living organisms",
+      "topics": [
+        "Cell Biology",
+        "Genetics",
+        "Ecology",
+        "Evolution",
+        "Human Physiology",
+        "Plant Biology",
+        "Microbiology",
+        "Biochemistry"
+      ]
+    },
+    {
+      "id": "mathematics",
+      "name": "Mathematics",
+      "icon": "📐",
+      "description": "Numbers, algebra & calculus",
+      "topics": [
+        "Algebra",
+        "Geometry",
+        "Trigonometry",
+        "Calculus",
+        "Statistics",
+        "Probability",
+        "Number Theory",
+        "Linear Algebra"
+      ]
+    },
+    {
+      "id": "chemistry",
+      "name": "Chemistry",
+      "icon": "⚗️",
+      "description": "Matter & chemical reactions",
+      "topics": [
+        "Atomic Structure",
+        "Chemical Bonding",
+        "Organic Chemistry",
+        "Inorganic Chemistry",
+        "Physical Chemistry",
+        "Analytical Chemistry",
+        "Biochemistry",
+        "Environmental Chemistry"
+      ]
+    },
+    {
+      "id": "physics",
+      "name": "Physics",
+      "icon": "⚛️",
+      "description": "Matter, energy & forces",
+      "topics": [
+        "Mechanics",
+        "Thermodynamics",
+        "Electromagnetism",
+        "Optics",
+        "Quantum Physics",
+        "Relativity",
+        "Nuclear Physics",
+        "Astrophysics"
+      ]
+    },
+    {
+      "id": "english",
+      "name": "English",
+      "icon": "📖",
+      "description": "Language & literature",
+      "topics": [
+        "Grammar",
+        "Composition",
+        "Literature",
+        "Poetry",
+        "Drama",
+        "Reading Comprehension",
+        "Vocabulary",
+        "Creative Writing"
+      ]
+    },
+    {
+      "id": "computer-science",
+      "name": "Computer Science",
+      "icon": "💻",
+      "description": "Programming & technology",
+      "topics": [
+        "Programming Fundamentals",
+        "Data Structures",
+        "Algorithms",
+        "Database Systems",
+        "Web Development",
+        "Machine Learning",
+        "Cybersecurity",
+        "Software Engineering"
+      ]
+    },
+    {
+      "id": "business-studies",
+      "name": "Business Studies",
+      "icon": "💼",
+      "description": "Management & commerce",
+      "topics": [
+        "Business Organization",
+        "Marketing",
+        "Finance",
+        "Human Resources",
+        "Operations",
+        "Strategy",
+        "Entrepreneurship",
+        "International Business"
+      ]
+    },
+    {
+      "id": "economics",
+      "name": "Economics",
+      "icon": "📊",
+      "description": "Markets & resources",
+      "topics": [
+        "Microeconomics",
+        "Macroeconomics",
+        "International Economics",
+        "Development Economics",
+        "Monetary Policy",
+        "Fiscal Policy",
+        "Game Theory",
+        "Behavioral Economics"
+      ]
+    }
+  ]
+}

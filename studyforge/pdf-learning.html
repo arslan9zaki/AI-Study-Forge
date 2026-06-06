@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Learning Center — StudyForge AI</title>
+<meta name="description" content="Upload your PDF and generate AI-powered learning resources including notes, MCQs, flashcards, quizzes, and presentations.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+
+<!-- PDF.js for PDF text extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+
+<!-- StudyForge Core -->
+<script src="../assets/js/rag-config.js"></script>
+<script src="../assets/js/ai-integration.js"></script>
+<script src="../assets/js/studyforge-core.js"></script>
+<script src="../assets/js/visual-engine.js"></script>
+<script src="../assets/js/presentation-generator.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:var(--font-family-base);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--color-bg-primary);
+    color:var(--color-text-primary);
+    overflow-x:hidden;
+}
+
+/* ================= NAVBAR ================= */
+
+.main-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:var(--spacing-4) 8%;
+    background:var(--color-surface-backdrop);
+    backdrop-filter:blur(20px);
+    position:sticky;
+    top:0;
+    z-index:var(--z-sticky);
+    border-bottom:1px solid var(--color-border);
+    box-shadow:var(--shadow-sm);
+}
+
+.logo{
+    font-size:var(--font-size-2xl);
+    font-weight:var(--font-weight-extrabold);
+    color:var(--color-primary);
+    letter-spacing:var(--letter-spacing-tight);
+    text-decoration:none;
+}
+
+.logo span{
+    color:var(--color-text-primary);
+}
+
+.navbar{
+    display:flex;
+    gap:var(--spacing-6);
+    align-items:center;
+}
+
+.navbar a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    transition:var(--transition-default);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+}
+
+.navbar a:hover{
+    color:var(--color-primary);
+}
+
+.nav-btn{
+    background:var(--color-primary);
+    color:var(--color-text-inverse) !important;
+    padding:var(--spacing-3) var(--spacing-5);
+    border-radius:var(--radius-lg);
+    font-weight:var(--font-weight-semibold) !important;
+    font-size:var(--font-size-sm) !important;
+    white-space:nowrap;
+    transition:var(--transition-default);
+}
+
+.nav-btn:hover{
+    background:var(--color-primary-hover) !important;
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-primary);
+}
+
+.hamburger{
+    display:none;
+    flex-direction:column;
+    gap:var(--spacing-1);
+    cursor:pointer;
+    padding:var(--spacing-1);
+    background:none;
+    border:none;
+}
+
+.hamburger span{
+    display:block;
+    width:25px;
+    height:2px;
+    background:var(--color-text-primary);
+    border-radius:var(--radius-sm);
+    transition:var(--transition-base);
+}
+
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+.mobile-menu{
+    display:none;
+    flex-direction:column;
+    gap:0;
+    background:var(--color-bg-secondary);
+    border-top:1px solid var(--color-border);
+    padding:var(--spacing-2) 0;
+}
+
+.mobile-menu.open{
+    display:flex;
+}
+
+.mobile-menu a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    padding:var(--spacing-3) 8%;
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+    border-bottom:1px solid var(--color-border-light);
+    transition:var(--transition-base);
+}
+
+.mobile-menu a:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.mobile-menu .nav-btn{
+    margin:var(--spacing-3) 8%;
+    text-align:center;
+    border-radius:var(--radius-lg);
+    padding:var(--spacing-3);
+    border-bottom:none;
+}
+
+/* ================= MAIN LAYOUT ================= */
+
+.main-container{
+    max-width:1400px;
+    margin:0 auto;
+    padding:var(--spacing-12) 8%;
+    display:grid;
+    grid-template-columns:350px 1fr;
+    gap:var(--spacing-10);
+    min-height:calc(100vh - 80px);
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:sticky;
+    top:100px;
+    height:fit-content;
+}
+
+.sidebar-section{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-6);
+    border:1px solid var(--color-border);
+    margin-bottom:var(--spacing-6);
+}
+
+.sidebar-title{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-4);
+    color:var(--color-text-primary);
+}
+
+.selection-item{
+    padding:var(--spacing-3) var(--spacing-4);
+    border-radius:var(--radius-lg);
+    cursor:pointer;
+    transition:var(--transition-default);
+    margin-bottom:var(--spacing-2);
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+    display:flex;
+    align-items:center;
+    gap:var(--spacing-2);
+}
+
+.selection-item:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.selection-item.active{
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+}
+
+.language-selector{
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-2);
+}
+
+.language-option{
+    padding:var(--spacing-3) var(--spacing-4);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-lg);
+    cursor:pointer;
+    transition:var(--transition-default);
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+}
+
+.language-option:hover{
+    border-color:var(--color-primary);
+    color:var(--color-primary);
+}
+
+.language-option.active{
+    background:var(--color-primary);
+    border-color:var(--color-primary);
+    color:var(--color-text-inverse);
+}
+
+/* ================= CONTENT AREA ================= */
+
+.content-area{
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-8);
+}
+
+/* ================= UPLOAD SECTION ================= */
+
+.upload-section{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-10);
+    border:1px solid var(--color-border);
+    text-align:center;
+}
+
+.upload-zone{
+    border:2px dashed var(--color-border);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-16);
+    cursor:pointer;
+    transition:var(--transition-default);
+    background:var(--color-bg-primary);
+}
+
+.upload-zone:hover{
+    border-color:var(--color-primary);
+    background:var(--color-primary-light);
+}
+
+.upload-zone.dragover{
+    border-color:var(--color-primary);
+    background:var(--color-primary-light);
+}
+
+.upload-icon{
+    font-size:64px;
+    margin-bottom:var(--spacing-4);
+}
+
+.upload-zone h3{
+    font-size:var(--font-size-xl);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-3);
+}
+
+.upload-zone p{
+    color:var(--color-text-secondary);
+    margin-bottom:var(--spacing-6);
+}
+
+.upload-btn{
+    padding:var(--spacing-4) var(--spacing-8);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    border:none;
+    border-radius:var(--radius-xl);
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    cursor:pointer;
+    transition:var(--transition-default);
+    box-shadow:var(--shadow-md);
+}
+
+.upload-btn:hover{
+    background:var(--color-primary-hover);
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-lg);
+}
+
+.file-input{
+    display:none;
+}
+
+/* ================= PROCESSING STEPS ================= */
+
+.processing-section{
+    display:none;
+}
+
+.processing-section.active{
+    display:block;
+}
+
+.steps-container{
+    display:flex;
+    flex-direction:column;
+    gap:var(--spacing-4);
+}
+
+.step-item{
+    display:flex;
+    align-items:center;
+    gap:var(--spacing-4);
+    padding:var(--spacing-5);
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-xl);
+    border:1px solid var(--color-border);
+}
+
+.step-number{
+    width:40px;
+    height:40px;
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    border-radius:var(--radius-full);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:var(--font-weight-bold);
+    flex-shrink:0;
+}
+
+.step-item.completed .step-number{
+    background:var(--color-success);
+}
+
+.step-item.processing .step-number{
+    background:var(--color-primary);
+    animation:pulse 1.5s ease-in-out infinite;
+}
+
+.step-item.pending .step-number{
+    background:var(--color-border);
+    color:var(--color-text-tertiary);
+}
+
+@keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.5;}
+}
+
+.step-content{
+    flex:1;
+}
+
+.step-content h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-1);
+}
+
+.step-content p{
+    font-size:var(--font-size-sm);
+    color:var(--color-text-secondary);
+}
+
+.step-status{
+    font-size:var(--font-size-xs);
+    font-weight:var(--font-weight-semibold);
+    padding:var(--spacing-1) var(--spacing-3);
+    border-radius:var(--radius-full);
+}
+
+.step-status.completed{
+    background:var(--color-success-light);
+    color:var(--color-success);
+}
+
+.step-status.processing{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.step-status.pending{
+    background:var(--color-bg-tertiary);
+    color:var(--color-text-tertiary);
+}
+
+/* ================= TOPICS DETECTED ================= */
+
+.topics-section{
+    display:none;
+}
+
+.topics-section.active{
+    display:block;
+}
+
+.topics-section h3{
+    font-size:var(--font-size-xl);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-6);
+}
+
+.topics-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:var(--spacing-4);
+}
+
+.topic-card{
+    background:var(--color-bg-elevated);
+    padding:var(--spacing-5);
+    border-radius:var(--radius-xl);
+    border:1px solid var(--color-border);
+    cursor:pointer;
+    transition:var(--transition-default);
+}
+
+.topic-card:hover{
+    border-color:var(--color-primary);
+    transform:translateY(-2px);
+}
+
+.topic-card.selected{
+    background:var(--color-primary);
+    border-color:var(--color-primary);
+    color:var(--color-text-inverse);
+}
+
+.topic-card h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    margin-bottom:var(--spacing-2);
+}
+
+.topic-card p{
+    font-size:var(--font-size-xs);
+    opacity:0.8;
+}
+
+/* ================= LEARNING ACTIONS ================= */
+
+.actions-section{
+    display:none;
+}
+
+.actions-section.active{
+    display:block;
+}
+
+.actions-section h3{
+    font-size:var(--font-size-xl);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-6);
+}
+
+.actions-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:var(--spacing-4);
+}
+
+.action-card{
+    background:var(--color-bg-elevated);
+    padding:var(--spacing-6);
+    border-radius:var(--radius-xl);
+    border:1px solid var(--color-border);
+    cursor:pointer;
+    transition:var(--transition-default);
+    text-align:center;
+}
+
+.action-card:hover{
+    border-color:var(--color-primary);
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-lg);
+}
+
+.action-icon{
+    font-size:40px;
+    margin-bottom:var(--spacing-3);
+}
+
+.action-card h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    margin-bottom:var(--spacing-2);
+}
+
+.action-card p{
+    font-size:var(--font-size-xs);
+    color:var(--color-text-secondary);
+}
+
+/* ================= OUTPUT SECTION ================= */
+
+.output-section{
+    display:none;
+}
+
+.output-section.active{
+    display:block;
+}
+
+.output-section h3{
+    font-size:var(--font-size-xl);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-6);
+}
+
+.output-content{
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    padding:var(--spacing-8);
+    border:1px solid var(--color-border);
+    min-height:400px;
+}
+
+.output-actions{
+    display:flex;
+    gap:var(--spacing-3);
+    margin-top:var(--spacing-6);
+}
+
+.action-btn{
+    padding:var(--spacing-3) var(--spacing-6);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    border:none;
+    border-radius:var(--radius-lg);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-semibold);
+    cursor:pointer;
+    transition:var(--transition-default);
+}
+
+.action-btn:hover{
+    background:var(--color-primary-hover);
+}
+
+.action-btn.secondary{
+    background:transparent;
+    border:1px solid var(--color-border);
+    color:var(--color-text-primary);
+}
+
+.action-btn.secondary:hover{
+    border-color:var(--color-primary);
+    color:var(--color-primary);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1024px){
+    .main-container{
+        grid-template-columns:1fr;
+        padding:var(--spacing-8) 5%;
+    }
+    .sidebar{
+        position:relative;
+        top:0;
+    }
+}
+
+@media(max-width:768px){
+    .navbar{ display:none; }
+    .hamburger{ display:flex; }
+    .main-container{
+        padding:var(--spacing-6) 4%;
+    }
+    .topics-grid{
+        grid-template-columns:1fr 1fr;
+    }
+    .actions-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="main-header">
+
+    <a href="index.html" class="logo">StudyForge <span>AI</span></a>
+
+    <nav class="navbar">
+        <a href="../index.html">AI Biz Tools</a>
+        <a href="index.html">Home</a>
+        <a href="pdf-learning.html">PDF Learning</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="dashboard.html" class="nav-btn">📊 Dashboard</a>
+    </nav>
+
+    <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+</header>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">AI Biz Tools</a>
+    <a href="index.html">Home</a>
+    <a href="pdf-learning.html">PDF Learning</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="dashboard.html" class="nav-btn">📊 Dashboard</a>
+</nav>
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="main-container">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-title">📚 Subject</h4>
+            <div id="subjectDisplay">Not selected</div>
+        </div>
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-title">🎓 Curriculum</h4>
+            <div id="curriculumDisplay">Not selected</div>
+        </div>
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-title">🌐 Output Language</h4>
+            <div class="language-selector">
+                <div class="language-option active" onclick="selectLanguage('english')">English</div>
+                <div class="language-option" onclick="selectLanguage('simple-english')">Simple English</div>
+                <div class="language-option" onclick="selectLanguage('roman-urdu')">Roman Urdu</div>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h4 class="sidebar-title">🔑 API Configuration</h4>
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-3);">
+                <div>
+                    <label style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--spacing-1);display:block;">Gemini API Key</label>
+                    <input type="password" id="geminiApiKey" placeholder="Enter Gemini API key" style="width:100%;padding:var(--spacing-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-bg-primary);color:var(--color-text-primary);font-size:var(--font-size-xs);" onchange="saveAPIKey('gemini', this.value)">
+                </div>
+                <div>
+                    <label style="font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-bottom:var(--spacing-1);display:block;">OpenRouter API Key</label>
+                    <input type="password" id="openrouterApiKey" placeholder="Enter OpenRouter API key" style="width:100%;padding:var(--spacing-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-bg-primary);color:var(--color-text-primary);font-size:var(--font-size-xs);" onchange="saveAPIKey('openrouter', this.value)">
+                </div>
+                <p style="font-size:var(--font-size-xs);color:var(--color-text-tertiary);margin-top:var(--spacing-1);">Keys are stored locally in your browser.</p>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ================= CONTENT AREA ================= -->
+
+    <main class="content-area">
+
+        <!-- ================= UPLOAD SECTION ================= -->
+
+        <section class="upload-section" id="uploadSection">
+
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📄</div>
+                <h3>Upload Your PDF</h3>
+                <p>Drag and drop your PDF here or click to browse</p>
+                <button class="upload-btn">Choose PDF File</button>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf" onchange="handleFileUpload(event)">
+            </div>
+
+        </section>
+
+        <!-- ================= PROCESSING SECTION ================= -->
+
+        <section class="processing-section" id="processingSection">
+
+            <h3 style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);margin-bottom:var(--spacing-6);">Processing Your PDF</h3>
+
+            <div class="steps-container">
+
+                <div class="step-item" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Extracting Text</h4>
+                        <p>Reading and parsing PDF content</p>
+                    </div>
+                    <span class="step-status pending">Pending</span>
+                </div>
+
+                <div class="step-item" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Detecting Chapters</h4>
+                        <p>Identifying chapter structure</p>
+                    </div>
+                    <span class="step-status pending">Pending</span>
+                </div>
+
+                <div class="step-item" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Detecting Headings</h4>
+                        <p>Identifying section headings</p>
+                    </div>
+                    <span class="step-status pending">Pending</span>
+                </div>
+
+                <div class="step-item" id="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Detecting Topics</h4>
+                        <p>Extracting key topics and concepts</p>
+                    </div>
+                    <span class="step-status pending">Pending</span>
+                </div>
+
+                <div class="step-item" id="step5">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Preparing Chunks</h4>
+                        <p>Creating chunks for RAG retrieval</p>
+                    </div>
+                    <span class="step-status pending">Pending</span>
+                </div>
+
+                <div class="step-item" id="step6">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h4>Ready for Learning</h4>
+                        <p>PDF processed successfully</p>
+                    </div>
+                    <span class="step-status pending">Pending</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= TOPICS SECTION ================= -->
+
+        <section class="topics-section" id="topicsSection">
+
+            <h3>Select Topics to Learn</h3>
+
+            <div class="topics-grid" id="topicsGrid">
+                <!-- Topics will be dynamically added here -->
+            </div>
+
+            <div style="margin-top:var(--spacing-6);text-align:right;">
+                <button class="upload-btn" onclick="proceedToActions()">Continue →</button>
+            </div>
+
+        </section>
+
+        <!-- ================= LEARNING ACTIONS SECTION ================= -->
+
+        <section class="actions-section" id="actionsSection">
+
+            <h3>Choose Learning Action</h3>
+
+            <div class="actions-grid">
+
+                <div class="action-card" onclick="generateContent('notes')">
+                    <div class="action-icon">📝</div>
+                    <h4>Notes</h4>
+                    <p>Generate detailed notes</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('mcq')">
+                    <div class="action-icon">❓</div>
+                    <h4>MCQs</h4>
+                    <p>Create multiple choice</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('flashcards')">
+                    <div class="action-icon">🎴</div>
+                    <h4>Flashcards</h4>
+                    <p>Build flashcard deck</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('quiz')">
+                    <div class="action-icon">📊</div>
+                    <h4>Quiz</h4>
+                    <p>Create quiz test</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('short-questions')">
+                    <div class="action-icon">💬</div>
+                    <h4>Short Questions</h4>
+                    <p>Generate short Q&A</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('long-questions')">
+                    <div class="action-icon">📖</div>
+                    <h4>Long Questions</h4>
+                    <p>Create essay questions</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('revision')">
+                    <div class="action-icon">🔄</div>
+                    <h4>Revision Notes</h4>
+                    <p>Quick revision summary</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('visual')">
+                    <div class="action-icon">🎨</div>
+                    <h4>Visual Learning</h4>
+                    <p>Diagrams & charts</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('presentation')">
+                    <div class="action-icon">📊</div>
+                    <h4>Presentation</h4>
+                    <p>Generate slides</p>
+                </div>
+
+                <div class="action-card" onclick="generateContent('ask')">
+                    <div class="action-icon">🤔</div>
+                    <h4>Ask Questions</h4>
+                    <p>Interactive Q&A</p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= OUTPUT SECTION ================= -->
+
+        <section class="output-section" id="outputSection">
+
+            <h3 id="outputTitle">Generated Content</h3>
+
+            <div class="output-content" id="outputContent">
+                <!-- Generated content will appear here -->
+            </div>
+
+            <div class="output-actions">
+                <button class="action-btn" onclick="copyContent()">📋 Copy</button>
+                <button class="action-btn" onclick="saveContent()">💾 Save</button>
+                <button class="action-btn secondary" onclick="downloadContent()">⬇️ Download</button>
+                <button class="action-btn secondary" onclick="resetUpload()">🔄 New Upload</button>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+/* --- Hamburger Menu --- */
+function toggleMenu(){
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+/* --- State Management --- */
+let selectedSubject = localStorage.getItem('selectedSubject') || 'Not selected';
+let selectedCurriculum = localStorage.getItem('selectedCurriculum') || 'Not selected';
+let selectedLanguage = 'english';
+let uploadedFile = null;
+let selectedTopics = [];
+let extractedPDFData = null;
+let studyForge = null;
+let visualEngine = null;
+let presentationGenerator = null;
+
+/* --- Initialize --- */
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('subjectDisplay').textContent = formatSubject(selectedSubject);
+    document.getElementById('curriculumDisplay').textContent = formatCurriculum(selectedCurriculum);
+    setupDragAndDrop();
+    
+    // Initialize StudyForge AI instance
+    studyForge = new StudyForgeAI();
+    
+    // Initialize Visual Learning Engine
+    visualEngine = new VisualLearningEngine();
+    
+    // Initialize Presentation Generator
+    presentationGenerator = new PresentationGenerator();
+    
+    // Set AI integration for presentation generator
+    if (studyForge.aiIntegration) {
+        presentationGenerator.setAIIntegration(studyForge.aiIntegration);
+    }
+    
+    // Load API keys from localStorage if available
+    const geminiKey = localStorage.getItem('gemini_api_key');
+    const openrouterKey = localStorage.getItem('openrouter_api_key');
+    
+    if (geminiKey) {
+        studyForge.aiIntegration.setAPIKey('gemini', geminiKey);
+        document.getElementById('geminiApiKey').value = geminiKey;
+    }
+    if (openrouterKey) {
+        studyForge.aiIntegration.setAPIKey('openrouter', openrouterKey);
+        document.getElementById('openrouterApiKey').value = openrouterKey;
+    }
+});
+
+function formatSubject(subject){
+    const subjects = {
+        'biology': 'Biology 🧬',
+        'mathematics': 'Mathematics 📐',
+        'chemistry': 'Chemistry ⚗️',
+        'physics': 'Physics ⚛️',
+        'english': 'English 📖',
+        'computer-science': 'Computer Science 💻',
+        'business-studies': 'Business Studies 💼',
+        'economics': 'Economics 📊'
+    };
+    return subjects[subject] || subject;
+}
+
+function formatCurriculum(curriculum){
+    const curricula = {
+        'grade-9': 'Grade 9',
+        'grade-10': 'Grade 10',
+        'o-level': 'O Level',
+        'a-level': 'A Level',
+        'gcse': 'GCSE',
+        'ap': 'AP',
+        'university': 'University'
+    };
+    return curricula[curriculum] || curriculum;
+}
+
+/* --- Language Selection --- */
+function selectLanguage(lang){
+    selectedLanguage = lang;
+    document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+/* --- API Key Management --- */
+function saveAPIKey(provider, key){
+    localStorage.setItem(`${provider}_api_key`, key);
+    if (studyForge && studyForge.aiIntegration) {
+        studyForge.aiIntegration.setAPIKey(provider, key);
+    }
+}
+
+/* --- File Upload --- */
+function setupDragAndDrop(){
+    const uploadZone = document.getElementById('uploadZone');
+    
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('dragover');
+    });
+    
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('dragover');
+    });
+    
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type === 'application/pdf') {
+            handleFileUpload({ target: { files: files } });
+        }
+    });
+}
+
+function handleFileUpload(event){
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+        uploadedFile = file;
+        startProcessing();
+    } else {
+        alert('Please upload a valid PDF file.');
+    }
+}
+
+/* --- Actual PDF Processing --- */
+async function startProcessing(){
+    document.getElementById('uploadSection').style.display = 'none';
+    document.getElementById('processingSection').classList.add('active');
+    
+    try {
+        // Step 1: Extract Text
+        await updateStep(1, 'processing');
+        const extractedText = await extractTextFromPDF(uploadedFile);
+        await updateStep(1, 'completed');
+        
+        // Step 2: Detect Chapters
+        await updateStep(2, 'processing');
+        const chapters = detectChapters(extractedText);
+        await updateStep(2, 'completed');
+        
+        // Step 3: Detect Headings
+        await updateStep(3, 'processing');
+        const headings = detectHeadings(extractedText);
+        await updateStep(3, 'completed');
+        
+        // Step 4: Detect Topics
+        await updateStep(4, 'processing');
+        const topics = detectTopics(extractedText, chapters);
+        await updateStep(4, 'completed');
+        
+        // Step 5: Prepare Chunks for RAG
+        await updateStep(5, 'processing');
+        const chunks = prepareChunks(extractedText);
+        await updateStep(5, 'completed');
+        
+        // Store extracted data in memory
+        extractedPDFData = {
+            fileName: uploadedFile.name,
+            fileSize: uploadedFile.size,
+            fullText: extractedText,
+            chapters: chapters,
+            headings: headings,
+            topics: topics,
+            chunks: chunks,
+            processedAt: new Date().toISOString()
+        };
+        
+        // Save to localStorage for use in other components
+        localStorage.setItem('studyforge_pdf_data', JSON.stringify(extractedPDFData));
+        
+        // Show topics
+        setTimeout(() => {
+            document.getElementById('processingSection').classList.remove('active');
+            showTopics(topics);
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error processing PDF:', error);
+        alert('Error processing PDF: ' + error.message);
+        resetUpload();
+    }
+}
+
+/* --- PDF Text Extraction using PDF.js --- */
+async function extractTextFromPDF(file){
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    let fullText = '';
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(' ');
+        fullText += pageText + '\n\n';
+    }
+    
+    return fullText;
+}
+
+/* --- Chapter Detection Algorithm --- */
+function detectChapters(text){
+    const chapters = [];
+    const chapterPatterns = [
+        /(?:^|\n)\s*(?:Chapter|CHAPTER)\s+\d+[:\.\s]*\s*(.+?)(?:\n|$)/gim,
+        /(?:^|\n)\s*(?:Chapter|CHAPTER)\s+[IVXLCDM]+[:\.\s]*\s*(.+?)(?:\n|$)/gim,
+        /(?:^|\n)\s*\d+\.\s+(.+?)(?:\n|$)/gim,
+        /(?:^|\n)\s*(?:Unit|UNIT)\s+\d+[:\.\s]*\s*(.+?)(?:\n|$)/gim
+    ];
+    
+    const lines = text.split('\n');
+    let currentChapter = null;
+    
+    lines.forEach((line, index) => {
+        for (const pattern of chapterPatterns) {
+            const match = line.match(pattern);
+            if (match) {
+                if (currentChapter) {
+                    chapters.push(currentChapter);
+                }
+                currentChapter = {
+                    title: match[1] || match[0].trim(),
+                    startIndex: index,
+                    content: ''
+                };
+                break;
+            }
+        }
+        
+        if (currentChapter) {
+            currentChapter.content += line + '\n';
+        }
+    });
+    
+    if (currentChapter) {
+        chapters.push(currentChapter);
+    }
+    
+    // If no chapters detected, create one from entire text
+    if (chapters.length === 0) {
+        chapters.push({
+            title: 'Full Document',
+            startIndex: 0,
+            content: text
+        });
+    }
+    
+    return chapters;
+}
+
+/* --- Heading Detection Algorithm --- */
+function detectHeadings(text){
+    const headings = [];
+    const lines = text.split('\n');
+    
+    lines.forEach((line, index) => {
+        const trimmedLine = line.trim();
+        
+        // Skip empty lines
+        if (!trimmedLine) return;
+        
+        // Skip very short lines (likely not headings)
+        if (trimmedLine.length < 5) return;
+        
+        // Detect heading patterns
+        const isHeading = (
+            // All caps (likely main heading)
+            trimmedLine === trimmedLine.toUpperCase() && 
+            trimmedLine.length < 100 &&
+            !trimmedLine.includes('.') &&
+            !trimmedLine.includes(',')
+        ) || (
+            // Ends with colon
+            trimmedLine.endsWith(':') &&
+            trimmedLine.length < 80
+        ) || (
+            // Numbered heading
+            /^\d+\.\s+\w+/.test(trimmedLine)
+        ) || (
+            // Bold-like pattern (all caps with spaces)
+            /^[A-Z][A-Z\s]{5,50}$/.test(trimmedLine)
+        );
+        
+        if (isHeading) {
+            headings.push({
+                text: trimmedLine,
+                level: 2, // Default to h2
+                index: index
+            });
+        }
+    });
+    
+    return headings;
+}
+
+/* --- Topic Detection Algorithm --- */
+function detectTopics(text, chapters){
+    const topics = [];
+    const topicKeywords = [
+        'introduction', 'definition', 'overview', 'concept', 'principle',
+        'theory', 'application', 'example', 'summary', 'conclusion',
+        'key points', 'important', 'fundamental', 'essential', 'basic',
+        'advanced', 'method', 'process', 'procedure', 'technique',
+        'analysis', 'evaluation', 'comparison', 'relationship', 'structure',
+        'function', 'characteristic', 'feature', 'component', 'element'
+    ];
+    
+    const sentences = text.split(/[.!?]+/);
+    
+    sentences.forEach((sentence, index) => {
+        const lowerSentence = sentence.toLowerCase().trim();
+        
+        // Skip very short sentences
+        if (lowerSentence.length < 20) return;
+        
+        topicKeywords.forEach(keyword => {
+            if (lowerSentence.includes(keyword)) {
+                // Check if this topic is already in the list
+                const existingTopic = topics.find(t => 
+                    t.keyword === keyword && 
+                    Math.abs(t.index - index) < 5
+                );
+                
+                if (!existingTopic) {
+                    topics.push({
+                        id: topics.length + 1,
+                        title: sentence.trim().substring(0, 60) + '...',
+                        keyword: keyword,
+                        context: sentence.trim(),
+                        index: index
+                    });
+                }
+            }
+        });
+    });
+    
+    // If no topics detected from keywords, use chapter titles as topics
+    if (topics.length === 0 && chapters.length > 0) {
+        chapters.forEach((chapter, index) => {
+            topics.push({
+                id: index + 1,
+                title: chapter.title,
+                keyword: 'chapter',
+                context: chapter.content.substring(0, 200) + '...',
+                index: chapter.startIndex
+            });
+        });
+    }
+    
+    // Limit to top 12 topics
+    return topics.slice(0, 12);
+}
+
+/* --- Chunk Preparation for RAG --- */
+function prepareChunks(text){
+    const chunks = [];
+    const chunkSize = 1000; // characters
+    const overlap = 100; // characters
+    
+    for (let i = 0; i < text.length; i += chunkSize - overlap) {
+        const chunkText = text.substring(i, i + chunkSize);
+        
+        // Only add non-empty chunks
+        if (chunkText.trim().length > 50) {
+            chunks.push({
+                id: chunks.length,
+                text: chunkText.trim(),
+                startIndex: i,
+                endIndex: i + chunkSize,
+                metadata: {
+                    method: 'fixed',
+                    size: chunkText.length
+                }
+            });
+        }
+    }
+    
+    return chunks;
+}
+
+async function updateStep(stepNum, status){
+    const step = document.getElementById(`step${stepNum}`);
+    const statusEl = step.querySelector('.step-status');
+    
+    step.classList.remove('pending', 'processing', 'completed');
+    step.classList.add(status);
+    
+    statusEl.classList.remove('pending', 'processing', 'completed');
+    statusEl.classList.add(status);
+    statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+function simulateProgress(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/* --- Topics Display --- */
+function showTopics(detectedTopics){
+    document.getElementById('topicsSection').classList.add('active');
+    
+    const topics = detectedTopics || [
+        { id: 1, name: 'Introduction to the Topic', chapters: 'Chapter 1' },
+        { id: 2, name: 'Key Concepts & Definitions', chapters: 'Chapter 1-2' },
+        { id: 3, name: 'Core Principles', chapters: 'Chapter 2' },
+        { id: 4, name: 'Practical Applications', chapters: 'Chapter 3' },
+        { id: 5, name: 'Advanced Topics', chapters: 'Chapter 4' },
+        { id: 6, name: 'Summary & Review', chapters: 'Chapter 5' }
+    ];
+    
+    const grid = document.getElementById('topicsGrid');
+    grid.innerHTML = topics.map(topic => `
+        <div class="topic-card" onclick="toggleTopic(${topic.id})" id="topic-${topic.id}">
+            <h4>${topic.title}</h4>
+            <p>${topic.keyword ? 'Keyword: ' + topic.keyword : topic.chapters || 'Detected Topic'}</p>
+        </div>
+    `).join('');
+    
+    // Select all by default
+    selectedTopics = [];
+    topics.forEach(topic => selectedTopics.push(topic.id));
+    topics.forEach(topic => document.getElementById(`topic-${topic.id}`).classList.add('selected'));
+}
+
+function toggleTopic(topicId){
+    const card = document.getElementById(`topic-${topicId}`);
+    card.classList.toggle('selected');
+    
+    if (selectedTopics.includes(topicId)) {
+        selectedTopics = selectedTopics.filter(id => id !== topicId);
+    } else {
+        selectedTopics.push(topicId);
+    }
+}
+
+function proceedToActions(){
+    if (selectedTopics.length === 0) {
+        alert('Please select at least one topic.');
+        return;
+    }
+    document.getElementById('topicsSection').classList.remove('active');
+    document.getElementById('actionsSection').classList.add('active');
+}
+
+/* --- Content Generation --- */
+async function generateContent(type){
+    document.getElementById('actionsSection').classList.remove('active');
+    document.getElementById('outputSection').classList.add('active');
+    
+    const titles = {
+        'notes': 'Generated Notes',
+        'mcq': 'Generated MCQs',
+        'flashcards': 'Generated Flashcards',
+        'quiz': 'Generated Quiz',
+        'short-questions': 'Generated Short Questions',
+        'long-questions': 'Generated Long Questions',
+        'revision': 'Revision Notes',
+        'visual': 'Visual Learning Content',
+        'presentation': 'Presentation Slides',
+        'ask': 'Interactive Q&A'
+    };
+    
+    document.getElementById('outputTitle').textContent = titles[type];
+    document.getElementById('outputContent').innerHTML = '<p style="color:var(--color-text-secondary);">Generating content using AI... This may take a moment.</p>';
+    
+    try {
+        let content;
+        
+        if (type === 'presentation') {
+            // Generate presentation using presentation generator
+            const presentation = await presentationGenerator.generatePresentation(
+                extractedPDFData.fullText,
+                'lesson',
+                10,
+                true,
+                selectedLanguage
+            );
+            
+            // Render presentation as HTML
+            content = presentationGenerator.renderToHTML(presentation);
+        } else if (type === 'visual') {
+            // Generate visual using visual engine
+            const visual = await visualEngine.generateVisual(
+                extractedPDFData.fullText,
+                'diagram',
+                extractedPDFData.topics
+            );
+            
+            if (visual.type === 'table') {
+                content = visual.html;
+            } else {
+                const svg = await visualEngine.renderMermaid(visual.mermaidCode);
+                content = svg;
+            }
+        } else {
+            // Use StudyForge AI to generate content with RAG context
+            content = await studyForge.generateContent(
+                type,
+                extractedPDFData.fullText,
+                selectedLanguage,
+                extractedPDFData.chunks
+            );
+            
+            // Integrate visual with notes if applicable
+            if (type === 'notes' && visualEngine) {
+                const visual = await visualEngine.generateVisual(
+                    extractedPDFData.fullText,
+                    'diagram',
+                    extractedPDFData.topics
+                );
+                content = visualEngine.integrateWithNotes(content, visual);
+            }
+        }
+        
+        document.getElementById('outputContent').innerHTML = formatGeneratedContent(content, type);
+    } catch (error) {
+        console.error('Error generating content:', error);
+        document.getElementById('outputContent').innerHTML = `
+            <div style="color:var(--color-error);padding:var(--spacing-4);">
+                <h4>Error generating content</h4>
+                <p>${error.message}</p>
+                <p style="font-size:var(--font-size-sm);margin-top:var(--spacing-2);">Please ensure you have configured API keys or try again later.</p>
+            </div>
+        `;
+    }
+}
+
+function formatGeneratedContent(content, type){
+    // Convert markdown-like content to HTML
+    let html = content
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/#{3}\s+(.*)/g, '<h4>$1</h4>')
+        .replace(/#{2}\s+(.*)/g, '<h3>$1</h3>')
+        .replace(/#{1}\s+(.*)/g, '<h2>$1</h2>')
+        .replace(/-\s+(.*)/g, '<li>$1</li>')
+        .replace(/\d+\.\s+(.*)/g, '<li>$1</li>');
+    
+    // Wrap in paragraph tags
+    if (!html.startsWith('<')) {
+        html = '<p>' + html + '</p>';
+    }
+    
+    return html;
+}
+
+function getPlaceholderContent(type){
+    const contents = {
+        'notes': `
+            <div style="line-height:var(--line-height-relaxed);">
+                <h4 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);margin-bottom:var(--spacing-4);color:var(--color-primary);">Topic 1: Introduction</h4>
+                <p style="margin-bottom:var(--spacing-3);"><strong>Key Points:</strong></p>
+                <ul style="margin-left:var(--spacing-6);margin-bottom:var(--spacing-4);">
+                    <li>Definition and overview of the concept</li>
+                    <li>Historical context and development</li>
+                    <li>Importance in the subject area</li>
+                </ul>
+                <p style="margin-bottom:var(--spacing-3);"><strong>Summary:</strong></p>
+                <p>This topic introduces the fundamental concepts that form the foundation for understanding more advanced material. The key principles discussed here will be referenced throughout the course.</p>
+            </div>
+        `,
+        'mcq': `
+            <div style="line-height:var(--line-height-relaxed);">
+                <div style="margin-bottom:var(--spacing-6);padding:var(--spacing-4);background:var(--color-bg-primary);border-radius:var(--radius-lg);">
+                    <p style="font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-3);">1. What is the primary function of this concept?</p>
+                    <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
+                        <label><input type="radio" name="q1"> A) To explain the basic principles</label>
+                        <label><input type="radio" name="q1"> B) To provide practical examples</label>
+                        <label><input type="radio" name="q1"> C) To compare with other concepts</label>
+                        <label><input type="radio" name="q1"> D) All of the above</label>
+                    </div>
+                    <p style="margin-top:var(--spacing-3);font-size:var(--font-size-sm);color:var(--color-success);"><strong>Answer:</strong> D) All of the above</p>
+                </div>
+            </div>
+        `,
+        'flashcards': `
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:var(--spacing-4);">
+                <div style="padding:var(--spacing-5);background:var(--color-bg-primary);border-radius:var(--radius-xl);border:1px solid var(--color-border);">
+                    <p style="font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-3);color:var(--color-primary);">Front: Definition</p>
+                    <p style="color:var(--color-text-secondary);">What is the meaning of this term?</p>
+                    <hr style="margin:var(--spacing-3);border:none;border-top:1px solid var(--color-border);">
+                    <p style="font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-2);color:var(--color-success);">Back: Answer</p>
+                    <p style="color:var(--color-text-secondary);">The term refers to...</p>
+                </div>
+            </div>
+        `,
+        'quiz': `
+            <div style="line-height:var(--line-height-relaxed);">
+                <h4 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);margin-bottom:var(--spacing-4);">Quiz: Topic Assessment</h4>
+                <p style="margin-bottom:var(--spacing-4);">Answer the following questions to test your understanding.</p>
+                <div style="padding:var(--spacing-4);background:var(--color-bg-primary);border-radius:var(--radius-lg);">
+                    <p style="font-weight:var(--font-weight-semibold);margin-bottom:var(--spacing-3);">1. Question text here...</p>
+                    <div style="display:flex;flex-direction:column;gap:var(--spacing-2);">
+                        <label><input type="radio" name="quiz1"> Option A</label>
+                        <label><input type="radio" name="quiz1"> Option B</label>
+                        <label><input type="radio" name="quiz1"> Option C</label>
+                        <label><input type="radio" name="quiz1"> Option D</label>
+                    </div>
+                </div>
+            </div>
+        `,
+        'default': `
+            <div style="line-height:var(--line-height-relaxed);">
+                <p style="color:var(--color-text-secondary);">Content will be generated using AI APIs (Gemini/OpenRouter) when integrated. This is a placeholder showing the structure.</p>
+            </div>
+        `
+    };
+    
+    return contents[type] || contents['default'];
+}
+
+/* --- Output Actions --- */
+function copyContent(){
+    const content = document.getElementById('outputContent').innerText;
+    navigator.clipboard.writeText(content);
+    alert('Content copied to clipboard!');
+}
+
+function saveContent(){
+    alert('Content saved to your dashboard!');
+}
+
+function downloadContent(){
+    alert('Download feature will be available after AI integration.');
+}
+
+function resetUpload(){
+    uploadedFile = null;
+    selectedTopics = [];
+    extractedPDFData = null;
+    document.getElementById('outputSection').classList.remove('active');
+    document.getElementById('actionsSection').classList.remove('active');
+    document.getElementById('topicsSection').classList.remove('active');
+    document.getElementById('uploadSection').style.display = 'block';
+    
+    // Reset steps
+    for (let i = 1; i <= 6; i++) {
+        const step = document.getElementById(`step${i}`);
+        step.classList.remove('completed', 'processing');
+        step.classList.add('pending');
+        const statusEl = step.querySelector('.step-status');
+        statusEl.classList.remove('completed', 'processing');
+        statusEl.classList.add('pending');
+        statusEl.textContent = 'Pending';
+    }
+}
+
+</script>
+
+<!-- Theme System -->
+<script src="../assets/js/theme.js"></script>
+
+</body>
+</html>

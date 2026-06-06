@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyForge AI — Learn Faster. Practice Smarter. Master Every Subject.</title>
+<meta name="description" content="AI-powered educational platform for students. Generate notes, MCQs, flashcards, quizzes, and presentations from PDFs. Support for Biology, Mathematics, Chemistry, Physics, English, Computer Science, Business Studies, and Economics.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:var(--font-family-base);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--color-bg-primary);
+    color:var(--color-text-primary);
+    overflow-x:hidden;
+}
+
+/* ================= NAVBAR ================= */
+
+.main-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:var(--spacing-4) 8%;
+    background:var(--color-surface-backdrop);
+    backdrop-filter:blur(20px);
+    position:sticky;
+    top:0;
+    z-index:var(--z-sticky);
+    border-bottom:1px solid var(--color-border);
+    box-shadow:var(--shadow-sm);
+}
+
+.logo{
+    font-size:var(--font-size-2xl);
+    font-weight:var(--font-weight-extrabold);
+    color:var(--color-primary);
+    letter-spacing:var(--letter-spacing-tight);
+    text-decoration:none;
+}
+
+.logo span{
+    color:var(--color-text-primary);
+}
+
+.navbar{
+    display:flex;
+    gap:var(--spacing-6);
+    align-items:center;
+}
+
+.navbar a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    transition:var(--transition-default);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+}
+
+.navbar a:hover{
+    color:var(--color-primary);
+}
+
+.nav-btn{
+    background:var(--color-primary);
+    color:var(--color-text-inverse) !important;
+    padding:var(--spacing-3) var(--spacing-5);
+    border-radius:var(--radius-lg);
+    font-weight:var(--font-weight-semibold) !important;
+    font-size:var(--font-size-sm) !important;
+    white-space:nowrap;
+    transition:var(--transition-default);
+}
+
+.nav-btn:hover{
+    background:var(--color-primary-hover) !important;
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-primary);
+}
+
+.hamburger{
+    display:none;
+    flex-direction:column;
+    gap:var(--spacing-1);
+    cursor:pointer;
+    padding:var(--spacing-1);
+    background:none;
+    border:none;
+}
+
+.hamburger span{
+    display:block;
+    width:25px;
+    height:2px;
+    background:var(--color-text-primary);
+    border-radius:var(--radius-sm);
+    transition:var(--transition-base);
+}
+
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+.mobile-menu{
+    display:none;
+    flex-direction:column;
+    gap:0;
+    background:var(--color-bg-secondary);
+    border-top:1px solid var(--color-border);
+    padding:var(--spacing-2) 0;
+}
+
+.mobile-menu.open{
+    display:flex;
+}
+
+.mobile-menu a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    padding:var(--spacing-3) 8%;
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-medium);
+    border-bottom:1px solid var(--color-border-light);
+    transition:var(--transition-base);
+}
+
+.mobile-menu a:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.mobile-menu .nav-btn{
+    margin:var(--spacing-3) 8%;
+    text-align:center;
+    border-radius:var(--radius-lg);
+    padding:var(--spacing-3);
+    border-bottom:none;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    min-height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:var(--spacing-20) var(--spacing-5) var(--spacing-16);
+    background:linear-gradient(135deg,var(--color-bg-primary) 0%,var(--color-bg-secondary) 50%,var(--color-bg-primary) 100%);
+    position:relative;
+    overflow:hidden;
+}
+
+.hero::before{
+    content:'';
+    position:absolute;
+    width:700px;
+    height:700px;
+    background:radial-gradient(circle,var(--color-primary-light) 0%,transparent 70%);
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    animation:pulse-glow 8s ease-in-out infinite;
+}
+
+@keyframes pulse-glow{
+    0%,100%{opacity:0.5;transform:translate(-50%,-50%) scale(1);}
+    50%{opacity:0.8;transform:translate(-50%,-50%) scale(1.1);}
+}
+
+.hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:var(--spacing-2);
+    background:var(--color-primary-light);
+    border:1px solid var(--color-primary);
+    color:var(--color-primary);
+    font-size:var(--font-size-xs);
+    font-weight:var(--font-weight-semibold);
+    padding:var(--spacing-2) var(--spacing-5);
+    border-radius:var(--radius-full);
+    margin-bottom:var(--spacing-8);
+    letter-spacing:var(--letter-spacing-wide);
+    animation:fade-in-up 0.6s ease-out;
+}
+
+.hero-content{
+    max-width:900px;
+    position:relative;
+}
+
+.hero-content h1{
+    font-size:clamp(40px,6vw,72px);
+    line-height:var(--line-height-tight);
+    margin-bottom:var(--spacing-7);
+    font-weight:var(--font-weight-extrabold);
+    letter-spacing:var(--letter-spacing-tight);
+    animation:fade-in-up 0.8s ease-out 0.1s both;
+}
+
+.hero-content h1 span{
+    color:var(--color-primary);
+    background:linear-gradient(135deg,var(--color-primary),var(--color-primary-hover));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+
+.hero-content p{
+    font-size:var(--font-size-lg);
+    color:var(--color-text-secondary);
+    line-height:var(--line-height-relaxed);
+    margin-bottom:var(--spacing-12);
+    max-width:640px;
+    margin-left:auto;
+    margin-right:auto;
+    animation:fade-in-up 0.8s ease-out 0.2s both;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:var(--spacing-4);
+    flex-wrap:wrap;
+    margin-bottom:var(--spacing-16);
+    animation:fade-in-up 0.8s ease-out 0.3s both;
+}
+
+.hero-btn{
+    padding:var(--spacing-4) var(--spacing-8);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    text-decoration:none;
+    border-radius:var(--radius-xl);
+    transition:var(--transition-default);
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-semibold);
+    display:inline-flex;
+    align-items:center;
+    gap:var(--spacing-2);
+    box-shadow:var(--shadow-md);
+}
+
+.hero-btn:hover{
+    background:var(--color-primary-hover);
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-xl);
+}
+
+.secondary-btn{
+    background:transparent;
+    border:2px solid var(--color-primary);
+    color:var(--color-primary);
+}
+
+.secondary-btn:hover{
+    background:var(--color-primary-light);
+    border-color:var(--color-primary);
+    box-shadow:var(--shadow-md);
+}
+
+/* ================= SUBJECTS SECTION ================= */
+
+.subjects-section{
+    padding:var(--spacing-24) 8%;
+    background:var(--color-bg-secondary);
+}
+
+.section-header{
+    text-align:center;
+    margin-bottom:var(--spacing-16);
+}
+
+.section-tag{
+    display:inline-block;
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+    font-size:var(--font-size-xs);
+    font-weight:var(--font-weight-bold);
+    letter-spacing:var(--letter-spacing-wider);
+    text-transform:uppercase;
+    padding:var(--spacing-1) var(--spacing-4);
+    border-radius:var(--radius-md);
+    margin-bottom:var(--spacing-4);
+}
+
+.section-header h2{
+    font-size:clamp(30px,4vw,46px);
+    font-weight:var(--font-weight-extrabold);
+    margin-bottom:var(--spacing-3);
+    letter-spacing:var(--letter-spacing-tight);
+}
+
+.section-header p{
+    color:var(--color-text-secondary);
+    font-size:var(--font-size-lg);
+    max-width:500px;
+    margin:0 auto;
+}
+
+.subjects-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:var(--spacing-6);
+}
+
+.subject-card{
+    background:var(--color-bg-elevated);
+    padding:var(--spacing-8) var(--spacing-6);
+    border-radius:var(--radius-2xl);
+    text-align:center;
+    transition:var(--transition-slow);
+    border:1px solid var(--color-border);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:200px;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+}
+
+.subject-card:hover{
+    transform:translateY(-8px);
+    box-shadow:var(--shadow-xl);
+    border-color:var(--color-primary);
+}
+
+.subject-icon{
+    font-size:48px;
+    margin-bottom:var(--spacing-4);
+}
+
+.subject-card h3{
+    font-size:var(--font-size-lg);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-2);
+    color:var(--color-text-primary);
+}
+
+.subject-card p{
+    color:var(--color-text-secondary);
+    font-size:var(--font-size-sm);
+}
+
+/* ================= CURRICULUM SECTION ================= */
+
+.curriculum-section{
+    padding:var(--spacing-24) 8%;
+    background:var(--color-bg-primary);
+}
+
+.curriculum-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:var(--spacing-5);
+}
+
+.curriculum-card{
+    background:var(--color-bg-elevated);
+    padding:var(--spacing-6) var(--spacing-5);
+    border-radius:var(--radius-xl);
+    text-align:center;
+    transition:var(--transition-default);
+    border:1px solid var(--color-border);
+    cursor:pointer;
+}
+
+.curriculum-card:hover{
+    border-color:var(--color-primary);
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-lg);
+}
+
+.curriculum-card h4{
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-bold);
+    color:var(--color-text-primary);
+}
+
+/* ================= FEATURES SECTION ================= */
+
+.features-section{
+    padding:var(--spacing-24) 8%;
+    background:var(--color-bg-secondary);
+}
+
+.features-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:var(--spacing-8);
+    margin-top:var(--spacing-12);
+}
+
+.feature-item{
+    padding:var(--spacing-8) var(--spacing-6);
+    background:var(--color-bg-elevated);
+    border-radius:var(--radius-2xl);
+    border:1px solid var(--color-border);
+    transition:var(--transition-default);
+}
+
+.feature-item:hover{
+    border-color:var(--color-primary);
+}
+
+.feature-icon{
+    font-size:var(--font-size-3xl);
+    margin-bottom:var(--spacing-4);
+}
+
+.feature-item h4{
+    font-size:var(--font-size-lg);
+    font-weight:var(--font-weight-bold);
+    margin-bottom:var(--spacing-3);
+}
+
+.feature-item p{
+    color:var(--color-text-secondary);
+    font-size:var(--font-size-sm);
+    line-height:var(--line-height-relaxed);
+}
+
+/* ================= CTA SECTION ================= */
+
+.cta-section{
+    padding:var(--spacing-24) 8%;
+    background:linear-gradient(135deg,var(--color-primary),var(--color-primary-hover));
+    text-align:center;
+}
+
+.cta-box{
+    max-width:800px;
+    margin:auto;
+}
+
+.cta-box h2{
+    font-size:clamp(32px,5vw,48px);
+    font-weight:var(--font-weight-extrabold);
+    margin-bottom:var(--spacing-4);
+    color:var(--color-text-inverse);
+}
+
+.cta-box p{
+    font-size:var(--font-size-lg);
+    color:var(--color-text-inverse);
+    margin-bottom:var(--spacing-8);
+    opacity:0.9;
+}
+
+.cta-btn{
+    display:inline-block;
+    padding:var(--spacing-5) var(--spacing-10);
+    background:var(--color-text-inverse);
+    color:var(--color-primary);
+    text-decoration:none;
+    border-radius:var(--radius-xl);
+    font-size:var(--font-size-base);
+    font-weight:var(--font-weight-bold);
+    transition:var(--transition-default);
+    box-shadow:var(--shadow-lg);
+}
+
+.cta-btn:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-2xl);
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    background:var(--color-bg-tertiary);
+    padding:var(--spacing-16) 8% var(--spacing-8);
+    color:var(--color-text-secondary);
+}
+
+.footer-top{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:var(--spacing-12);
+    padding-bottom:var(--spacing-12);
+    border-bottom:1px solid var(--color-border-light);
+    margin-bottom:var(--spacing-8);
+}
+
+.footer-brand .logo{
+    font-size:var(--font-size-2xl);
+    display:block;
+    margin-bottom:var(--spacing-4);
+}
+
+.footer-brand p{
+    font-size:var(--font-size-base);
+    line-height:var(--line-height-relaxed);
+    max-width:320px;
+    margin-bottom:var(--spacing-5);
+}
+
+.footer-col h4{
+    color:var(--color-text-primary);
+    font-size:var(--font-size-sm);
+    font-weight:var(--font-weight-bold);
+    letter-spacing:var(--letter-spacing-wide);
+    text-transform:uppercase;
+    margin-bottom:var(--spacing-5);
+}
+
+.footer-col a{
+    display:block;
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    font-size:var(--font-size-base);
+    margin-bottom:var(--spacing-3);
+    transition:var(--transition-base);
+}
+
+.footer-col a:hover{
+    color:var(--color-primary);
+    transform:translateX(4px);
+}
+
+.footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:var(--font-size-sm);
+    flex-wrap:wrap;
+    gap:var(--spacing-4);
+}
+
+.footer-bottom a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    transition:var(--transition-base);
+    margin-left:var(--spacing-4);
+}
+
+.footer-bottom a:hover{
+    color:var(--color-primary);
+}
+
+/* ================= ANIMATIONS ================= */
+
+@keyframes fade-in-up{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Tablet */
+@media(max-width:1024px){
+    .footer-top{ grid-template-columns:1fr 1fr; gap:var(--spacing-10); }
+    .subjects-grid{ grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:var(--spacing-5); }
+}
+
+/* Mobile */
+@media(max-width:768px){
+    .navbar{ display:none; }
+    .hamburger{ display:flex; }
+    .hero-content h1{ font-size:36px; }
+    .hero-content p{ font-size:var(--font-size-base); }
+    .footer-top{ grid-template-columns:1fr; gap:var(--spacing-8); }
+    .footer-bottom{ flex-direction:column; text-align:center; }
+    .subjects-section{ padding:var(--spacing-16) 5%; }
+    .curriculum-section{ padding:var(--spacing-16) 5%; }
+    .features-section{ padding:var(--spacing-16) 5%; }
+}
+
+/* Small Mobile */
+@media(max-width:480px){
+    .hero-btn{ width:100%; justify-content:center; }
+    .subjects-grid{ grid-template-columns:1fr 1fr; gap:var(--spacing-4); }
+    .curriculum-grid{ grid-template-columns:1fr 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="main-header">
+
+    <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+
+    <nav class="navbar">
+        <a href="../index.html">AI Biz Tools</a>
+        <a href="index.html">Home</a>
+        <a href="pdf-learning.html">PDF Learning</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="pdf-learning.html" class="nav-btn">📚 Start Learning</a>
+    </nav>
+
+    <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+</header>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">AI Biz Tools</a>
+    <a href="index.html">Home</a>
+    <a href="pdf-learning.html">PDF Learning</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="pdf-learning.html" class="nav-btn">📚 Start Learning</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            🎓 AI-Powered Learning Platform
+        </div>
+
+        <h1>
+            Learn Faster. <span>Practice Smarter.</span><br>
+            Master Every Subject.
+        </h1>
+
+        <p>
+            Transform your PDFs into interactive learning resources. Generate notes, MCQs, flashcards, quizzes, and presentations powered by AI.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="pdf-learning.html" class="hero-btn">📚 Upload PDF & Learn</a>
+            <a href="#subjects" class="hero-btn secondary-btn">Explore Subjects →</a>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= SUBJECTS ================= -->
+
+<section class="subjects-section" id="subjects">
+
+    <div class="section-header">
+        <div class="section-tag">Subjects</div>
+        <h2>Choose Your Subject</h2>
+        <p>Select from a wide range of subjects supported by our AI learning system</p>
+    </div>
+
+    <div class="subjects-grid">
+
+        <div class="subject-card" onclick="selectSubject('biology')">
+            <div class="subject-icon">🧬</div>
+            <h3>Biology</h3>
+            <p>Life sciences & living organisms</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('mathematics')">
+            <div class="subject-icon">📐</div>
+            <h3>Mathematics</h3>
+            <p>Numbers, algebra & calculus</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('chemistry')">
+            <div class="subject-icon">⚗️</div>
+            <h3>Chemistry</h3>
+            <p>Matter & chemical reactions</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('physics')">
+            <div class="subject-icon">⚛️</div>
+            <h3>Physics</h3>
+            <p>Matter, energy & forces</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('english')">
+            <div class="subject-icon">📖</div>
+            <h3>English</h3>
+            <p>Language & literature</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('computer-science')">
+            <div class="subject-icon">💻</div>
+            <h3>Computer Science</h3>
+            <p>Programming & technology</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('business-studies')">
+            <div class="subject-icon">💼</div>
+            <h3>Business Studies</h3>
+            <p>Management & commerce</p>
+        </div>
+
+        <div class="subject-card" onclick="selectSubject('economics')">
+            <div class="subject-icon">📊</div>
+            <h3>Economics</h3>
+            <p>Markets & resources</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= CURRICULUM ================= -->
+
+<section class="curriculum-section">
+
+    <div class="section-header">
+        <div class="section-tag">Curriculum</div>
+        <h2>Select Your Curriculum</h2>
+        <p>Choose the educational level that matches your learning goals</p>
+    </div>
+
+    <div class="curriculum-grid">
+
+        <div class="curriculum-card" onclick="selectCurriculum('grade-9')">
+            <h4>Grade 9</h4>
+        </div>
+
+        <div class="curriculum-card" onclick="selectCurriculum('grade-10')">
+            <h4>Grade 10</h4>
+        </div>
+
+        <div class="curriculum-card" onclick="selectCurriculum('o-level')">
+            <h4>O Level</h4>
+        </div>
+
+        <div class="curriculum-card" onclick="selectCurriculum('a-level')">
+            <h4>A Level</h4>
+        </div>
+
+        <div class="curriculum-card" onclick="selectCurriculum('gcse')">
+            <h4>GCSE</h4>
+        </div>
+
+        <div class="curriculum-card" onclick="selectCurriculum('ap')">
+            <h4>AP</h4>
+        </div>
+
+        <div class="curriculum-card" onclick="selectCurriculum('university')">
+            <h4>University</h4>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FEATURES ================= -->
+
+<section class="features-section">
+
+    <div class="section-header">
+        <div class="section-tag">Features</div>
+        <h2>Powerful Learning Tools</h2>
+        <p>Everything you need to master any subject efficiently</p>
+    </div>
+
+    <div class="features-grid">
+
+        <div class="feature-item">
+            <div class="feature-icon">📄</div>
+            <h4>PDF Learning Center</h4>
+            <p>Upload any PDF and automatically extract chapters, topics, and generate comprehensive learning materials.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">📝</div>
+            <h4>Smart Notes</h4>
+            <p>Generate detailed, organized notes with key points, summaries, and explanations from your study materials.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">❓</div>
+            <h4>MCQ Generator</h4>
+            <p>Create multiple choice questions with answers and explanations for effective practice and testing.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">🎴</div>
+            <h4>Flashcards</h4>
+            <p>Build interactive flashcards for quick revision and memorization of key concepts and definitions.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">📊</div>
+            <h4>Quiz Builder</h4>
+            <p>Create comprehensive quizzes with various question types to test your knowledge effectively.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">🎨</div>
+            <h4>Visual Learning</h4>
+            <p>Generate diagrams, flowcharts, concept maps, and tables to visualize complex topics.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">📊</div>
+            <h4>Presentation Generator</h4>
+            <p>Create professional lesson slides and revision presentations from your study materials.</p>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon">🌐</div>
+            <h4>Multi-Language</h4>
+            <p>Support for English, Urdu, and Roman Urdu in both UI and learning content output.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= CTA ================= -->
+
+<section class="cta-section">
+
+    <div class="cta-box">
+        <h2>Ready to Transform Your Learning?</h2>
+        <p>Upload your first PDF and start generating AI-powered learning materials in seconds.</p>
+        <a href="pdf-learning.html" class="cta-btn">🚀 Get Started Free</a>
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-top">
+
+        <div class="footer-brand">
+            <a href="index.html" class="logo">StudyForge <span>AI</span></a>
+            <p>AI-powered educational platform designed to help students learn faster, practice smarter, and master every subject with intelligent learning tools.</p>
+        </div>
+
+        <div class="footer-col">
+            <h4>Learning</h4>
+            <a href="pdf-learning.html">PDF Learning</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="index.html#subjects">Subjects</a>
+            <a href="index.html#curriculum">Curriculum</a>
+        </div>
+
+        <div class="footer-col">
+            <h4>Resources</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Tutorials</a>
+            <a href="#">Blog</a>
+            <a href="#">Community</a>
+        </div>
+
+        <div class="footer-col">
+            <h4>Connect</h4>
+            <a href="#">Twitter / X</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">GitHub</a>
+            <a href="#">Discord</a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 StudyForge AI — Part of AI Biz Tools</p>
+        <div style="display:flex;gap:var(--spacing-4);">
+            <a href="../pages/privacy.html">Privacy Policy</a>
+            <a href="../pages/terms.html">Terms</a>
+            <a href="../pages/contact.html">Contact</a>
+        </div>
+    </div>
+
+</footer>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+/* --- Hamburger Menu --- */
+function toggleMenu(){
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+/* --- Subject Selection --- */
+function selectSubject(subject){
+    localStorage.setItem('selectedSubject', subject);
+    window.location.href = 'pdf-learning.html';
+}
+
+/* --- Curriculum Selection --- */
+function selectCurriculum(curriculum){
+    localStorage.setItem('selectedCurriculum', curriculum);
+    window.location.href = 'pdf-learning.html';
+}
+
+</script>
+
+<!-- Theme System -->
+<script src="../assets/js/theme.js"></script>
+
+</body>
+</html>
