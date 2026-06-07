@@ -3,924 +3,2000 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyForge AI — Learn Faster. Practice Smarter. Master Every Subject.</title>
-<meta name="description" content="AI-powered educational platform for students. Generate notes, MCQs, flashcards, quizzes, and presentations from PDFs. Support for Biology, Mathematics, Chemistry, Physics, English, Computer Science, Business Studies, and Economics.">
+<title>StudyForge AI — AI-Powered Learning Platform</title>
+<meta name="description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
+<link rel="canonical" href="https://studyforge.ai/tools/studyforge/">
 
+<!-- Open Graph -->
+<meta property="og:title" content="StudyForge AI — AI-Powered Learning Platform">
+<meta property="og:description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studyforge.ai/tools/studyforge/">
+<meta property="og:site_name" content="StudyForge AI">
+
+<link rel="icon" href="../../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Design System -->
-<link rel="stylesheet" href="../assets/css/design-system.css">
-<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/design-system.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+
+<!-- Chart.js for Visual Learning charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Mermaid.js for flow/concept diagrams -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#6366f1', primaryTextColor: '#1e293b',
+      primaryBorderColor: '#8b5cf6', lineColor: '#6366f1',
+      secondaryColor: '#eef2ff', tertiaryColor: '#faf5ff',
+      fontSize: '14px'
+    }
+  });
+</script>
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:var(--font-family-base);
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    background:var(--color-bg-primary);
-    color:var(--color-text-primary);
-    overflow-x:hidden;
-}
-
-/* ================= NAVBAR ================= */
-
-.main-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:var(--spacing-4) 8%;
-    background:var(--color-surface-backdrop);
-    backdrop-filter:blur(20px);
-    position:sticky;
-    top:0;
-    z-index:var(--z-sticky);
-    border-bottom:1px solid var(--color-border);
-    box-shadow:var(--shadow-sm);
-}
-
-.logo{
-    font-size:var(--font-size-2xl);
-    font-weight:var(--font-weight-extrabold);
-    color:var(--color-primary);
-    letter-spacing:var(--letter-spacing-tight);
-    text-decoration:none;
-}
-
-.logo span{
-    color:var(--color-text-primary);
-}
-
-.navbar{
-    display:flex;
-    gap:var(--spacing-6);
-    align-items:center;
-}
-
-.navbar a{
-    color:var(--color-text-secondary);
-    text-decoration:none;
-    transition:var(--transition-default);
-    font-size:var(--font-size-sm);
-    font-weight:var(--font-weight-medium);
-}
-
-.navbar a:hover{
-    color:var(--color-primary);
-}
-
-.nav-btn{
-    background:var(--color-primary);
-    color:var(--color-text-inverse) !important;
-    padding:var(--spacing-3) var(--spacing-5);
-    border-radius:var(--radius-lg);
-    font-weight:var(--font-weight-semibold) !important;
-    font-size:var(--font-size-sm) !important;
-    white-space:nowrap;
-    transition:var(--transition-default);
-}
-
-.nav-btn:hover{
-    background:var(--color-primary-hover) !important;
-    transform:translateY(-2px);
-    box-shadow:var(--shadow-primary);
-}
-
-.hamburger{
-    display:none;
-    flex-direction:column;
-    gap:var(--spacing-1);
-    cursor:pointer;
-    padding:var(--spacing-1);
-    background:none;
-    border:none;
-}
-
-.hamburger span{
-    display:block;
-    width:25px;
-    height:2px;
-    background:var(--color-text-primary);
-    border-radius:var(--radius-sm);
-    transition:var(--transition-base);
-}
-
-.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
-.hamburger.open span:nth-child(2){ opacity:0; }
-.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
-
-.mobile-menu{
-    display:none;
-    flex-direction:column;
-    gap:0;
-    background:var(--color-bg-secondary);
-    border-top:1px solid var(--color-border);
-    padding:var(--spacing-2) 0;
-}
-
-.mobile-menu.open{
-    display:flex;
-}
-
-.mobile-menu a{
-    color:var(--color-text-secondary);
-    text-decoration:none;
-    padding:var(--spacing-3) 8%;
-    font-size:var(--font-size-sm);
-    font-weight:var(--font-weight-medium);
-    border-bottom:1px solid var(--color-border-light);
-    transition:var(--transition-base);
-}
-
-.mobile-menu a:hover{
-    background:var(--color-primary-light);
-    color:var(--color-primary);
-}
-
-.mobile-menu .nav-btn{
-    margin:var(--spacing-3) 8%;
-    text-align:center;
-    border-radius:var(--radius-lg);
-    padding:var(--spacing-3);
-    border-bottom:none;
-}
-
-/* ================= HERO ================= */
-
-.hero{
-    min-height:90vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:var(--spacing-20) var(--spacing-5) var(--spacing-16);
-    background:linear-gradient(135deg,var(--color-bg-primary) 0%,var(--color-bg-secondary) 50%,var(--color-bg-primary) 100%);
-    position:relative;
-    overflow:hidden;
-}
-
-.hero::before{
-    content:'';
-    position:absolute;
-    width:700px;
-    height:700px;
-    background:radial-gradient(circle,var(--color-primary-light) 0%,transparent 70%);
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    pointer-events:none;
-    animation:pulse-glow 8s ease-in-out infinite;
-}
-
-@keyframes pulse-glow{
-    0%,100%{opacity:0.5;transform:translate(-50%,-50%) scale(1);}
-    50%{opacity:0.8;transform:translate(-50%,-50%) scale(1.1);}
-}
-
-.hero-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:var(--spacing-2);
-    background:var(--color-primary-light);
-    border:1px solid var(--color-primary);
-    color:var(--color-primary);
-    font-size:var(--font-size-xs);
-    font-weight:var(--font-weight-semibold);
-    padding:var(--spacing-2) var(--spacing-5);
-    border-radius:var(--radius-full);
-    margin-bottom:var(--spacing-8);
-    letter-spacing:var(--letter-spacing-wide);
-    animation:fade-in-up 0.6s ease-out;
-}
-
-.hero-content{
-    max-width:900px;
-    position:relative;
-}
-
-.hero-content h1{
-    font-size:clamp(40px,6vw,72px);
-    line-height:var(--line-height-tight);
-    margin-bottom:var(--spacing-7);
-    font-weight:var(--font-weight-extrabold);
-    letter-spacing:var(--letter-spacing-tight);
-    animation:fade-in-up 0.8s ease-out 0.1s both;
-}
-
-.hero-content h1 span{
-    color:var(--color-primary);
-    background:linear-gradient(135deg,var(--color-primary),var(--color-primary-hover));
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-}
-
-.hero-content p{
-    font-size:var(--font-size-lg);
-    color:var(--color-text-secondary);
-    line-height:var(--line-height-relaxed);
-    margin-bottom:var(--spacing-12);
-    max-width:640px;
-    margin-left:auto;
-    margin-right:auto;
-    animation:fade-in-up 0.8s ease-out 0.2s both;
-}
-
-.hero-buttons{
-    display:flex;
-    justify-content:center;
-    gap:var(--spacing-4);
-    flex-wrap:wrap;
-    margin-bottom:var(--spacing-16);
-    animation:fade-in-up 0.8s ease-out 0.3s both;
-}
-
-.hero-btn{
-    padding:var(--spacing-4) var(--spacing-8);
-    background:var(--color-primary);
-    color:var(--color-text-inverse);
-    text-decoration:none;
-    border-radius:var(--radius-xl);
-    transition:var(--transition-default);
-    font-size:var(--font-size-base);
-    font-weight:var(--font-weight-semibold);
-    display:inline-flex;
-    align-items:center;
-    gap:var(--spacing-2);
-    box-shadow:var(--shadow-md);
-}
-
-.hero-btn:hover{
-    background:var(--color-primary-hover);
-    transform:translateY(-4px);
-    box-shadow:var(--shadow-xl);
-}
-
-.secondary-btn{
-    background:transparent;
-    border:2px solid var(--color-primary);
-    color:var(--color-primary);
-}
-
-.secondary-btn:hover{
-    background:var(--color-primary-light);
-    border-color:var(--color-primary);
-    box-shadow:var(--shadow-md);
-}
-
-/* ================= SUBJECTS SECTION ================= */
-
-.subjects-section{
-    padding:var(--spacing-24) 8%;
-    background:var(--color-bg-secondary);
-}
-
-.section-header{
-    text-align:center;
-    margin-bottom:var(--spacing-16);
-}
-
-.section-tag{
-    display:inline-block;
-    background:var(--color-primary-light);
-    color:var(--color-primary);
-    font-size:var(--font-size-xs);
-    font-weight:var(--font-weight-bold);
-    letter-spacing:var(--letter-spacing-wider);
-    text-transform:uppercase;
-    padding:var(--spacing-1) var(--spacing-4);
-    border-radius:var(--radius-md);
-    margin-bottom:var(--spacing-4);
-}
-
-.section-header h2{
-    font-size:clamp(30px,4vw,46px);
-    font-weight:var(--font-weight-extrabold);
-    margin-bottom:var(--spacing-3);
-    letter-spacing:var(--letter-spacing-tight);
-}
-
-.section-header p{
-    color:var(--color-text-secondary);
-    font-size:var(--font-size-lg);
-    max-width:500px;
-    margin:0 auto;
-}
-
-.subjects-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:var(--spacing-6);
-}
-
-.subject-card{
-    background:var(--color-bg-elevated);
-    padding:var(--spacing-8) var(--spacing-6);
-    border-radius:var(--radius-2xl);
-    text-align:center;
-    transition:var(--transition-slow);
-    border:1px solid var(--color-border);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    min-height:200px;
-    position:relative;
-    overflow:hidden;
-    cursor:pointer;
-}
-
-.subject-card:hover{
-    transform:translateY(-8px);
-    box-shadow:var(--shadow-xl);
-    border-color:var(--color-primary);
-}
-
-.subject-icon{
-    font-size:48px;
-    margin-bottom:var(--spacing-4);
-}
-
-.subject-card h3{
-    font-size:var(--font-size-lg);
-    font-weight:var(--font-weight-bold);
-    margin-bottom:var(--spacing-2);
-    color:var(--color-text-primary);
-}
-
-.subject-card p{
-    color:var(--color-text-secondary);
-    font-size:var(--font-size-sm);
-}
-
-/* ================= CURRICULUM SECTION ================= */
-
-.curriculum-section{
-    padding:var(--spacing-24) 8%;
-    background:var(--color-bg-primary);
-}
-
-.curriculum-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:var(--spacing-5);
-}
-
-.curriculum-card{
-    background:var(--color-bg-elevated);
-    padding:var(--spacing-6) var(--spacing-5);
-    border-radius:var(--radius-xl);
-    text-align:center;
-    transition:var(--transition-default);
-    border:1px solid var(--color-border);
-    cursor:pointer;
-}
-
-.curriculum-card:hover{
-    border-color:var(--color-primary);
-    transform:translateY(-4px);
-    box-shadow:var(--shadow-lg);
-}
-
-.curriculum-card h4{
-    font-size:var(--font-size-base);
-    font-weight:var(--font-weight-bold);
-    color:var(--color-text-primary);
-}
-
-/* ================= FEATURES SECTION ================= */
-
-.features-section{
-    padding:var(--spacing-24) 8%;
-    background:var(--color-bg-secondary);
-}
-
-.features-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:var(--spacing-8);
-    margin-top:var(--spacing-12);
-}
-
-.feature-item{
-    padding:var(--spacing-8) var(--spacing-6);
-    background:var(--color-bg-elevated);
-    border-radius:var(--radius-2xl);
-    border:1px solid var(--color-border);
-    transition:var(--transition-default);
-}
-
-.feature-item:hover{
-    border-color:var(--color-primary);
-}
-
-.feature-icon{
-    font-size:var(--font-size-3xl);
-    margin-bottom:var(--spacing-4);
-}
-
-.feature-item h4{
-    font-size:var(--font-size-lg);
-    font-weight:var(--font-weight-bold);
-    margin-bottom:var(--spacing-3);
-}
-
-.feature-item p{
-    color:var(--color-text-secondary);
-    font-size:var(--font-size-sm);
-    line-height:var(--line-height-relaxed);
-}
-
-/* ================= CTA SECTION ================= */
-
-.cta-section{
-    padding:var(--spacing-24) 8%;
-    background:linear-gradient(135deg,var(--color-primary),var(--color-primary-hover));
-    text-align:center;
-}
-
-.cta-box{
-    max-width:800px;
-    margin:auto;
-}
-
-.cta-box h2{
-    font-size:clamp(32px,5vw,48px);
-    font-weight:var(--font-weight-extrabold);
-    margin-bottom:var(--spacing-4);
-    color:var(--color-text-inverse);
-}
-
-.cta-box p{
-    font-size:var(--font-size-lg);
-    color:var(--color-text-inverse);
-    margin-bottom:var(--spacing-8);
-    opacity:0.9;
-}
-
-.cta-btn{
-    display:inline-block;
-    padding:var(--spacing-5) var(--spacing-10);
-    background:var(--color-text-inverse);
-    color:var(--color-primary);
-    text-decoration:none;
-    border-radius:var(--radius-xl);
-    font-size:var(--font-size-base);
-    font-weight:var(--font-weight-bold);
-    transition:var(--transition-default);
-    box-shadow:var(--shadow-lg);
-}
-
-.cta-btn:hover{
-    transform:translateY(-4px);
-    box-shadow:var(--shadow-2xl);
-}
-
-/* ================= FOOTER ================= */
-
-footer{
-    background:var(--color-bg-tertiary);
-    padding:var(--spacing-16) 8% var(--spacing-8);
-    color:var(--color-text-secondary);
-}
-
-.footer-top{
-    display:grid;
-    grid-template-columns:2fr 1fr 1fr 1fr;
-    gap:var(--spacing-12);
-    padding-bottom:var(--spacing-12);
-    border-bottom:1px solid var(--color-border-light);
-    margin-bottom:var(--spacing-8);
-}
-
-.footer-brand .logo{
-    font-size:var(--font-size-2xl);
-    display:block;
-    margin-bottom:var(--spacing-4);
-}
-
-.footer-brand p{
-    font-size:var(--font-size-base);
-    line-height:var(--line-height-relaxed);
-    max-width:320px;
-    margin-bottom:var(--spacing-5);
-}
-
-.footer-col h4{
-    color:var(--color-text-primary);
-    font-size:var(--font-size-sm);
-    font-weight:var(--font-weight-bold);
-    letter-spacing:var(--letter-spacing-wide);
-    text-transform:uppercase;
-    margin-bottom:var(--spacing-5);
-}
-
-.footer-col a{
-    display:block;
-    color:var(--color-text-secondary);
-    text-decoration:none;
-    font-size:var(--font-size-base);
-    margin-bottom:var(--spacing-3);
-    transition:var(--transition-base);
-}
-
-.footer-col a:hover{
-    color:var(--color-primary);
-    transform:translateX(4px);
-}
-
-.footer-bottom{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:var(--font-size-sm);
-    flex-wrap:wrap;
-    gap:var(--spacing-4);
-}
-
-.footer-bottom a{
-    color:var(--color-text-secondary);
-    text-decoration:none;
-    transition:var(--transition-base);
-    margin-left:var(--spacing-4);
-}
-
-.footer-bottom a:hover{
-    color:var(--color-primary);
-}
-
-/* ================= ANIMATIONS ================= */
-
-@keyframes fade-in-up{
-    from{opacity:0;transform:translateY(20px);}
-    to{opacity:1;transform:translateY(0);}
-}
-
-/* ================= RESPONSIVE ================= */
-
-/* Tablet */
-@media(max-width:1024px){
-    .footer-top{ grid-template-columns:1fr 1fr; gap:var(--spacing-10); }
-    .subjects-grid{ grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:var(--spacing-5); }
-}
-
-/* Mobile */
-@media(max-width:768px){
-    .navbar{ display:none; }
-    .hamburger{ display:flex; }
-    .hero-content h1{ font-size:36px; }
-    .hero-content p{ font-size:var(--font-size-base); }
-    .footer-top{ grid-template-columns:1fr; gap:var(--spacing-8); }
-    .footer-bottom{ flex-direction:column; text-align:center; }
-    .subjects-section{ padding:var(--spacing-16) 5%; }
-    .curriculum-section{ padding:var(--spacing-16) 5%; }
-    .features-section{ padding:var(--spacing-16) 5%; }
-}
-
-/* Small Mobile */
-@media(max-width:480px){
-    .hero-btn{ width:100%; justify-content:center; }
-    .subjects-grid{ grid-template-columns:1fr 1fr; gap:var(--spacing-4); }
-    .curriculum-grid{ grid-template-columns:1fr 1fr; }
+/* ── Reset ── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Base ── */
+body {
+    font-family: var(--font-family-base);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Premium background gradient */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.1), transparent),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.1), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Navbar ── */
+.navbar {
+    width: 100%;
+    padding: var(--spacing-5) 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: var(--letter-spacing-tight);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--spacing-6);
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    transition: color var(--transition-default), transform var(--transition-base);
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    transition: width var(--transition-default);
+}
+
+.nav-links a:hover {
+    color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* ── Hero ── */
+.hero {
+    text-align: center;
+    padding: var(--spacing-16) 8% var(--spacing-12);
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-4);
+    background: linear-gradient(135deg, #1e293b 0%, #6366f1 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.hero p {
+    max-width: 680px;
+    margin: auto;
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    font-size: var(--font-size-base);
+    position: relative;
+}
+
+/* ── Main Grid ── */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-16);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-8);
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Card ── */
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: var(--spacing-8);
+    border-radius: var(--radius-3xl);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+}
+
+.card h2 {
+    margin-bottom: var(--spacing-6);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+}
+
+/* ── Form Inputs ── */
+.input-group {
+    margin-bottom: var(--spacing-4);
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    outline: none;
+    border-radius: var(--radius-2xl);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-base);
+    transition: all var(--transition-default);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    border-color: #6366f1;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 
+        0 0 0 3px rgba(99, 102, 241, 0.1),
+        0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.input-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-4) center;
+    padding-right: 40px;
+}
+
+.input-group select option {
+    background: var(--color-bg-secondary);
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+    line-height: var(--line-height-relaxed);
+}
+
+/* ── Error Message ── */
+.error-msg {
+    display: none;
+    color: #ef4444;
+    font-size: var(--font-size-xs);
+    margin-top: -10px;
+    margin-bottom: var(--spacing-3);
+    padding: var(--spacing-2) var(--spacing-3);
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.error-msg.visible {
+    display: block;
+}
+
+/* ── Generate Button ── */
+.generate-btn {
+    width: 100%;
+    padding: var(--spacing-4);
+    border: none;
+    border-radius: var(--radius-2xl);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family-base);
+    cursor: pointer;
+    transition: all var(--transition-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    box-shadow: 
+        0 4px 6px -1px rgba(99, 102, 241, 0.4),
+        0 2px 4px -1px rgba(99, 102, 241, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.generate-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.generate-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 12px -1px rgba(99, 102, 241, 0.5),
+        0 4px 8px -1px rgba(99, 102, 241, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+.generate-btn:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.generate-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.generate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+}
+
+.generate-btn.loading .spinner {
+    display: block;
+}
+
+.generate-btn.loading .btn-text::after {
+    content: "Generating...";
+}
+
+.generate-btn:not(.loading) .btn-text::after {
+    content: "Generate Content";
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Output Card Header ── */
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+}
+
+.output-header h2 {
+    margin-bottom: 0;
+}
+
+.output-actions {
+    display: flex;
+    gap: var(--spacing-2);
+    align-items: center;
+}
+
+.word-count {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+}
+
+/* ── Copy Button ── */
+.copy-btn {
+    padding: var(--spacing-2) var(--spacing-3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-lg);
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-base);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: none;
+}
+
+.copy-btn.visible {
+    display: inline-block;
+}
+
+.copy-btn:hover {
+    background: #6366f1;
+    color: white;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Output Box ── */
+.output-box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-6);
+    min-height: 420px;
+    max-height: 75vh;
+    overflow-y: auto;
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    white-space: normal;
+    font-size: var(--font-size-sm);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    scroll-behavior: smooth;
+}
+
+.output-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.output-box::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius-full);
+}
+
+.output-box::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-full);
+}
+
+.output-box::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
+}
+
+/* Presentation Slides */
+.slide-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-5);
+    margin-bottom: var(--spacing-4);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+}
+
+.slide-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+.slide-number {
+    font-size: var(--font-size-xs);
+    color: #6366f1;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-2);
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.slide-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-3);
+    color: var(--color-text-primary);
+}
+
+.slide-content {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+}
+
+.slide-content ul {
+    margin-left: var(--spacing-4);
+    margin-top: var(--spacing-2);
+}
+
+.slide-content li {
+    margin-bottom: var(--spacing-2);
+}
+
+/* Mermaid Diagram */
+.mermaid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-4);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin: var(--spacing-4) 0;
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.mermaid-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Placeholder text */
+.output-placeholder {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-16);
+    text-align: center;
+}
+
+.output-placeholder svg {
+    margin-bottom: 14px;
+    opacity: 0.4;
+}
+
+/* ── Footer ── */
+.footer {
+    text-align: center;
+    padding: var(--spacing-6);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    .nav-links {
+        gap: var(--spacing-4);
+    }
+}
+
+@media (max-width: 500px) {
+    .navbar {
+        padding: var(--spacing-4) 5%;
+    }
+
+    .hero {
+        padding: var(--spacing-10) 5% var(--spacing-8);
+    }
+
+    .container {
+        width: 95%;
+    }
+}
+
+/* Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #0f0f0f;
+    }
+    
+    body::before {
+        background: 
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.2), transparent),
+            radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.15), transparent),
+            radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.15), transparent);
+    }
+    
+    .navbar {
+        background: rgba(15, 15, 15, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .card {
+        background: rgba(30, 30, 30, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.3),
+            0 2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .card::before {
+        background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+    }
+    
+    .input-group input,
+    .input-group textarea,
+    .input-group select {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--color-text-primary);
+    }
+    
+    .input-group input:focus,
+    .input-group textarea:focus,
+    .input-group select:focus {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: #818cf8;
+        box-shadow: 
+            0 0 0 3px rgba(129, 140, 248, 0.2),
+            0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+    
+    .output-box {
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            inset 0 1px 2px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .output-box::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .output-box::-webkit-scrollbar-thumb {
+        background: rgba(129, 140, 248, 0.4);
+    }
+    
+    .slide-card {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .mermaid-container {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+}
+
+
+/* ══════════════════════════════════════════
+   GET LECTURE  – structured card layout
+══════════════════════════════════════════ */
+.lec-wrap { display:flex; flex-direction:column; gap:14px; }
+
+.lec-hero {
+  text-align:center; padding:32px 24px 26px;
+  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 60%,#a855f7 100%);
+  border-radius:18px; color:#fff; position:relative; overflow:hidden;
+  margin-bottom:4px;
+}
+.lec-hero::before {
+  content:''; position:absolute; top:-50px; right:-50px;
+  width:180px; height:180px; border-radius:50%;
+  background:rgba(255,255,255,0.07);
+}
+.lec-hero::after {
+  content:''; position:absolute; bottom:-40px; left:-40px;
+  width:130px; height:130px; border-radius:50%;
+  background:rgba(255,255,255,0.05);
+}
+.lec-hero-emoji { font-size:44px; display:block; margin-bottom:12px; }
+.lec-hero-title { font-size:22px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px; }
+.lec-hero-meta  { font-size:12px; opacity:0.75; }
+
+.lec-card {
+  border-radius:16px; border:1.5px solid rgba(0,0,0,0.07);
+  overflow:hidden; background:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  transition:transform .15s;
+}
+.lec-card:hover { transform:translateY(-1px); }
+
+.lec-card-hdr {
+  display:flex; align-items:center; gap:12px;
+  padding:13px 20px;
+  font-size:13px; font-weight:700; letter-spacing:-0.01em;
+}
+.lec-card-ico { font-size:22px; flex-shrink:0; }
+.lec-card-body {
+  padding:16px 22px 18px;
+  font-size:13.5px; line-height:1.85; color:#334155;
+}
+.lec-card-body p { margin-bottom:10px; }
+.lec-card-body ul { margin:6px 0 10px 20px; }
+.lec-card-body li { margin-bottom:5px; }
+.lec-card-body strong { font-weight:700; color:#1e293b; }
+.lec-card-body em    { font-style:italic; color:#475569; }
+.lec-card-body ol   { margin:6px 0 10px 20px; }
+
+/* Per-section accent colours */
+.lec--obj  .lec-card-hdr { background:linear-gradient(90deg,#eef2ff,#f5f3ff); color:#4f46e5; border-bottom:1px solid rgba(99,102,241,0.12); }
+.lec--intro .lec-card-hdr { background:linear-gradient(90deg,#f0fdf4,#dcfce7); color:#16a34a; border-bottom:1px solid rgba(22,163,74,0.1); }
+.lec--core  .lec-card-hdr { background:linear-gradient(90deg,#fff7ed,#ffedd5); color:#c2410c; border-bottom:1px solid rgba(194,65,12,0.1); }
+.lec--ex    .lec-card-hdr { background:linear-gradient(90deg,#eff6ff,#dbeafe); color:#1d4ed8; border-bottom:1px solid rgba(29,78,216,0.1); }
+.lec--terms .lec-card-hdr { background:linear-gradient(90deg,#fdf4ff,#fae8ff); color:#9333ea; border-bottom:1px solid rgba(147,51,234,0.1); }
+.lec--miss  .lec-card-hdr { background:linear-gradient(90deg,#fff1f2,#ffe4e6); color:#e11d48; border-bottom:1px solid rgba(225,29,72,0.1); }
+.lec--tips  .lec-card-hdr { background:linear-gradient(90deg,#fffbeb,#fef3c7); color:#d97706; border-bottom:1px solid rgba(217,119,6,0.1); }
+.lec--sum   .lec-card-hdr { background:linear-gradient(90deg,#f8fafc,#f1f5f9); color:#475569; border-bottom:1px solid rgba(71,85,105,0.1); }
+.lec--prac  .lec-card-hdr { background:linear-gradient(90deg,#ecfeff,#cffafe); color:#0e7490; border-bottom:1px solid rgba(14,116,144,0.1); }
+
+/* Term table inside lecture */
+.lec-term-row {
+  display:flex; gap:14px; padding:8px 0;
+  border-bottom:1px solid rgba(0,0,0,0.05); font-size:13px;
+}
+.lec-term-row:last-child { border-bottom:none; }
+.lec-term-word { font-weight:700; color:#6366f1; min-width:130px; flex-shrink:0; }
+
+/* ══════════════════════════════════════════
+   PRESENTATION  – real slide deck UI
+══════════════════════════════════════════ */
+.pres-deck { display:flex; flex-direction:column; }
+
+/* Nav bar above the slide */
+.pres-nav {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px;
+  background:linear-gradient(90deg,#6366f1,#8b5cf6);
+  border-radius:16px 16px 0 0;
+}
+.pres-nav-btn {
+  width:34px; height:34px; border-radius:8px; border:none;
+  background:rgba(255,255,255,0.2); color:#fff;
+  font-size:18px; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+  transition:background .15s; flex-shrink:0;
+}
+.pres-nav-btn:hover:not(:disabled) { background:rgba(255,255,255,0.35); }
+.pres-nav-btn:disabled { opacity:0.3; cursor:default; }
+.pres-nav-label {
+  flex:1; text-align:center;
+  font-size:13px; font-weight:600; color:#fff; opacity:0.9;
+}
+.pres-counter {
+  font-size:11px; color:rgba(255,255,255,0.7);
+  background:rgba(255,255,255,0.15);
+  padding:3px 10px; border-radius:20px; flex-shrink:0;
+}
+
+/* Slide stage */
+.pres-stage {
+  min-height:340px; background:#fff;
+  border:1.5px solid rgba(0,0,0,0.06); border-top:none;
+  display:flex; flex-direction:column;
+}
+
+/* Title slide type */
+.pres-slide-title {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:40px 32px; text-align:center;
+  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 60%,#a855f7 100%);
+  color:#fff; min-height:340px; position:relative; overflow:hidden;
+}
+.pres-slide-title::before {
+  content:''; position:absolute; top:-60px; right:-60px;
+  width:200px; height:200px; border-radius:50%;
+  background:rgba(255,255,255,0.07);
+}
+.pres-slide-title h2 {
+  font-size:28px; font-weight:800; letter-spacing:-0.02em;
+  margin-bottom:14px; line-height:1.2; position:relative;
+}
+.pres-slide-title p {
+  font-size:14px; opacity:0.85; max-width:440px;
+  line-height:1.6; position:relative;
+}
+.pres-slide-title .pres-tag {
+  display:inline-block; margin-bottom:18px;
+  background:rgba(255,255,255,0.2); color:rgba(255,255,255,0.9);
+  font-size:11px; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; padding:4px 14px; border-radius:20px;
+}
+
+/* Content slide type */
+.pres-slide-content { flex:1; display:flex; flex-direction:column; min-height:340px; }
+.pres-slide-content-hdr {
+  padding:18px 26px;
+  background:linear-gradient(90deg,#6366f1,#8b5cf6);
+  display:flex; align-items:center; gap:12px;
+}
+.pres-slide-content-hdr h3 {
+  color:#fff; font-size:19px; font-weight:700; letter-spacing:-0.01em; flex:1;
+}
+.pres-slide-content-hdr .slide-type-badge {
+  font-size:10px; color:rgba(255,255,255,0.65);
+  background:rgba(255,255,255,0.15); padding:3px 10px; border-radius:20px; flex-shrink:0;
+}
+.pres-slide-body { flex:1; padding:20px 26px; display:flex; flex-direction:column; gap:9px; }
+.pres-bullet {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:11px 16px;
+  background:#f8faff;
+  border:1px solid rgba(99,102,241,0.1);
+  border-radius:12px;
+  font-size:13.5px; line-height:1.6; color:#334155;
+  transition:all .15s;
+}
+.pres-bullet:hover { background:#eef2ff; border-color:rgba(99,102,241,0.25); transform:translateX(3px); }
+.pres-bullet-num {
+  width:24px; height:24px; border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff; font-size:10px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:2px;
+}
+
+/* Quiz slide */
+.pres-quiz-body { flex:1; padding:20px 26px; display:flex; flex-direction:column; gap:9px; }
+.pres-quiz-item {
+  display:flex; gap:12px; align-items:flex-start;
+  padding:11px 16px; border-radius:12px;
+  background:#f0f9ff; border:1px solid #bae6fd;
+  font-size:13px; color:#0c4a6e;
+}
+.pres-quiz-num { font-weight:800; color:#0ea5e9; flex-shrink:0; margin-top:1px; }
+
+/* Footer bar */
+.pres-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 20px;
+  background:#f8fafc; border-top:1px solid rgba(0,0,0,0.05);
+  font-size:11px; color:#94a3b8;
+}
+.pres-prog-bar {
+  height:3px; background:linear-gradient(90deg,#6366f1,#8b5cf6);
+  transition:width .3s ease; border-radius:0 2px 2px 0;
+}
+
+/* Thumbnail strip */
+.pres-strip {
+  display:flex; gap:6px; overflow-x:auto;
+  padding:10px 14px;
+  background:#f1f5f9;
+  border:1.5px solid rgba(0,0,0,0.06); border-top:none;
+  border-radius:0 0 16px 16px;
+  scrollbar-width:thin;
+}
+.pres-strip::-webkit-scrollbar { height:3px; }
+.pres-strip::-webkit-scrollbar-thumb { background:rgba(99,102,241,0.3); border-radius:4px; }
+.pres-thumb {
+  flex-shrink:0; width:58px; height:38px; border-radius:7px;
+  border:2px solid transparent;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  cursor:pointer; transition:all .15s;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:rgba(255,255,255,0.85);
+}
+.pres-thumb:hover { transform:scale(1.1); }
+.pres-thumb.active { border-color:#f59e0b; box-shadow:0 0 0 2px rgba(245,158,11,0.4); }
+
+/* ══════════════════════════════════════════
+   VISUAL LEARNING  – charts + diagrams
+══════════════════════════════════════════ */
+.vis-wrap { display:flex; flex-direction:column; gap:16px; }
+
+.vis-toolbar {
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:12px 16px;
+  background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.04));
+  border:1px solid rgba(99,102,241,0.15);
+  border-radius:14px;
+}
+.vis-toolbar-lbl {
+  font-size:11px; font-weight:700; color:#6366f1;
+  text-transform:uppercase; letter-spacing:.06em; margin-right:4px;
+}
+.vis-btn {
+  padding:5px 13px; border-radius:20px;
+  border:1.5px solid rgba(99,102,241,0.25);
+  background:#fff; color:#6366f1;
+  font-size:11px; font-weight:600; cursor:pointer;
+  transition:all .15s; font-family:inherit;
+}
+.vis-btn:hover { background:rgba(99,102,241,0.08); border-color:#6366f1; }
+.vis-btn.active { background:#6366f1; border-color:#6366f1; color:#fff; box-shadow:0 2px 8px rgba(99,102,241,0.35); }
+
+.vis-panel {
+  background:#fff; border:1.5px solid rgba(0,0,0,0.07);
+  border-radius:16px; overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+.vis-panel-hdr {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 18px;
+  background:linear-gradient(90deg,#6366f1,#8b5cf6);
+  color:#fff;
+}
+.vis-panel-hdr-icon { font-size:18px; }
+.vis-panel-hdr-title { font-size:13px; font-weight:600; flex:1; }
+.vis-panel-hdr-badge {
+  font-size:10px; background:rgba(255,255,255,0.2);
+  padding:2px 8px; border-radius:10px; opacity:0.85;
+}
+.vis-panel-body {
+  padding:20px; min-height:220px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* Mermaid override */
+.mermaid-wrap {
+  display:flex; align-items:center; justify-content:center;
+  padding:16px; min-height:200px;
+  background:#fafbff; border-radius:12px; width:100%;
+}
+.mermaid-wrap svg { max-width:100%; height:auto; }
+
+/* Chart wrapper */
+.chart-wrap { width:100%; max-width:600px; margin:0 auto; }
+.chart-wrap canvas { max-width:100%; }
+
+/* SVG diagram wrapper */
+.svg-wrap { width:100%; overflow:auto; }
+.svg-wrap svg { max-width:100%; height:auto; display:block; margin:0 auto; }
+
+/* Spinner */
+.vis-loading {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; min-height:200px; gap:14px;
+  color:#94a3b8; font-size:13px;
+}
+.vis-spin {
+  width:38px; height:38px;
+  border:3px solid rgba(99,102,241,0.2);
+  border-top-color:#6366f1;
+  border-radius:50%; animation:vis-spin .7s linear infinite;
+}
+@keyframes vis-spin { to { transform:rotate(360deg); } }
+
+/* Comparison table inside visual */
+.vis-table { width:100%; border-collapse:collapse; font-size:13px; }
+.vis-table th { background:#6366f1; color:#fff; padding:10px 14px; text-align:left; font-weight:600; }
+.vis-table td { padding:9px 14px; border-bottom:1px solid rgba(0,0,0,0.06); }
+.vis-table tr:nth-child(even) td { background:#f8faff; }
+
+/* ── Dark mode extras ── */
+@media (prefers-color-scheme: dark) {
+  .lec-card  { background:#1e1e2e; border-color:rgba(255,255,255,0.08); }
+  .lec-card-body { color:#cbd5e1; }
+  .lec--obj  .lec-card-hdr { background:rgba(99,102,241,0.15); }
+  .lec--intro .lec-card-hdr { background:rgba(22,163,74,0.12); }
+  .lec--core  .lec-card-hdr { background:rgba(194,65,12,0.12); }
+  .lec--ex    .lec-card-hdr { background:rgba(29,78,216,0.12); }
+  .lec--terms .lec-card-hdr { background:rgba(147,51,234,0.12); }
+  .lec--miss  .lec-card-hdr { background:rgba(225,29,72,0.12); }
+  .lec--tips  .lec-card-hdr { background:rgba(217,119,6,0.12); }
+  .lec--sum   .lec-card-hdr { background:rgba(71,85,105,0.2); }
+  .lec--prac  .lec-card-hdr { background:rgba(14,116,144,0.12); }
+  .pres-stage,.pres-slide-body,.pres-bullet { background:#1e1e2e; }
+  .pres-bullet { background:#252535; border-color:rgba(99,102,241,0.18); color:#cbd5e1; }
+  .pres-bullet:hover { background:#2e2e45; }
+  .pres-footer { background:#181828; color:#64748b; }
+  .pres-strip { background:#181828; }
+  .pres-quiz-item { background:#162032; border-color:#0c4a6e; color:#bae6fd; }
+  .vis-panel { background:#1e1e2e; border-color:rgba(255,255,255,0.08); }
+  .vis-panel-body { background:#1e1e2e; }
+  .vis-btn { background:#1e1e2e; color:#818cf8; border-color:rgba(129,140,248,0.3); }
+  .vis-btn.active { background:#6366f1; color:#fff; }
+  .mermaid-wrap { background:#181828; }
+  .vis-table td { border-color:rgba(255,255,255,0.06); }
+  .vis-table tr:nth-child(even) td { background:#252535; }
 }
 
 </style>
 </head>
 <body>
 
-<!-- ================= HEADER ================= -->
+<!-- Navbar -->
+<div class="navbar">
+    <div class="logo">AI Biz Tools</div>
+    <div class="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="../../pages/about.html">About</a>
+        <a href="../../blog/index.html">Blog</a>
+        <a href="../../pages/contact.html">Contact</a>
+    </div>
+</div>
 
-<header class="main-header">
+<!-- Hero -->
+<section class="hero">
+    <h1>StudyForge AI</h1>
+    <p>Generate educational content including notes, MCQs, concepts, lectures, presentations, and visual learning materials for any curriculum, subject, and topic.</p>
+</section>
 
-    <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+<!-- Main -->
+<div class="container">
 
-    <nav class="navbar">
-        <a href="../index.html">AI Biz Tools</a>
-        <a href="index.html">Home</a>
-        <a href="study-hub.html">Study Hub</a>
-        <a href="pdf-learning.html">PDF Tools</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="study-hub.html" class="nav-btn">🎓 Study Hub</a>
-    </nav>
+    <!-- Left: Input Card -->
+    <div class="card">
+        <h2>Generate Content</h2>
 
-    <div class="header-actions">
-        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
-            <span></span>
-            <span></span>
-            <span></span>
+        <div class="input-group">
+            <label>Curriculum</label>
+            <select id="curriculum" title="Select your curriculum">
+                <option>Grade 9</option>
+                <option>Grade 10</option>
+                <option>O Level</option>
+                <option>A Level</option>
+                <option>GCSE</option>
+                <option>AP</option>
+                <option>University</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Subject</label>
+            <select id="subject" title="Select your subject">
+                <option>Biology</option>
+                <option>Mathematics</option>
+                <option>Chemistry</option>
+                <option>Physics</option>
+                <option>English</option>
+                <option>Computer Science</option>
+                <option>Business Studies</option>
+                <option>Economics</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Topic</label>
+            <input type="text" id="topic" placeholder="e.g. Photosynthesis, Calculus, World War II">
+        </div>
+
+        <div class="input-group">
+            <label>Action</label>
+            <select id="action" title="Select content type to generate">
+                <option>Notes</option>
+                <option>MCQs</option>
+                <option>Concepts</option>
+                <option>Get Lecture</option>
+                <option>Presentation</option>
+                <option>Visual Learning</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Language</label>
+            <select id="language" title="Select output language">
+                <option>English</option>
+                <option>Simple English</option>
+                <option>Roman Urdu</option>
+            </select>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-msg" id="errorMsg">⚠ Please fill in the Topic field.</div>
+
+        <button class="generate-btn" id="generateBtn" onclick="generateContent()" aria-label="Generate AI content">
+            <div class="spinner"></div>
+            <span class="btn-text"></span>
         </button>
     </div>
 
-</header>
-
-<!-- MOBILE MENU -->
-<nav class="mobile-menu" id="mobileMenu">
-    <a href="../index.html">AI Biz Tools</a>
-    <a href="index.html">Home</a>
-    <a href="study-hub.html">Study Hub</a>
-    <a href="pdf-learning.html">PDF Tools</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="study-hub.html" class="nav-btn">🎓 Study Hub</a>
-</nav>
-
-<!-- ================= HERO ================= -->
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <div class="hero-badge">
-            🎓 AI-Powered Learning Platform
+    <!-- Right: Output Card -->
+    <div class="card">
+        <div class="output-header">
+            <h2>Generated Content</h2>
+            <div class="output-actions">
+                <span class="word-count" id="wordCount"></span>
+                <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Copy</button>
+            </div>
         </div>
 
-        <h1>
-            Learn Faster. <span>Practice Smarter.</span><br>
-            Master Every Subject.
-        </h1>
-
-        <p>
-            Choose your curriculum, pick a subject and topic, then generate notes, MCQs, flashcards, quizzes, and presentations — powered by AI.
-        </p>
-
-        <div class="hero-buttons">
-            <a href="study-hub.html" class="hero-btn">🎓 Open Study Hub</a>
-            <a href="#subjects" class="hero-btn secondary-btn">Explore Subjects →</a>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= SUBJECTS ================= -->
-
-<section class="subjects-section" id="subjects">
-
-    <div class="section-header">
-        <div class="section-tag">Subjects</div>
-        <h2>Choose Your Subject</h2>
-        <p>Select from a wide range of subjects supported by our AI learning system</p>
-    </div>
-
-    <div class="subjects-grid">
-
-        <div class="subject-card" onclick="selectSubject('biology')">
-            <div class="subject-icon">🧬</div>
-            <h3>Biology</h3>
-            <p>Life sciences & living organisms</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('mathematics')">
-            <div class="subject-icon">📐</div>
-            <h3>Mathematics</h3>
-            <p>Numbers, algebra & calculus</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('chemistry')">
-            <div class="subject-icon">⚗️</div>
-            <h3>Chemistry</h3>
-            <p>Matter & chemical reactions</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('physics')">
-            <div class="subject-icon">⚛️</div>
-            <h3>Physics</h3>
-            <p>Matter, energy & forces</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('english')">
-            <div class="subject-icon">📖</div>
-            <h3>English</h3>
-            <p>Language & literature</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('computer-science')">
-            <div class="subject-icon">💻</div>
-            <h3>Computer Science</h3>
-            <p>Programming & technology</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('business-studies')">
-            <div class="subject-icon">💼</div>
-            <h3>Business Studies</h3>
-            <p>Management & commerce</p>
-        </div>
-
-        <div class="subject-card" onclick="selectSubject('economics')">
-            <div class="subject-icon">📊</div>
-            <h3>Economics</h3>
-            <p>Markets & resources</p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= CURRICULUM ================= -->
-
-<section class="curriculum-section">
-
-    <div class="section-header">
-        <div class="section-tag">Curriculum</div>
-        <h2>Select Your Curriculum</h2>
-        <p>Choose the educational level that matches your learning goals</p>
-    </div>
-
-    <div class="curriculum-grid">
-
-        <div class="curriculum-card" onclick="selectCurriculum('grade-9')">
-            <h4>Grade 9</h4>
-        </div>
-
-        <div class="curriculum-card" onclick="selectCurriculum('grade-10')">
-            <h4>Grade 10</h4>
-        </div>
-
-        <div class="curriculum-card" onclick="selectCurriculum('o-level')">
-            <h4>O Level</h4>
-        </div>
-
-        <div class="curriculum-card" onclick="selectCurriculum('a-level')">
-            <h4>A Level</h4>
-        </div>
-
-        <div class="curriculum-card" onclick="selectCurriculum('gcse')">
-            <h4>GCSE</h4>
-        </div>
-
-        <div class="curriculum-card" onclick="selectCurriculum('ap')">
-            <h4>AP</h4>
-        </div>
-
-        <div class="curriculum-card" onclick="selectCurriculum('university')">
-            <h4>University</h4>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= FEATURES ================= -->
-
-<section class="features-section">
-
-    <div class="section-header">
-        <div class="section-tag">Features</div>
-        <h2>Powerful Learning Tools</h2>
-        <p>Everything you need to master any subject efficiently</p>
-    </div>
-
-    <div class="features-grid">
-
-        <div class="feature-item">
-            <div class="feature-icon">📄</div>
-            <h4>PDF Learning Center</h4>
-            <p>Upload any PDF and automatically extract chapters, topics, and generate comprehensive learning materials.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">📝</div>
-            <h4>Smart Notes</h4>
-            <p>Generate detailed, organized notes with key points, summaries, and explanations from your study materials.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">❓</div>
-            <h4>MCQ Generator</h4>
-            <p>Create multiple choice questions with answers and explanations for effective practice and testing.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">🎴</div>
-            <h4>Flashcards</h4>
-            <p>Build interactive flashcards for quick revision and memorization of key concepts and definitions.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">📊</div>
-            <h4>Quiz Builder</h4>
-            <p>Create comprehensive quizzes with various question types to test your knowledge effectively.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">🎨</div>
-            <h4>Visual Learning</h4>
-            <p>Generate diagrams, flowcharts, concept maps, and tables to visualize complex topics.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">📊</div>
-            <h4>Presentation Generator</h4>
-            <p>Create professional lesson slides and revision presentations from your study materials.</p>
-        </div>
-
-        <div class="feature-item">
-            <div class="feature-icon">🌐</div>
-            <h4>Multi-Language</h4>
-            <p>Support for English, Urdu, and Roman Urdu in both UI and learning content output.</p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= CTA ================= -->
-
-<section class="cta-section">
-
-    <div class="cta-box">
-        <h2>Ready to Transform Your Learning?</h2>
-        <p>Select your curriculum and topic, then generate AI-powered learning materials in seconds.</p>
-        <a href="study-hub.html" class="cta-btn">🎓 Open Study Hub Free</a>
-    </div>
-
-</section>
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-    <div class="footer-top">
-
-        <div class="footer-brand">
-            <a href="index.html" class="logo">StudyForge <span>AI</span></a>
-            <p>AI-powered educational platform designed to help students learn faster, practice smarter, and master every subject with intelligent learning tools.</p>
-        </div>
-
-        <div class="footer-col">
-            <h4>Learning</h4>
-            <a href="study-hub.html">Study Hub</a>
-            <a href="pdf-learning.html">PDF Tools</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="index.html#subjects">Subjects</a>
-            <a href="index.html#curriculum">Curriculum</a>
-        </div>
-
-        <div class="footer-col">
-            <h4>Resources</h4>
-            <a href="#">Help Center</a>
-            <a href="#">Tutorials</a>
-            <a href="#">Blog</a>
-            <a href="#">Community</a>
-        </div>
-
-        <div class="footer-col">
-            <h4>Connect</h4>
-            <a href="#">Twitter / X</a>
-            <a href="#">LinkedIn</a>
-            <a href="#">GitHub</a>
-            <a href="#">Discord</a>
-        </div>
-
-    </div>
-
-    <div class="footer-bottom">
-        <p>© 2026 StudyForge AI — Part of AI Biz Tools</p>
-        <div style="display:flex;gap:var(--spacing-4);">
-            <a href="../pages/privacy.html">Privacy Policy</a>
-            <a href="../pages/terms.html">Terms</a>
-            <a href="../pages/contact.html">Contact</a>
+        <div class="output-box" id="output">
+            <div class="output-placeholder">
+                <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" color="#4da3ff">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <p>Your AI-generated educational content will appear here.</p>
+            </div>
         </div>
     </div>
 
-</footer>
+</div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- Footer -->
+<div class="footer">
+    © 2026 StudyForge AI — All Rights Reserved
+</div>
 
 <script>
+/* ══════════════════════════════════════════════════════════
+   StudyForge AI  —  complete render engine
+   Fixes: Lecture cards, Presentation deck, Visual diagrams
+══════════════════════════════════════════════════════════ */
 
-/* --- Hamburger Menu --- */
-function toggleMenu(){
-    const menu = document.getElementById('mobileMenu');
-    const btn = document.getElementById('hamburger');
-    menu.classList.toggle('open');
-    btn.classList.toggle('open');
+let generatedText = "";
+let presSlides    = [];
+let presIndex     = 0;
+const WORKER      = "https://aibiztools.arslan9zaki.workers.dev";
+
+/* ── Worker helper ── */
+async function callWorker(prompt, systemPrompt) {
+  const r = await fetch(WORKER, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, systemPrompt })
+  });
+  const raw = await r.text();
+  if (!r.ok) {
+    let msg = `Server error (${r.status})`;
+    try { msg = JSON.parse(raw).error || msg; } catch(_) { if (raw.trim()) msg = raw.slice(0,140); }
+    throw new Error(msg);
+  }
+  if (!raw.trim()) throw new Error("Worker returned empty response.");
+  let d; try { d = JSON.parse(raw); } catch(_) { throw new Error("Invalid JSON from worker: " + raw.slice(0,80)); }
+  const t = (d.text || "").trim();
+  if (!t) throw new Error("AI returned no content. Try rephrasing your topic.");
+  return t;
 }
 
-/* --- Subject Selection --- */
-function selectSubject(subject){
-    localStorage.setItem('selectedSubject', subject);
-    window.location.href = 'study-hub.html';
+/* ══════════════════════════════════════════
+   GENERATE
+══════════════════════════════════════════ */
+async function generateContent() {
+  const curriculum = document.getElementById("curriculum").value;
+  const subject    = document.getElementById("subject").value;
+  const topic      = document.getElementById("topic").value.trim();
+  const action     = document.getElementById("action").value;
+  const language   = document.getElementById("language").value;
+  const errorMsg   = document.getElementById("errorMsg");
+  const btn        = document.getElementById("generateBtn");
+  const box        = document.getElementById("output");
+  const copyBtn    = document.getElementById("copyBtn");
+  const wordEl     = document.getElementById("wordCount");
+
+  if (!topic) { errorMsg.classList.add("visible"); return; }
+  errorMsg.classList.remove("visible");
+
+  btn.classList.add("loading"); btn.disabled = true;
+  copyBtn.classList.remove("visible"); wordEl.textContent = "";
+  generatedText = "";
+  box.innerHTML = '<div class="output-placeholder"><p style="color:#6366f1;font-weight:600">⏳ Generating ' + action + '…</p></div>';
+
+  const langNote = `Output language: ${language}. Keep all scientific/technical terms (DNA, photosynthesis, force, etc.) in their standard English form.`;
+
+  const prompts = {
+
+"Notes": {
+  sys: "You are an expert educational AI. Write concise, exam-ready study notes. Use clear headings. Write the notes directly — no preamble.",
+  usr: `Generate comprehensive revision-ready study notes for "${topic}" in ${subject} at ${curriculum} level.
+Structure:
+# ${topic} — Study Notes
+## Key Definitions
+[define every essential term]
+## Core Concepts
+[explain each major concept with sub-headings]
+## Formulas / Rules
+[list all relevant formulas or rules, if applicable]
+## Worked Examples
+[2-3 examples]
+## Summary
+[6-8 bullet takeaways]
+## Exam Tips
+[3-5 specific hints]
+${langNote}`
+},
+
+"MCQs": {
+  sys: "You are an expert educational AI generating MCQs. Follow the exact format specified. No extra text.",
+  usr: `Generate 10 exam-style MCQs for "${topic}" in ${subject} at ${curriculum} level.
+EXACT FORMAT — repeat for every question:
+Q1. [question]
+A) option  B) option  C) option  D) option
+Answer: [letter]
+Explanation: [one sentence]
+
+Include easy, medium, hard. ${langNote}`
+},
+
+"Concepts": {
+  sys: "You are an expert educational AI. Explain concepts thoroughly with examples.",
+  usr: `Generate a full concept guide for "${topic}" in ${subject} at ${curriculum} level.
+For each core concept: definition, explanation, real-world example, common misconception.
+End with: KEY RELATIONSHIPS and EXAM TIPS.
+${langNote}`
+},
+
+"Get Lecture": {
+  sys: "You are an AI teacher delivering a structured lecture. Use EXACTLY the emoji section headers listed. Write each section fully.",
+  usr: `Deliver a complete AI teacher lecture on "${topic}" in ${subject} at ${curriculum} level.
+
+Use EXACTLY these section headers (emoji + title on its own line):
+
+🎓 LECTURE TITLE
+[Full title on next line, then: Subject: ${subject} | Level: ${curriculum}]
+
+🎯 LEARNING OBJECTIVES
+[3-5 numbered objectives using action verbs]
+
+📖 INTRODUCTION
+[2-3 paragraphs: hook, relevance, real-world connection]
+
+💡 CORE EXPLANATION
+[Thorough explanation with sub-headings for each major concept]
+
+🔬 EXAMPLES & APPLICATIONS
+[2-3 fully worked examples, step-by-step]
+
+📚 KEY TERMS & DEFINITIONS
+[One term per line: Term — Definition]
+
+⚠️ COMMON MISTAKES
+[5 bullet points of what students get wrong]
+
+🏆 EXAM TIPS
+[5 specific exam strategies for this topic]
+
+📋 SUMMARY
+[8-10 bullet takeaways]
+
+📝 PRACTICE QUESTIONS
+[5 numbered questions, each followed by: Answer: ...]
+
+${langNote}`
+},
+
+"Presentation": {
+  sys: "You are an expert educational slide designer. Follow the EXACT slide format specified. No extra text outside the format.",
+  usr: `Generate a 10-slide presentation on "${topic}" in ${subject} at ${curriculum} level.
+
+STRICT FORMAT — use exactly this for every slide:
+
+SLIDE 1: [Topic Title]
+TYPE: title
+SUBTITLE: [one engaging sentence]
+
+SLIDE 2: Learning Objectives
+TYPE: content
+• [objective 1]
+• [objective 2]
+• [objective 3]
+
+SLIDE 3: [First Core Concept Name]
+TYPE: content
+• [point]
+• [point]
+• [point]
+
+SLIDE 4: [Second Core Concept]
+TYPE: content
+• [point]
+• [point]
+• [point]
+
+SLIDE 5: [Third Core Concept]
+TYPE: content
+• [point]
+• [point]
+• [point]
+
+SLIDE 6: [Fourth Core Concept]
+TYPE: content
+• [point]
+• [point]
+• [point]
+
+SLIDE 7: Examples & Applications
+TYPE: content
+• [example 1]
+• [example 2]
+• [example 3]
+
+SLIDE 8: Common Mistakes
+TYPE: content
+• [mistake 1]
+• [mistake 2]
+• [mistake 3]
+
+SLIDE 9: Summary & Key Takeaways
+TYPE: content
+• [takeaway 1]
+• [takeaway 2]
+• [takeaway 3]
+• [takeaway 4]
+
+SLIDE 10: Review Quiz
+TYPE: quiz
+1. [question 1]
+2. [question 2]
+3. [question 3]
+
+${langNote}`
+},
+
+"Visual Learning": {
+  sys: "You are an expert educational diagram creator. Output ONLY the requested format with no explanations, no markdown fences, no preamble.",
+  usr: `Generate a Mermaid flowchart diagram for "${topic}" in ${subject} at ${curriculum} level.
+
+Rules:
+- Output ONLY valid Mermaid code, starting with: graph TD
+- Use short node labels (max 4 words each)
+- Use --> for connections
+- Use --label--> for labelled edges
+- Do NOT use parentheses, colons, or quotes inside node labels
+- Show the main process, relationships, or structure of the topic
+- Include 8-14 nodes
+
+${langNote}`
+}
+  };
+
+  try {
+    const p = prompts[action] || prompts["Notes"];
+    generatedText = await callWorker(p.usr, p.sys);
+
+    if      (action === "Get Lecture")     renderLecture(generatedText, box, topic, subject, curriculum);
+    else if (action === "Presentation")    renderPresentation(generatedText, box, topic, subject, curriculum);
+    else if (action === "Visual Learning") renderVisual(generatedText, box, topic, subject, curriculum);
+    else if (action === "MCQs")            renderMCQs(generatedText, box);
+    else                                   renderText(generatedText, box);
+
+    wordEl.textContent = generatedText.split(/\s+/).filter(Boolean).length + " words";
+    copyBtn.classList.add("visible");
+
+  } catch(err) {
+    box.innerHTML = `<div style="padding:20px;color:#ef4444;font-size:13px;">⚠️ ${err.message || "Something went wrong."}</div>`;
+  }
+
+  btn.classList.remove("loading"); btn.disabled = false;
 }
 
-/* --- Curriculum Selection --- */
-function selectCurriculum(curriculum){
-    localStorage.setItem('selectedCurriculum', curriculum);
-    window.location.href = 'study-hub.html';
+/* ══════════════════════════════════════════
+   RENDER: plain text (Notes, Concepts)
+══════════════════════════════════════════ */
+function renderText(text, box) {
+  box.style.whiteSpace = "pre-wrap";
+  box.innerHTML = "";
+  box.textContent = text;
 }
 
+/* ══════════════════════════════════════════
+   RENDER: MCQs
+══════════════════════════════════════════ */
+function renderMCQs(text, box) {
+  box.style.whiteSpace = "normal";
+  box.innerHTML = "";
+  const blocks = text.split(/\n(?=Q\d+\.)/i).map(b => b.trim()).filter(Boolean);
+  if (!blocks.length) { renderText(text, box); return; }
+
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "display:flex;flex-direction:column;gap:14px;";
+
+  blocks.forEach((blk, qi) => {
+    const lines = blk.split("\n").map(l => l.trim()).filter(Boolean);
+    const qText  = lines[0].replace(/^Q\d+\.\s*/i,"");
+    const opts   = lines.filter(l => /^[A-D]\)/.test(l));
+    const ansM   = blk.match(/Answer:\s*([A-D])/i);
+    const expM   = blk.match(/Explanation:\s*(.+)/i);
+    const ans    = ansM ? ansM[1] : "";
+    const exp    = expM ? expM[1] : "";
+
+    const el = document.createElement("div");
+    el.style.cssText = "background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.05);";
+    el.innerHTML = `
+      <div style="font-size:11px;font-weight:700;color:#6366f1;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Q${qi+1}</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;line-height:1.5;">${qText}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${opts.map(o => {
+          const letter = o[0];
+          const isAns  = letter === ans;
+          return `<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:10px;border:1px solid ${isAns?'rgba(34,197,94,0.3)':'rgba(0,0,0,0.07)'};background:${isAns?'rgba(34,197,94,0.07)':'#f9fafb'};font-size:13px;">
+            <span style="font-weight:700;color:${isAns?'#16a34a':'#6366f1'};min-width:18px;">${letter}</span>
+            <span style="color:${isAns?'#166534':'#374151'}">${o.slice(2).trim()}</span>
+          </div>`;
+        }).join("")}
+      </div>
+      ${ans ? `<div style="margin-top:12px;padding:10px 14px;background:#f0fdf4;border-radius:10px;font-size:13px;color:#166534;border:1px solid rgba(34,197,94,0.2);">
+        <strong>✓ Answer: ${ans}</strong>${exp ? ` — ${exp}` : ""}
+      </div>` : ""}`;
+    wrap.appendChild(el);
+  });
+  box.appendChild(wrap);
+}
+
+/* ══════════════════════════════════════════
+   RENDER: GET LECTURE  (beautiful cards)
+══════════════════════════════════════════ */
+function renderLecture(text, box, topic, subject, curriculum) {
+  box.style.whiteSpace = "normal";
+  box.innerHTML = "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "lec-wrap";
+
+  /* ── Section definitions ── */
+  const SECS = [
+    { emoji:"🎓", key:"LECTURE TITLE",         cls:"lec--obj"  },
+    { emoji:"🎯", key:"LEARNING OBJECTIVES",   cls:"lec--obj"  },
+    { emoji:"📖", key:"INTRODUCTION",          cls:"lec--intro"},
+    { emoji:"💡", key:"CORE EXPLANATION",      cls:"lec--core" },
+    { emoji:"🔬", key:"EXAMPLES",              cls:"lec--ex"   },
+    { emoji:"📚", key:"KEY TERMS",             cls:"lec--terms"},
+    { emoji:"⚠️", key:"COMMON MISTAKES",       cls:"lec--miss" },
+    { emoji:"🏆", key:"EXAM TIPS",             cls:"lec--tips" },
+    { emoji:"📋", key:"SUMMARY",               cls:"lec--sum"  },
+    { emoji:"📝", key:"PRACTICE QUESTIONS",    cls:"lec--prac" }
+  ];
+
+  /* ── Parse: split on emoji lines ── */
+  const emojiRe = /^(🎓|🎯|📖|💡|🔬|📚|⚠️|🏆|📋|📝)\s*/m;
+  const lines   = text.split("\n");
+  const sections= [];
+  let cur       = null;
+
+  lines.forEach(line => {
+    const stripped = line.trim();
+    const m = stripped.match(/^(🎓|🎯|📖|💡|🔬|📚|⚠️|🏆|📋|📝)\s*(.*)/);
+    if (m) {
+      if (cur) sections.push(cur);
+      cur = { emoji: m[1], rawTitle: m[2].trim(), lines: [] };
+    } else if (cur) {
+      cur.lines.push(line);
+    }
+  });
+  if (cur) sections.push(cur);
+
+  /* ── Hero card for first section (title) ── */
+  if (sections.length > 0 && sections[0].emoji === "🎓") {
+    const hero = document.createElement("div");
+    hero.className = "lec-hero";
+    const titleLine = sections[0].lines.find(l => l.trim()) || topic;
+    hero.innerHTML = `
+      <span class="lec-hero-emoji">🎓</span>
+      <div class="lec-hero-title">${titleLine.trim()}</div>
+      <div class="lec-hero-meta">${subject} &nbsp;·&nbsp; ${curriculum}</div>`;
+    wrap.appendChild(hero);
+    sections.shift(); // remove title from loop
+  } else {
+    // Fallback hero
+    const hero = document.createElement("div");
+    hero.className = "lec-hero";
+    hero.innerHTML = `<span class="lec-hero-emoji">🎓</span><div class="lec-hero-title">${topic}</div><div class="lec-hero-meta">${subject} · ${curriculum}</div>`;
+    wrap.appendChild(hero);
+  }
+
+  /* ── If no emoji sections found, do a heading-based fallback ── */
+  if (sections.length === 0) {
+    const headingRe = /^(#{1,3}|[A-Z][A-Z &]+:?)\s+(.+)/;
+    const plain = text.split("\n");
+    let fb = null; const fbSecs = [];
+    plain.forEach(l => {
+      const hm = l.trim().match(/^(#{1,3})\s+(.+)/) ||
+                 l.trim().match(/^(🎯|📖|💡|🔬|📚|⚠️|🏆|📋|📝)\s*(.*)/);
+      if (hm) {
+        if (fb) fbSecs.push(fb);
+        fb = { title: hm[2]||hm[1], lines:[] };
+      } else if (fb) fb.lines.push(l);
+    });
+    if (fb) fbSecs.push(fb);
+
+    const icons = ["🎯","📖","💡","🔬","📚","⚠️","🏆","📋","📝"];
+    const clss  = ["lec--obj","lec--intro","lec--core","lec--ex","lec--terms","lec--miss","lec--tips","lec--sum","lec--prac"];
+    fbSecs.forEach((s,i) => {
+      wrap.appendChild(buildLecCard(icons[i%icons.length], s.title, s.lines, clss[i%clss.length]));
+    });
+
+    if (fbSecs.length === 0) {
+      const raw = document.createElement("div");
+      raw.style.cssText = "white-space:pre-wrap;font-size:13.5px;line-height:1.8;padding:8px;";
+      raw.textContent = text;
+      wrap.appendChild(raw);
+    }
+
+    box.appendChild(wrap);
+    return;
+  }
+
+  /* ── Normal render ── */
+  const clsMap = {};
+  SECS.forEach(s => { clsMap[s.emoji] = s.cls; });
+
+  sections.forEach(sec => {
+    const defSec = SECS.find(s => s.emoji === sec.emoji) || SECS[0];
+    const cls    = clsMap[sec.emoji] || "lec--obj";
+    const title  = sec.rawTitle || defSec.key;
+    wrap.appendChild(buildLecCard(sec.emoji, title, sec.lines, cls));
+  });
+
+  box.appendChild(wrap);
+}
+
+function buildLecCard(emoji, title, bodyLines, cls) {
+  const card = document.createElement("div");
+  card.className = `lec-card ${cls}`;
+
+  /* Header */
+  const hdr = document.createElement("div");
+  hdr.className = "lec-card-hdr";
+  hdr.innerHTML = `<span class="lec-card-ico">${emoji}</span><span>${title}</span>`;
+  card.appendChild(hdr);
+
+  /* Body */
+  const body = document.createElement("div");
+  body.className = "lec-card-body";
+
+  const trimmed = bodyLines.map(l => l.trim()).filter(Boolean);
+  if (!trimmed.length) { card.appendChild(body); return card; }
+
+  let html = ""; let inList = false;
+
+  trimmed.forEach(line => {
+    // Apply inline markdown
+    const fmt = line
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g,     "<em>$1</em>");
+
+    if (/^[-•*]\s+/.test(line) || /^\d+\.\s+/.test(line)) {
+      if (!inList) { html += "<ul>"; inList = true; }
+      html += `<li>${fmt.replace(/^[-•*\d.]\s+/,"")}</li>`;
+    } else if (/^.+\s—\s.+/.test(line) && cls === "lec--terms") {
+      if (inList) { html += "</ul>"; inList = false; }
+      const [w, ...rest] = line.split(" — ");
+      html += `<div class="lec-term-row"><span class="lec-term-word">${w.trim()}</span><span>${rest.join(" — ").trim()}</span></div>`;
+    } else {
+      if (inList) { html += "</ul>"; inList = false; }
+      html += `<p>${fmt}</p>`;
+    }
+  });
+  if (inList) html += "</ul>";
+
+  body.innerHTML = html;
+  card.appendChild(body);
+  return card;
+}
+
+/* ══════════════════════════════════════════
+   RENDER: PRESENTATION  (slide deck)
+══════════════════════════════════════════ */
+function renderPresentation(text, box, topic, subject, curriculum) {
+  box.style.whiteSpace = "normal";
+  box.innerHTML = "";
+
+  /* ── Parse slides ── */
+  const slideRe = /^SLIDE\s+(\d+):\s*(.+)$/gim;
+  const matches = [...text.matchAll(slideRe)];
+  const slides  = [];
+
+  if (matches.length > 0) {
+    matches.forEach((m, i) => {
+      const start   = m.index + m[0].length;
+      const end     = i + 1 < matches.length ? matches[i+1].index : text.length;
+      const chunk   = text.slice(start, end);
+      const typeM   = chunk.match(/^[\r\n]*TYPE:\s*(\w+)/i);
+      const subtM   = chunk.match(/SUBTITLE:\s*(.+)/i);
+      const rawBulls= chunk.replace(/^[\r\n]*TYPE:\s*\w+[\r\n]*/i,"")
+                           .replace(/SUBTITLE:\s*.+[\r\n]*/i,"")
+                           .trim();
+      slides.push({
+        number:   parseInt(m[1]),
+        title:    m[2].trim(),
+        type:     typeM ? typeM[1].toLowerCase() : "content",
+        subtitle: subtM ? subtM[1].trim() : "",
+        body:     rawBulls
+      });
+    });
+  } else {
+    /* fallback: split on ## headings */
+    const hm = [...text.matchAll(/^#{1,3}\s+(.+)$/gm)];
+    if (hm.length) {
+      hm.forEach((m, i) => {
+        const start = m.index + m[0].length;
+        const end   = i+1 < hm.length ? hm[i+1].index : text.length;
+        slides.push({ number:i+1, title:m[1].trim(), type:"content",
+          subtitle:"", body:text.slice(start,end).trim() });
+      });
+    } else {
+      /* last resort: paragraph blocks */
+      text.split(/\n{2,}/).filter(p=>p.trim()).forEach((p,i)=>{
+        const ls = p.split("\n"); slides.push({ number:i+1,
+          title:ls[0].replace(/^[-*•#]+\s*/,"").trim(),
+          type:"content", subtitle:"", body:ls.slice(1).join("\n") });
+      });
+    }
+  }
+
+  if (!slides.length) { renderText(text, box); return; }
+
+  presSlides = slides;
+  presIndex  = 0;
+
+  /* ── Build deck chrome ── */
+  const deck = document.createElement("div");
+  deck.className = "pres-deck";
+
+  // Progress bar (full width line above nav)
+  const prog = document.createElement("div");
+  prog.style.cssText = "height:3px;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:2px 2px 0 0;transition:width .3s;";
+  prog.id = "pres-prog";
+  deck.appendChild(prog);
+
+  // Nav bar
+  const nav = document.createElement("div");
+  nav.className = "pres-nav";
+  nav.innerHTML = `
+    <button class="pres-nav-btn" id="pres-prev" onclick="presGo(-1)" disabled>◀</button>
+    <span class="pres-nav-label" id="pres-nav-label">${slides[0].title}</span>
+    <span class="pres-counter" id="pres-counter">1 / ${slides.length}</span>
+    <button class="pres-nav-btn" id="pres-next" onclick="presGo(1)" ${slides.length<2?"disabled":""}>▶</button>`;
+  deck.appendChild(nav);
+
+  // Stage
+  const stage = document.createElement("div");
+  stage.className = "pres-stage";
+  stage.id = "pres-stage";
+  deck.appendChild(stage);
+
+  // Footer
+  const footer = document.createElement("div");
+  footer.className = "pres-footer";
+  footer.innerHTML = `<span id="pres-footer-left">${subject} · ${curriculum}</span><span id="pres-footer-right">${topic}</span>`;
+  deck.appendChild(footer);
+
+  // Thumbnail strip
+  const strip = document.createElement("div");
+  strip.className = "pres-strip";
+  strip.id = "pres-strip";
+  slides.forEach((_,i) => {
+    const t = document.createElement("div");
+    t.className = "pres-thumb" + (i===0?" active":"");
+    t.textContent = i+1;
+    t.onclick = () => presJump(i);
+    strip.appendChild(t);
+  });
+  deck.appendChild(strip);
+
+  box.appendChild(deck);
+  presRenderSlide(0);
+}
+
+function presRenderSlide(idx) {
+  const slide = presSlides[idx];
+  const stage = document.getElementById("pres-stage");
+  if (!slide || !stage) return;
+
+  stage.innerHTML = "";
+
+  if (slide.type === "title") {
+    /* ── Title slide ── */
+    const el = document.createElement("div");
+    el.className = "pres-slide-title";
+    el.innerHTML = `
+      <div class="pres-tag">📊 Presentation</div>
+      <h2>${slide.title}</h2>
+      ${slide.subtitle ? `<p>${slide.subtitle}</p>` : ""}`;
+    stage.appendChild(el);
+  } else if (slide.type === "quiz") {
+    /* ── Quiz slide ── */
+    const header = document.createElement("div");
+    header.className = "pres-slide-content-hdr";
+    header.innerHTML = `<h3>${slide.title}</h3><span class="slide-type-badge">🧠 Quiz</span>`;
+    stage.appendChild(header);
+
+    const quizBody = document.createElement("div");
+    quizBody.className = "pres-quiz-body";
+    const questions = slide.body.split("\n")
+      .map(l => l.trim()).filter(l => /^\d+\./.test(l));
+    questions.forEach((q, qi) => {
+      const item = document.createElement("div");
+      item.className = "pres-quiz-item";
+      item.innerHTML = `<span class="pres-quiz-num">Q${qi+1}</span><span>${q.replace(/^\d+\.\s*/,"")}</span>`;
+      quizBody.appendChild(item);
+    });
+    if (!questions.length) {
+      quizBody.textContent = slide.body;
+      quizBody.style.whiteSpace = "pre-wrap";
+    }
+    stage.appendChild(quizBody);
+  } else {
+    /* ── Content slide ── */
+    const header = document.createElement("div");
+    header.className = "pres-slide-content-hdr";
+    const badge = slide.type === "quiz" ? "🧠 Quiz" : `Slide ${slide.number}`;
+    header.innerHTML = `<h3>${slide.title}</h3><span class="slide-type-badge">${badge}</span>`;
+    stage.appendChild(header);
+
+    const body = document.createElement("div");
+    body.className = "pres-slide-body";
+
+    const bullets = slide.body.split("\n")
+      .map(l => l.trim())
+      .filter(l => l && !/^TYPE:/i.test(l) && !/^SUBTITLE:/i.test(l));
+
+    let num = 0;
+    bullets.forEach(line => {
+      const text = line.replace(/^[-•*]\s*/,"").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").trim();
+      if (!text) return;
+      num++;
+      const b = document.createElement("div");
+      b.className = "pres-bullet";
+      b.innerHTML = `<div class="pres-bullet-num">${num}</div><div>${text}</div>`;
+      body.appendChild(b);
+    });
+
+    if (num === 0) {
+      body.style.whiteSpace = "pre-wrap";
+      body.style.fontSize = "13px";
+      body.style.padding = "20px 26px";
+      body.textContent = slide.body;
+    }
+    stage.appendChild(body);
+  }
+
+  /* Update nav UI */
+  const total = presSlides.length;
+  const prevBtn = document.getElementById("pres-prev");
+  const nextBtn = document.getElementById("pres-next");
+  const label   = document.getElementById("pres-nav-label");
+  const counter = document.getElementById("pres-counter");
+  const prog    = document.getElementById("pres-prog");
+
+  if (prevBtn) prevBtn.disabled = idx === 0;
+  if (nextBtn) nextBtn.disabled = idx === total - 1;
+  if (label)   label.textContent = slide.title;
+  if (counter) counter.textContent = `${idx+1} / ${total}`;
+  if (prog)    prog.style.width   = ((idx+1)/total*100) + "%";
+
+  /* Update strip */
+  document.querySelectorAll(".pres-thumb").forEach((t,i) => t.classList.toggle("active", i===idx));
+  /* Scroll strip thumb into view */
+  const strip = document.getElementById("pres-strip");
+  const thumb = strip?.querySelectorAll(".pres-thumb")[idx];
+  if (thumb) thumb.scrollIntoView({ block:"nearest", inline:"center", behavior:"smooth" });
+}
+
+function presGo(dir) {
+  const n = presIndex + dir;
+  if (n < 0 || n >= presSlides.length) return;
+  presIndex = n;
+  presRenderSlide(presIndex);
+}
+
+function presJump(idx) {
+  presIndex = idx;
+  presRenderSlide(presIndex);
+}
+
+/* ══════════════════════════════════════════
+   RENDER: VISUAL LEARNING  (Mermaid diagram)
+══════════════════════════════════════════ */
+function renderVisual(text, box, topic, subject, curriculum) {
+  box.style.whiteSpace = "normal";
+  box.innerHTML = "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "vis-wrap";
+
+  /* Toolbar */
+  const toolbar = document.createElement("div");
+  toolbar.className = "vis-toolbar";
+  toolbar.innerHTML = `
+    <span class="vis-toolbar-lbl">Diagram Type:</span>
+    <button class="vis-btn active" id="vbtn-flowchart" onclick="switchVisType('flowchart',this,${JSON.stringify(topic)},${JSON.stringify(subject)},${JSON.stringify(curriculum)})">🔀 Flowchart</button>
+    <button class="vis-btn" id="vbtn-mindmap"  onclick="switchVisType('mindmap',this,${JSON.stringify(topic)},${JSON.stringify(subject)},${JSON.stringify(curriculum)})">🧠 Mind Map</button>
+    <button class="vis-btn" id="vbtn-process"  onclick="switchVisType('process',this,${JSON.stringify(topic)},${JSON.stringify(subject)},${JSON.stringify(curriculum)})">⚙️ Process</button>
+    <button class="vis-btn" id="vbtn-timeline" onclick="switchVisType('timeline',this,${JSON.stringify(topic)},${JSON.stringify(subject)},${JSON.stringify(curriculum)})">📅 Timeline</button>
+    <button class="vis-btn" id="vbtn-chart"    onclick="switchVisType('chart',this,${JSON.stringify(topic)},${JSON.stringify(subject)},${JSON.stringify(curriculum)})">📊 Bar Chart</button>`;
+  wrap.appendChild(toolbar);
+
+  /* Panel */
+  const panel = document.createElement("div");
+  panel.className = "vis-panel";
+  panel.id = "vis-panel";
+
+  const panelHdr = document.createElement("div");
+  panelHdr.className = "vis-panel-hdr";
+  panelHdr.id = "vis-panel-hdr";
+  panelHdr.innerHTML = `<span class="vis-panel-hdr-icon">🔀</span><span class="vis-panel-hdr-title">Flowchart — ${topic}</span><span class="vis-panel-hdr-badge">${subject}</span>`;
+
+  const panelBody = document.createElement("div");
+  panelBody.className = "vis-panel-body";
+  panelBody.id = "vis-panel-body";
+
+  panel.appendChild(panelHdr);
+  panel.appendChild(panelBody);
+  wrap.appendChild(panel);
+
+  box.appendChild(wrap);
+
+  /* Render the initial diagram from the AI text */
+  renderMermaidInPanel(text, panelBody, topic);
+}
+
+function renderMermaidInPanel(rawText, panelBody, topic) {
+  panelBody.innerHTML = `<div class="vis-loading"><div class="vis-spin"></div><span>Rendering diagram…</span></div>`;
+
+  let code = rawText.trim();
+
+  /* Strip markdown fences */
+  const fenceM = code.match(/```(?:mermaid)?\s*([\s\S]*?)```/i);
+  if (fenceM) code = fenceM[1].trim();
+
+  /* Extract from first diagram keyword */
+  const kwM = code.match(/(graph\s+[TBLR]+|flowchart\s+[TBLR]+|mindmap|timeline|sequenceDiagram|classDiagram)([\s\S]*)/i);
+  if (kwM) code = kwM[0].trim();
+
+  /* Sanitise */
+  code = code
+    .replace(/[""]/g,'"').replace(/['']/g,"'")
+    .replace(/–|—/g,"-");
+
+  panelBody.innerHTML = "";
+  const mWrap = document.createElement("div");
+  mWrap.className = "mermaid-wrap";
+  const mDiv  = document.createElement("div");
+  mDiv.className = "mermaid";
+  mDiv.textContent = code;
+  mWrap.appendChild(mDiv);
+  panelBody.appendChild(mWrap);
+
+  mermaid.run({ nodes:[mDiv] }).then(() => {
+    /* success — nothing extra needed */
+  }).catch(err => {
+    console.error("Mermaid err:", err);
+    /* Fallback: show a clean SVG concept map */
+    panelBody.innerHTML = "";
+    panelBody.appendChild(buildFallbackSVG(topic));
+
+    /* Also show code for debug */
+    const details = document.createElement("details");
+    details.style.cssText = "margin-top:10px;font-size:11px;color:#94a3b8;width:100%;";
+    details.innerHTML = `<summary style="cursor:pointer;padding:4px 0;">Show raw diagram code (had syntax error)</summary><pre style="background:#f8fafc;padding:12px;border-radius:8px;overflow:auto;margin-top:6px;font-size:11px;line-height:1.5;color:#475569;">${code.replace(/</g,"&lt;")}</pre>`;
+    panelBody.appendChild(details);
+  });
+}
+
+async function switchVisType(type, btn, topic, subject, curriculum) {
+  /* Toggle buttons */
+  document.querySelectorAll(".vis-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  /* Update panel header */
+  const icons  = {flowchart:"🔀", mindmap:"🧠", process:"⚙️", timeline:"📅", chart:"📊"};
+  const labels = {flowchart:"Flowchart", mindmap:"Mind Map", process:"Process Diagram", timeline:"Timeline", chart:"Bar Chart"};
+  const hdr = document.getElementById("vis-panel-hdr");
+  if (hdr) hdr.innerHTML = `<span class="vis-panel-hdr-icon">${icons[type]||"📊"}</span><span class="vis-panel-hdr-title">${labels[type]||type} — ${topic}</span><span class="vis-panel-hdr-badge">${subject}</span>`;
+
+  const body = document.getElementById("vis-panel-body");
+  if (!body) return;
+  body.innerHTML = `<div class="vis-loading"><div class="vis-spin"></div><span>Generating ${labels[type]||type}…</span></div>`;
+
+  if (type === "chart") {
+    /* Bar chart via Chart.js */
+    renderBarChart(body, topic, subject);
+    return;
+  }
+
+  /* Mermaid diagram types */
+  const diagramPrompts = {
+    flowchart: `Generate a Mermaid flowchart (graph TD) for "${topic}" in ${subject}. 8-12 nodes. Short labels (max 4 words). No special chars inside labels. Output ONLY Mermaid code starting with: graph TD`,
+    mindmap:   `Generate a Mermaid mind map (mindmap) for "${topic}" in ${subject}. Central node = topic. 3-5 main branches, 2-3 sub-branches each. Output ONLY Mermaid mindmap code starting with: mindmap`,
+    process:   `Generate a Mermaid flowchart (graph TD) showing the step-by-step process of "${topic}" in ${subject}. Use rectangles for steps, diamonds for decisions. 8-12 nodes. Output ONLY Mermaid code.`,
+    timeline:  `Generate a Mermaid timeline for "${topic}" in ${subject}. Show key stages or historical events. Output ONLY valid Mermaid timeline code starting with: timeline`
+  };
+
+  const sysPrompt = "Output ONLY valid Mermaid diagram code. No backticks. No markdown fences. No explanations. Node labels: max 4 words, no special characters inside square brackets.";
+
+  try {
+    const raw = await callWorker(diagramPrompts[type] || diagramPrompts.flowchart, sysPrompt);
+    renderMermaidInPanel(raw, body, topic);
+  } catch(e) {
+    body.innerHTML = "";
+    body.appendChild(buildFallbackSVG(topic));
+  }
+}
+
+/* ── Fallback SVG when Mermaid fails ── */
+function buildFallbackSVG(topic) {
+  const short = topic.length > 14 ? topic.slice(0,14)+"…" : topic;
+  const nodes = ["Definition","Key Concepts","Examples","Applications","Exam Tips"];
+  const cx = 300, cy = 200, r = 130;
+  const angles = [270, 342, 54, 126, 198].map(a => a * Math.PI/180);
+
+  const circles = nodes.map((n, i) => {
+    const x = cx + r*Math.cos(angles[i]);
+    const y = cy + r*Math.sin(angles[i]);
+    return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#c7d2fe" stroke-width="2"/>
+<circle cx="${x}" cy="${y}" r="46" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="${x}" y="${y-6}" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">${n}</text>`;
+  }).join("\n");
+
+  const wrap = document.createElement("div");
+  wrap.className = "svg-wrap";
+  wrap.style.textAlign = "center";
+  wrap.innerHTML = `<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+  <defs>
+    <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </radialGradient>
+  </defs>
+  ${circles}
+  <circle cx="${cx}" cy="${cy}" r="60" fill="url(#rg)" filter="drop-shadow(0 4px 8px rgba(99,102,241,0.4))"/>
+  <text x="${cx}" y="${cy-6}" text-anchor="middle" font-size="12" font-weight="700" fill="white">${short}</text>
+  <text x="${cx}" y="${cy+10}" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">Concept Map</text>
+  <text x="300" y="380" text-anchor="middle" font-size="11" fill="#94a3b8">Concept map for: ${topic}</text>
+</svg>`;
+  return wrap;
+}
+
+/* ── Bar Chart via Chart.js ── */
+function renderBarChart(body, topic, subject) {
+  body.innerHTML = "";
+  const wrap = document.createElement("div");
+  wrap.className = "chart-wrap";
+  const canvas = document.createElement("canvas");
+  canvas.style.maxHeight = "340px";
+  wrap.appendChild(canvas);
+  body.appendChild(wrap);
+
+  /* Generic "concept importance" chart when no real data */
+  const labels = ["Fundamentals","Theory","Application","Problem Solving","Exam Weight"];
+  const values = [85, 70, 75, 80, 90];
+  const colors = ["rgba(99,102,241,0.85)","rgba(139,92,246,0.85)","rgba(168,85,247,0.85)","rgba(59,130,246,0.85)","rgba(16,185,129,0.85)"];
+
+  new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{ label:`${topic} — ${subject}`, data: values,
+        backgroundColor: colors, borderRadius: 8, borderSkipped: false }]
+    },
+    options: {
+      responsive:true,
+      plugins: {
+        legend: { display:true, labels:{ font:{size:12}, color:"#475569" } },
+        title:  { display:true, text:`${topic} — Key Area Weights (%)`, font:{size:14,weight:"700"}, color:"#1e293b" }
+      },
+      scales: {
+        y: { beginAtZero:true, max:100, grid:{ color:"rgba(0,0,0,0.05)" },
+             ticks:{ color:"#64748b", font:{size:11} } },
+        x: { grid:{ display:false }, ticks:{ color:"#64748b", font:{size:11} } }
+      }
+    }
+  });
+}
+
+/* ══════════════════════════════════════════
+   COPY
+══════════════════════════════════════════ */
+function copyOutput() {
+  if (!generatedText) return;
+  navigator.clipboard.writeText(generatedText).then(() => {
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = "Copied!";
+    btn.style.background = "#6366f1"; btn.style.color = "white";
+    setTimeout(() => { btn.textContent="Copy"; btn.style.background=""; btn.style.color=""; }, 2000);
+  }).catch(() => {
+    const el = document.createElement("textarea");
+    el.value = generatedText; document.body.appendChild(el);
+    el.select(); document.execCommand("copy"); document.body.removeChild(el);
+  });
+}
 </script>
 
 <!-- Theme System -->
-<script src="../assets/js/theme.js"></script>
+<script src="../../assets/js/theme.js"></script>
 
 </body>
 </html>
