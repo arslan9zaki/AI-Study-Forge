@@ -4,8 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Contact Us | AI Biz Tools</title>
+<title>Contact Us | StudyForge AI</title>
+<meta name="description" content="Contact the StudyForge AI team for questions, suggestions, or feedback about our AI-powered learning platform.">
+<link rel="canonical" href="https://studyforge.ai/pages/contact.html">
 
+<!-- Open Graph -->
+<meta property="og:title" content="Contact Us | StudyForge AI">
+<meta property="og:description" content="Contact the StudyForge AI team for questions, suggestions, or feedback about our AI-powered learning platform.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studyforge.ai/pages/contact.html">
+<meta property="og:site_name" content="StudyForge AI">
+
+<link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -116,6 +126,33 @@ button:hover{
 background:var(--color-primary-hover);
 }
 
+.contact-email-container{
+    text-align:center;
+    padding:var(--spacing-8);
+}
+
+.contact-email-btn{
+    display:inline-block;
+    padding:var(--spacing-4) var(--spacing-8);
+    background:var(--color-primary);
+    color:var(--color-text-inverse);
+    text-decoration:none;
+    border-radius:var(--radius-2xl);
+    font-size:var(--font-size-lg);
+    font-weight:var(--font-weight-bold);
+    transition:var(--transition-default);
+}
+
+.contact-email-btn:hover{
+    background:var(--color-primary-hover);
+}
+
+.contact-email-note{
+    text-align:center;
+    margin-top:var(--spacing-4);
+    color:var(--color-text-secondary);
+}
+
 footer{
 background:var(--color-bg-secondary);
 padding:var(--spacing-6);
@@ -133,7 +170,7 @@ font-size:var(--font-size-sm);
 
 <header>
 
-<h1>AI Biz Tools</h1>
+<h1>StudyForge AI</h1>
 
 <nav>
 <a href="../index.html">Home</a>
@@ -149,30 +186,24 @@ font-size:var(--font-size-sm);
 <h2>Contact Us</h2>
 
 <p>
-Have questions, suggestions or business inquiries?
-Feel free to contact the AI Biz Tools team anytime.
+Have questions, suggestions or feedback about StudyForge AI?
+Feel free to contact our team anytime.
 </p>
 
-<form>
-
-<input type="text" placeholder="Your Name" required>
-
-<input type="email" placeholder="Your Email" required>
-
-<textarea placeholder="Your Message"></textarea>
-
-<button type="submit">Send Message</button>
-
-</form>
+<div class="contact-email-container">
+    <a href="mailto:contact@studyforge.ai" class="contact-email-btn">
+        📧 Email Us
+    </a>
+    <p class="contact-email-note">
+        We'll get back to you within 24 hours.
+    </p>
+</div>
 
 </section>
 
 <footer>
-© 2026 AI Biz Tools — All Rights Reserved
+© 2026 StudyForge AI — All Rights Reserved
 </footer>
-
-<!-- Theme System -->
-<script src="../assets/js/theme.js"></script>
 
 </body>
 </html>
