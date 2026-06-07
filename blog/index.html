@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Blog — Tools, Tips & Online Earning | AI Biz Tools</title>
+<title>AI Blog â€” Tools, Tips & Online Earning | StudyForge AI</title>
+<link rel="canonical" href="https://studyforge.ai/blog/">
+<link rel="icon" href="../favicon.ico">
 <meta name="description" content="Read the latest guides on AI tools, online earning methods, blogging strategies, freelancing and automation for 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +21,7 @@ html { scroll-behavior:smooth; }
 body { background:var(--color-bg-primary); color:var(--color-text-primary); min-height:100vh; display:flex; flex-direction:column; }
 
 /* Header */
-.main-header { display:flex; justify-content:space-between; align-items:center; padding:var(--spacing-4) 8%; background:var(--color-surface-backdrop); backdrop-filter:blur(12px); position:sticky; top:0; z-index:var(--z-sticky); border-bottom:1px solid var(--color-border); }
+.main-header { display:flex; justify-content:space-between; align-items:center; padding:var(--spacing-4) 8%; background:var(--color-surface-backdrop); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position:sticky; top:0; z-index:var(--z-sticky); border-bottom:1px solid var(--color-border); }
 .logo { font-size:var(--font-size-2xl); font-weight:var(--font-weight-extrabold); color:var(--color-primary); text-decoration:none; letter-spacing:var(--letter-spacing-tight); }
 .logo span { color:var(--color-text-primary); }
 .navbar { display:flex; gap:var(--spacing-7); align-items:center; }
@@ -119,7 +121,7 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
         <a href="../pages/about.html">About</a>
         <a href="index.html">Blog</a>
         <a href="../pages/contact.html">Contact</a>
-        <a href="../tools/content-writer/index.html" class="nav-btn">🚀 Try Free Tools</a>
+        <a href="../tools/content-writer/index.html" class="nav-btn">ðŸš€ Try Free Tools</a>
     </nav>
     <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
         <span></span><span></span><span></span>
@@ -130,11 +132,11 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
     <a href="../pages/about.html">About</a>
     <a href="index.html">Blog</a>
     <a href="../pages/contact.html">Contact</a>
-    <a href="../tools/content-writer/index.html" class="nav-btn">🚀 Try Free Tools</a>
+    <a href="../tools/content-writer/index.html" class="nav-btn">ðŸš€ Try Free Tools</a>
 </nav>
 
 <section class="page-hero">
-    <div class="badge">📝 Latest Articles</div>
+    <div class="badge">ðŸ“ Latest Articles</div>
     <h1>AI Biz <span>Blog</span></h1>
     <p>Guides on AI tools, online earning, career tips and automation for 2026.</p>
 </section>
@@ -147,7 +149,7 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
 </div>
 
 <footer>
-    <span>© 2026 AI Biz Tools — All Rights Reserved</span>
+    <span>Â© 2026 AI Biz Tools â€” All Rights Reserved</span>
     <div class="footer-links">
         <a href="../index.html">Home</a>
         <a href="../pages/about.html">About</a>
@@ -172,7 +174,7 @@ function renderPosts(posts) {
     count.textContent = `${posts.length} article${posts.length !== 1 ? 's' : ''}`;
 
     if (posts.length === 0) {
-        grid.innerHTML = `<div class="no-results"><div style="font-size:48px">🔍</div><p>No articles found in this category.</p></div>`;
+        grid.innerHTML = `<div class="no-results"><div style="font-size:48px">ðŸ”</div><p>No articles found in this category.</p></div>`;
         return;
     }
 
@@ -183,11 +185,11 @@ function renderPosts(posts) {
                 <div class="card-meta">
                     <span class="card-tag">${post.category}</span>
                     <span class="card-date">${post.date}</span>
-                    <span class="card-read">⏱ ${post.readTime}</span>
+                    <span class="card-read">â± ${post.readTime}</span>
                 </div>
                 <h2>${post.title}</h2>
                 <p>${post.excerpt}</p>
-                <button class="read-btn">Read Article →</button>
+                <button class="read-btn">Read Article â†’</button>
             </div>
         </div>
     `).join('');
@@ -233,3 +235,5 @@ fetch('posts.json')
 
 </body>
 </html>
+
+
