@@ -975,13 +975,306 @@ body::before {
     }
 }
 
+/* ══ SHARED RESULT STYLES ══ */
+.sf-result-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-bg-secondary, #111827);
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: var(--radius-xl, 16px) var(--radius-xl, 16px) 0 0;
+}
+.sf-result-icon { font-size: 2rem; flex-shrink: 0; }
+.sf-result-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 2px; }
+.sf-result-subtitle { font-size: 0.8125rem; color: var(--color-text-muted, #64748B); }
+
+/* ══ NOTES ══ */
+.sf-notes-container { font-size: 0.9375rem; line-height: 1.8; }
+.sf-notes-section { margin-bottom: 1.5rem; }
+.sf-notes-heading {
+  display: flex; align-items: center; gap: 0.625rem;
+  font-size: 1.0625rem; font-weight: 700;
+  color: var(--color-primary, #3B82F6);
+  margin: 1.25rem 0 0.75rem; padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-primary-light, rgba(59,130,246,0.15));
+}
+.sf-heading-bar {
+  width: 4px; height: 18px; border-radius: 2px;
+  background: var(--color-primary, #3B82F6); flex-shrink: 0;
+}
+.sf-notes-content { padding-left: 0.5rem; }
+.sf-notes-point {
+  display: flex; align-items: flex-start; gap: 0.625rem;
+  padding: 0.375rem 0; color: var(--color-text-secondary, #CBD5E1);
+}
+.sf-point-dot { color: var(--color-primary, #3B82F6); font-size: 0.5rem; margin-top: 7px; flex-shrink: 0; }
+.sf-point-num {
+  min-width: 22px; height: 22px; background: var(--color-primary, #3B82F6);
+  color: #fff; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 0.6875rem; font-weight: 700; flex-shrink: 0;
+}
+.sf-notes-para { color: var(--color-text-secondary, #CBD5E1); margin-bottom: 0.625rem; }
+
+/* ══ MCQs ══ */
+.sf-mcqs-container { }
+.sf-mcqs-list { display: flex; flex-direction: column; gap: 1.25rem; padding: 1.25rem; }
+.sf-mcq-card {
+  background: var(--color-bg-elevated, #1A2332);
+  border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: var(--radius-xl, 16px); padding: 1.25rem;
+  transition: box-shadow 0.2s;
+}
+.sf-mcq-card:hover { box-shadow: var(--shadow-md, 0 4px 16px rgba(0,0,0,0.45)); }
+.sf-mcq-question {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  font-weight: 600; margin-bottom: 1rem;
+  color: var(--color-text-primary, #F8FAFC);
+}
+.sf-mcq-num {
+  background: var(--color-primary, #3B82F6); color: #fff;
+  border-radius: var(--radius-md, 8px); padding: 2px 8px;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+}
+.sf-mcq-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.sf-mcq-option {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.625rem 1rem; text-align: left;
+  background: var(--color-bg-secondary, #111827);
+  border: 1.5px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: var(--radius-lg, 12px);
+  color: var(--color-text-secondary, #CBD5E1);
+  font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+  font-family: inherit; width: 100%;
+}
+.sf-mcq-option:hover:not(:disabled) {
+  border-color: var(--color-primary, #3B82F6);
+  background: var(--color-primary-light, rgba(59,130,246,0.12));
+  color: var(--color-text-primary, #F8FAFC);
+}
+.sf-mcq-option:disabled { cursor: default; }
+.sf-opt-letter {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--color-bg-elevated, #1A2332);
+  border: 1.5px solid var(--color-border, rgba(255,255,255,0.08));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+}
+.sf-opt-correct { background: rgba(16,185,129,0.15) !important; border-color: #10B981 !important; color: #10B981 !important; }
+.sf-opt-correct .sf-opt-letter { background: #10B981; color: #fff; border-color: #10B981; }
+.sf-opt-wrong { background: rgba(239,68,68,0.12) !important; border-color: #EF4444 !important; color: #EF4444 !important; }
+.sf-opt-wrong .sf-opt-letter { background: #EF4444; color: #fff; border-color: #EF4444; }
+.sf-mcq-answer {
+  margin-top: 0.75rem; padding: 0.625rem 1rem;
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
+  border-radius: var(--radius-md, 8px); font-size: 0.875rem;
+  color: #10B981;
+}
+.sf-mcq-answer.hidden { display: none; }
+.sf-answer-label { font-weight: 700; }
+
+/* ══ PAST PAPER ══ */
+.sf-pastpaper-container { font-family: 'Georgia', serif; }
+.sf-paper-header {
+  text-align: center; padding: 2rem 1.5rem;
+  border-bottom: 3px double var(--color-border, rgba(255,255,255,0.08));
+  margin-bottom: 1.5rem;
+}
+.sf-paper-logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.sf-paper-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.375rem; }
+.sf-paper-meta { font-size: 0.9rem; color: var(--color-text-muted, #64748B); margin-bottom: 0.75rem; }
+.sf-paper-instructions {
+  font-size: 0.875rem; font-style: italic;
+  color: var(--color-text-secondary, #CBD5E1);
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: var(--radius-md, 8px);
+  display: inline-block;
+}
+.sf-paper-body { padding: 0 1.5rem 1.5rem; }
+.sf-paper-section { margin-bottom: 2rem; }
+.sf-section-heading {
+  font-size: 1rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 0.5rem 1rem;
+  background: var(--color-primary-light, rgba(59,130,246,0.12));
+  color: var(--color-primary, #3B82F6);
+  border-radius: var(--radius-md, 8px); margin-bottom: 1rem;
+}
+.sf-paper-question {
+  display: grid; grid-template-columns: 32px 1fr;
+  gap: 0.75rem; margin-bottom: 1.25rem; align-items: start;
+}
+.sf-q-num {
+  width: 32px; height: 32px;
+  background: var(--color-bg-elevated, #1A2332);
+  border: 1.5px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 0.875rem;
+  flex-shrink: 0; margin-top: 2px;
+}
+.sf-q-body { }
+.sf-q-marks {
+  display: inline-block; margin-top: 0.375rem;
+  font-size: 0.75rem; color: var(--color-accent, #8B5CF6);
+  font-weight: 600;
+}
+.sf-answer-space {
+  margin-top: 0.625rem; height: 64px;
+  border-bottom: 1px dashed var(--color-border, rgba(255,255,255,0.08));
+  border-radius: 0;
+}
+.sf-sub-question {
+  display: flex; gap: 0.625rem; margin: 0.5rem 0 0.5rem 2.5rem;
+  color: var(--color-text-secondary, #CBD5E1);
+}
+.sf-sub-letter { font-weight: 700; color: var(--color-primary, #3B82F6); flex-shrink: 0; }
+.sf-mark-scheme {
+  margin-top: 2rem; padding-top: 1.5rem;
+  border-top: 3px double var(--color-border, rgba(255,255,255,0.08));
+}
+.sf-ms-header {
+  font-size: 1.0625rem; font-weight: 700;
+  color: var(--color-success, #10B981);
+  margin-bottom: 1rem; padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(16,185,129,0.3);
+}
+.sf-ms-text { color: var(--color-text-secondary, #CBD5E1); margin-bottom: 0.5rem; }
+
+/* ══ TEST ══ */
+.sf-test-container { }
+.sf-test-header {
+  padding: 1.25rem 1.5rem;
+  background: var(--color-bg-secondary, #111827);
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: var(--radius-xl, 16px) var(--radius-xl, 16px) 0 0;
+}
+.sf-test-meta-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+.sf-test-icon { font-size: 2rem; }
+.sf-test-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 2px; }
+.sf-test-subtitle { font-size: 0.8125rem; color: var(--color-text-muted, #64748B); }
+.sf-test-info { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.sf-test-badge {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.3125rem 0.875rem;
+  background: var(--color-primary-light, rgba(59,130,246,0.12));
+  color: var(--color-primary, #3B82F6);
+  border: 1px solid var(--color-primary-border, rgba(59,130,246,0.3));
+  border-radius: var(--radius-full, 9999px); font-size: 0.8125rem; font-weight: 600;
+}
+.sf-test-body { padding: 1.25rem; }
+.sf-test-part { margin-bottom: 1.75rem; }
+.sf-part-heading {
+  font-size: 0.9375rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--color-accent, #8B5CF6);
+  padding: 0.5rem 0.875rem;
+  border-left: 3px solid var(--color-accent, #8B5CF6);
+  background: var(--color-accent-light, rgba(139,92,246,0.1));
+  border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0;
+  margin-bottom: 1rem;
+}
+.sf-test-question {
+  display: grid; grid-template-columns: 28px 1fr;
+  gap: 0.75rem; margin-bottom: 1rem; align-items: start;
+}
+.sf-tq-num {
+  width: 28px; height: 28px;
+  background: var(--color-accent-light, rgba(139,92,246,0.12));
+  color: var(--color-accent, #8B5CF6);
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+}
+.sf-tq-body { color: var(--color-text-primary, #F8FAFC); }
+.sf-tf-options { display: flex; gap: 1.5rem; margin-top: 0.5rem; }
+.sf-tf-label { display: flex; align-items: center; gap: 0.375rem; cursor: pointer; font-size: 0.9rem; color: var(--color-text-secondary, #CBD5E1); }
+.sf-test-options { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 0.5rem; }
+.sf-test-opt { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; color: var(--color-text-secondary, #CBD5E1); padding: 0.25rem 0; }
+.sf-test-input-line {
+  margin-top: 0.5rem; height: 32px;
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.08));
+}
+.sf-test-text { color: var(--color-text-secondary, #CBD5E1); margin-bottom: 0.375rem; font-size: 0.9rem; }
+.sf-answer-key { margin-top: 2rem; padding: 1.25rem; background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius-xl, 16px); }
+.sf-ak-header { font-size: 1rem; font-weight: 700; color: #10B981; margin-bottom: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+.sf-ak-text { font-size: 0.875rem; color: var(--color-text-secondary, #CBD5E1); margin-bottom: 0.375rem; }
+
+/* ══ CONCEPTS ══ */
+.sf-concepts-container { }
+.sf-concepts-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.sf-concept-block { margin-bottom: 1.25rem; }
+.sf-concept-heading {
+  font-size: 1.0625rem; font-weight: 700;
+  color: var(--color-primary, #3B82F6);
+  margin-bottom: 0.75rem; padding: 0.5rem 0.875rem;
+  background: var(--color-primary-light, rgba(59,130,246,0.1));
+  border-radius: var(--radius-md, 8px);
+}
+.sf-definition-box {
+  padding: 0.875rem 1rem; margin: 0.5rem 0;
+  background: var(--color-bg-elevated, #1A2332);
+  border-left: 4px solid var(--color-primary, #3B82F6);
+  border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+}
+.sf-def-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--color-primary, #3B82F6); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
+.sf-example-box {
+  padding: 0.875rem 1rem; margin: 0.5rem 0;
+  background: rgba(16,185,129,0.06);
+  border-left: 4px solid #10B981;
+  border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+}
+.sf-ex-label { display: block; font-size: 0.75rem; font-weight: 700; color: #10B981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
+.sf-tip-box {
+  padding: 0.875rem 1rem; margin: 0.5rem 0;
+  background: rgba(245,158,11,0.07);
+  border-left: 4px solid #F59E0B;
+  border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+}
+.sf-tip-label { display: block; font-size: 0.75rem; font-weight: 700; color: #F59E0B; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
+.sf-concept-point { display: flex; gap: 0.625rem; align-items: flex-start; padding: 0.25rem 0; color: var(--color-text-secondary, #CBD5E1); }
+.sf-concept-para { color: var(--color-text-secondary, #CBD5E1); margin-bottom: 0.5rem; line-height: 1.75; }
+
+/* ══ LECTURE ══ */
+.sf-lecture-container { }
+.sf-lecture-header {
+  display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem 1.75rem;
+  background: linear-gradient(135deg, var(--color-primary-light, rgba(59,130,246,0.12)), var(--color-bg-secondary, #111827));
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: var(--radius-xl, 16px) var(--radius-xl, 16px) 0 0;
+}
+.sf-lecture-icon { font-size: 2.5rem; }
+.sf-lecture-title { font-size: 1.5rem; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.01em; }
+.sf-lecture-sub { font-size: 0.875rem; color: var(--color-primary, #3B82F6); font-weight: 600; margin: 0; }
+.sf-lecture-body { padding: 1.5rem; }
+.sf-lecture-section { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-border-light, rgba(255,255,255,0.05)); }
+.sf-lecture-section:last-child { border-bottom: none; }
+.sf-lec-heading {
+  display: flex; align-items: center; gap: 0.875rem;
+  margin-bottom: 1rem;
+}
+.sf-lec-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--color-primary, #3B82F6); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.875rem; font-weight: 700; flex-shrink: 0;
+}
+.sf-lec-heading h3 { font-size: 1.125rem; font-weight: 700; margin: 0; }
+.sf-lec-content { padding-left: 0.5rem; }
+.sf-lec-subheading { font-size: 0.9375rem; font-weight: 600; color: var(--color-accent, #8B5CF6); margin: 0.875rem 0 0.5rem; }
+.sf-lec-point { display: flex; gap: 0.625rem; align-items: flex-start; padding: 0.3125rem 0; color: var(--color-text-secondary, #CBD5E1); }
+.sf-lec-bullet { color: var(--color-primary, #3B82F6); font-size: 0.625rem; margin-top: 6px; flex-shrink: 0; }
+.sf-lec-para { color: var(--color-text-secondary, #CBD5E1); line-height: 1.85; margin-bottom: 0.75rem; }
+.sf-lec-intro { padding: 0.875rem 1.25rem; background: var(--color-primary-light, rgba(59,130,246,0.1)); border-left: 4px solid var(--color-primary, #3B82F6); border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0; margin-bottom: 1rem; color: var(--color-text-secondary, #CBD5E1); font-style: italic; }
+.sf-lec-summary { padding: 1rem 1.25rem; background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius-xl, 16px); margin-top: 1rem; color: var(--color-text-secondary, #CBD5E1); }
+
+/* ══ GENERAL OUTPUT WRAPPER ══ */
+.sf-plain-result { padding: 1.25rem; white-space: pre-wrap; font-size: 0.9375rem; line-height: 1.8; color: var(--color-text-secondary, #CBD5E1); }
+.hidden { display: none !important; }
+
 </style>
 </head>
 <body>
 
 <!-- Navbar -->
 <div class="navbar">
-    <div class="logo">AI Biz Tools</div>
+    <a href="../../index.html" class="logo">AI StudyForge</a>
     <div class="nav-links">
         <a href="../../index.html">Home</a>
         <a href="../../pages/about.html">About</a>
@@ -1040,6 +1333,8 @@ body::before {
             <select id="action" title="Select content type to generate">
                 <option>Notes</option>
                 <option>MCQs</option>
+                <option>Past Papers</option>
+                <option>Tests</option>
                 <option>Concepts</option>
                 <option>Get Lecture</option>
                 <option>Presentation</option>
@@ -1132,6 +1427,64 @@ body::before {
         const prompts = {
             'Notes': `Generate comprehensive revision-ready study notes for the topic "${topic}" in ${subject} at ${curriculum} level. Include: key definitions, important formulas (if applicable), main concepts, examples, and summary points. Use clear headings and bullet points. Language: ${language}.`,
             'MCQs': `Generate 10 exam-style multiple-choice questions (MCQs) for the topic "${topic}" in ${subject} at ${curriculum} level. For each question, provide: the question, 4 options (A, B, C, D), the correct answer, and a brief explanation. Include a mix of difficulty levels. Language: ${language}.`,
+            'Past Papers': `You are an expert ${subject} examiner for ${curriculum} level.
+Generate a complete past paper style exam for the topic "${topic}" in ${subject} 
+for ${curriculum} curriculum students.
+
+The paper must include:
+
+SECTION A — SHORT QUESTIONS (5 questions, 2 marks each):
+- Direct factual questions
+- Definition questions
+- Fill in the blank style questions
+
+SECTION B — STRUCTURED QUESTIONS (3 questions, 5 marks each):
+- Multi-part questions (a, b, c parts)
+- Application and analysis questions
+- Each part clearly labelled with marks
+
+SECTION C — ESSAY / LONG QUESTIONS (2 questions, 10 marks each):
+- Choose one from two options
+- Requires detailed explanation, examples and analysis
+- Clear mark scheme hints in brackets
+
+At the end provide a complete MARK SCHEME with:
+- Model answers for Section A
+- Key points required for Section B (bullet points per mark)
+- Marking criteria for Section C
+
+Format the output clearly with proper section headings, question numbers, 
+and marks in square brackets like [2 marks].
+Language: ${language}.`,
+            'Tests': `You are an expert ${subject} teacher for ${curriculum} level.
+Generate a comprehensive topic test for "${topic}" in ${subject} 
+for ${curriculum} curriculum students.
+
+The test must contain ALL of the following question types:
+
+PART 1 — MULTIPLE CHOICE (10 questions, 1 mark each):
+- 4 options per question (A, B, C, D)
+- Answers listed at the end
+
+PART 2 — TRUE / FALSE (5 questions, 1 mark each):
+- Student must write True or False
+- Brief justification required for False answers
+
+PART 3 — FILL IN THE BLANKS (5 questions, 1 mark each):
+- Key terms and concepts
+- Answer key provided at the end
+
+PART 4 — SHORT ANSWER QUESTIONS (4 questions, 3 marks each):
+- Requires 3-4 sentence answers
+- Tests understanding not just recall
+
+PART 5 — DIAGRAM / LABEL (1 question, 5 marks):
+- Describe a diagram the student should draw and label
+- List exactly what must be included for full marks
+
+Include a complete ANSWER KEY at the end for all parts.
+State total marks: [Total: 35 marks] [Time: 45 minutes]
+Language: ${language}.`,
             'Concepts': `Generate detailed conceptual explanations for the topic "${topic}" in ${subject} at ${curriculum} level. Explain the core concepts, provide real-world examples, include exam tips, and clarify common misconceptions. Language: ${language}.`,
             'Get Lecture': `Generate a comprehensive lecture on the topic "${topic}" in ${subject} at ${curriculum} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language. Language: ${language}.`,
             'Presentation': `Generate a 10-slide presentation outline for the topic "${topic}" in ${subject} at ${curriculum} level. Structure: Slide 1: Title, Slide 2: Introduction, Slides 3-8: Core Concepts (2 slides each for main concepts), Slide 9: Summary, Slide 10: Quiz/Review Questions. For each slide, provide: slide title, bullet points for content, and speaker notes. Format each slide as: "Slide X: [Title]" followed by bullet points, then "Speaker Notes:" followed by the notes. Language: ${language}.`,
@@ -1189,19 +1542,7 @@ body::before {
             }
 
             // Render output based on action type
-            if (action === 'Presentation') {
-                renderPresentation(generatedText, outputBox);
-            } else if (action === 'Visual Learning') {
-                outputBox.classList.remove('presentation-mode');
-                renderMermaidDiagram(generatedText, outputBox);
-            } else if (action === 'Get Lecture') {
-                outputBox.classList.remove('presentation-mode');
-                renderLecture(generatedText, outputBox);
-            } else {
-                outputBox.classList.remove('presentation-mode');
-                outputBox.innerHTML = "";
-                outputBox.textContent = generatedText;
-            }
+            renderResult(action, generatedText, outputBox, topic, subject, curriculum);
 
             // Word count
             const words = generatedText.split(/\s+/).filter(Boolean).length;
@@ -1242,6 +1583,300 @@ body::before {
             document.execCommand("copy");
             document.body.removeChild(el);
         });
+    }
+
+    function renderResult(action, text, container, topic, subject, curriculum) {
+      // Clear container
+      container.innerHTML = '';
+      container.className = container.className.replace(/sf-output-\S+/g, '').trim();
+
+      switch(action) {
+        case 'Notes':
+          renderNotes(text, container, topic, subject);
+          break;
+        case 'MCQs':
+          renderMCQs(text, container, topic);
+          break;
+        case 'Past Papers':
+          renderPastPaper(text, container, topic, subject, curriculum);
+          break;
+        case 'Tests':
+          renderTest(text, container, topic, subject);
+          break;
+        case 'Concepts':
+          renderConcepts(text, container, topic);
+          break;
+        case 'Get Lecture':
+          renderLecture(text, container);
+          break;
+        case 'Presentation':
+          renderPresentation(text, container);
+          break;
+        case 'Visual Learning':
+          renderMermaidDiagram(text, container);
+          break;
+        default:
+          container.innerHTML = '<div class="sf-plain-result">' + escapeHtml(text) + '</div>';
+      }
+    }
+
+    /* ── UTILITY ── */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function boldKeyTerms(text) {
+      return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                 .replace(/__(.*?)__/g, '<strong>$1</strong>')
+                 .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+
+    function splitLines(text) {
+      return text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    }
+
+    /* ── NOTES RENDERER ── */
+    function renderNotes(text, container, topic, subject) {
+      container.classList.add('sf-output-notes');
+      const lines = splitLines(text);
+      let html = '<div class="sf-notes-container">';
+      html += '<div class="sf-result-header"><span class="sf-result-icon">📝</span><div><h3 class="sf-result-title">' + escapeHtml(topic) + '</h3><span class="sf-result-subtitle">' + escapeHtml(subject) + ' Notes</span></div></div>';
+      html += '<div class="sf-notes-body">';
+
+      lines.forEach(function(line) {
+        if (/^#{1,3}\s/.test(line) || /^[A-Z][A-Z\s]{4,}:?$/.test(line.trim())) {
+          var heading = line.replace(/^#{1,3}\s*/, '').replace(/:$/, '');
+          html += '</div><div class="sf-notes-section"><h4 class="sf-notes-heading"><span class="sf-heading-bar"></span>' + escapeHtml(heading) + '</h4><div class="sf-notes-content">';
+        } else if (/^[-•*]\s/.test(line)) {
+          html += '<div class="sf-notes-point"><span class="sf-point-dot">●</span><span>' + boldKeyTerms(escapeHtml(line.replace(/^[-•*]\s/, ''))) + '</span></div>';
+        } else if (/^\d+\.\s/.test(line)) {
+          html += '<div class="sf-notes-point"><span class="sf-point-num">' + line.match(/^\d+/)[0] + '</span><span>' + boldKeyTerms(escapeHtml(line.replace(/^\d+\.\s/, ''))) + '</span></div>';
+        } else if (line.length > 0) {
+          html += '<p class="sf-notes-para">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div></div>';
+      container.innerHTML = html;
+    }
+
+    /* ── MCQs RENDERER ── */
+    function renderMCQs(text, container, topic) {
+      container.classList.add('sf-output-mcqs');
+      var questions = [];
+      var current = null;
+      var answerSection = false;
+
+      splitLines(text).forEach(function(line) {
+        if (/^answer(s)?[\s:]/i.test(line) || /^answer key/i.test(line)) {
+          answerSection = true;
+          if (current) { questions.push(current); current = null; }
+          return;
+        }
+        var qMatch = line.match(/^(?:Q\.?\s*)?(\d+)[.)]\s+(.+)/);
+        if (qMatch && !answerSection) {
+          if (current) questions.push(current);
+          current = { num: qMatch[1], question: qMatch[2], options: [], answer: '', explanation: '' };
+        } else if (current && /^[A-D][.)]\s/.test(line)) {
+          current.options.push(line);
+        } else if (current && /^(?:ans(?:wer)?|correct)[:\s]/i.test(line)) {
+          current.answer = line.replace(/^(?:ans(?:wer)?|correct)[:\s]*/i, '').trim();
+        } else if (current && /^exp(?:lanation)?[:\s]/i.test(line)) {
+          current.explanation = line.replace(/^exp(?:lanation)?[:\s]*/i, '').trim();
+        }
+      });
+      if (current) questions.push(current);
+
+      var html = '<div class="sf-mcqs-container">';
+      html += '<div class="sf-result-header"><span class="sf-result-icon">❓</span><div><h3 class="sf-result-title">MCQ Quiz</h3><span class="sf-result-subtitle">' + escapeHtml(topic) + ' — ' + questions.length + ' Questions</span></div></div>';
+      html += '<div class="sf-mcqs-list">';
+
+      questions.forEach(function(q, i) {
+        html += '<div class="sf-mcq-card" data-index="' + i + '">';
+        html += '<div class="sf-mcq-question"><span class="sf-mcq-num">Q' + q.num + '</span><span>' + boldKeyTerms(escapeHtml(q.question)) + '</span></div>';
+        html += '<div class="sf-mcq-options">';
+        q.options.forEach(function(opt) {
+          var letter = opt.charAt(0);
+          var optText = opt.slice(2).trim();
+          html += '<button class="sf-mcq-option" data-letter="' + letter + '" onclick="selectMCQ(this, \'' + escapeHtml(q.answer) + '\')">';
+          html += '<span class="sf-opt-letter">' + letter + '</span><span>' + escapeHtml(optText) + '</span></button>';
+        });
+        html += '</div>';
+        if (q.answer) {
+          html += '<div class="sf-mcq-answer hidden"><span class="sf-answer-label">✅ Answer: </span>' + escapeHtml(q.answer) + (q.explanation ? ' — ' + escapeHtml(q.explanation) : '') + '</div>';
+        }
+        html += '</div>';
+      });
+
+      html += '</div></div>';
+      container.innerHTML = html;
+    }
+
+    window.selectMCQ = function(btn, correctAnswer) {
+      var card = btn.closest('.sf-mcq-card');
+      var allOpts = card.querySelectorAll('.sf-mcq-option');
+      allOpts.forEach(function(o) { o.disabled = true; });
+      var selected = btn.getAttribute('data-letter');
+      if (correctAnswer && correctAnswer.toUpperCase().startsWith(selected.toUpperCase())) {
+        btn.classList.add('sf-opt-correct');
+      } else {
+        btn.classList.add('sf-opt-wrong');
+        allOpts.forEach(function(o) {
+          if (correctAnswer && correctAnswer.toUpperCase().startsWith(o.getAttribute('data-letter').toUpperCase())) {
+            o.classList.add('sf-opt-correct');
+          }
+        });
+      }
+      var ansDiv = card.querySelector('.sf-mcq-answer');
+      if (ansDiv) ansDiv.classList.remove('hidden');
+    };
+
+    /* ── PAST PAPER RENDERER ── */
+    function renderPastPaper(text, container, topic, subject, curriculum) {
+      container.classList.add('sf-output-pastpaper');
+      var lines = splitLines(text);
+      var html = '<div class="sf-pastpaper-container">';
+
+      // Header
+      html += '<div class="sf-paper-header">';
+      html += '<div class="sf-paper-logo">📄</div>';
+      html += '<h2 class="sf-paper-title">' + escapeHtml(subject) + ' — ' + escapeHtml(topic) + '</h2>';
+      html += '<p class="sf-paper-meta">' + escapeHtml(curriculum) + ' Level &nbsp;|&nbsp; Past Paper Style</p>';
+      html += '<div class="sf-paper-instructions">Read all questions carefully. Marks are shown in square brackets.</div>';
+      html += '</div>';
+
+      html += '<div class="sf-paper-body">';
+      var inMarkScheme = false;
+
+      lines.forEach(function(line) {
+        if (/MARK SCHEME|MARKING SCHEME|ANSWER KEY/i.test(line)) {
+          inMarkScheme = true;
+          html += '</div><div class="sf-mark-scheme"><div class="sf-ms-header">📋 Mark Scheme</div><div class="sf-ms-body">';
+          return;
+        }
+        if (/^SECTION [ABC]/i.test(line)) {
+          html += '<div class="sf-paper-section"><h4 class="sf-section-heading">' + escapeHtml(line) + '</h4>';
+        } else if (/^\d+[.)]\s/.test(line) && !inMarkScheme) {
+          var qNum = line.match(/^(\d+)/)[1];
+          var qText = line.replace(/^\d+[.)]\s*/, '');
+          var marksMatch = qText.match(/\[(\d+)\s*marks?\]/i);
+          var marks = marksMatch ? marksMatch[1] : '';
+          html += '<div class="sf-paper-question">';
+          html += '<span class="sf-q-num">' + qNum + '</span>';
+          html += '<div class="sf-q-body"><p>' + boldKeyTerms(escapeHtml(qText)) + '</p>';
+          if (marks) html += '<span class="sf-q-marks">[' + marks + ' mark' + (marks > 1 ? 's' : '') + ']</span>';
+          html += '<div class="sf-answer-space" aria-label="Answer space"></div></div></div>';
+        } else if (/^[a-z][.)]\s/i.test(line) && !inMarkScheme) {
+          var pLetter = line.charAt(0);
+          var pText = line.slice(2).trim();
+          html += '<div class="sf-sub-question"><span class="sf-sub-letter">(' + pLetter + ')</span><div>' + boldKeyTerms(escapeHtml(pText)) + '</div></div>';
+        } else if (line.length > 0) {
+          html += '<p class="sf-paper-text' + (inMarkScheme ? ' sf-ms-text' : '') + '">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div>';
+      container.innerHTML = html;
+    }
+
+    /* ── TEST RENDERER ── */
+    function renderTest(text, container, topic, subject) {
+      container.classList.add('sf-output-test');
+      var lines = splitLines(text);
+      var html = '<div class="sf-test-container">';
+
+      // Header
+      html += '<div class="sf-test-header">';
+      html += '<div class="sf-test-meta-row">';
+      html += '<span class="sf-test-icon">✅</span>';
+      html += '<div><h3 class="sf-test-title">' + escapeHtml(topic) + '</h3>';
+      html += '<p class="sf-test-subtitle">' + escapeHtml(subject) + ' — Class Test</p></div>';
+      html += '</div>';
+
+      var totalMatch = text.match(/Total[:\s]+\[?(\d+)\s*marks?\]?/i);
+      var timeMatch  = text.match(/Time[:\s]+\[?(\d+)\s*minutes?\]?/i);
+      if (totalMatch || timeMatch) {
+        html += '<div class="sf-test-info">';
+        if (totalMatch) html += '<span class="sf-test-badge">📊 ' + totalMatch[1] + ' Marks</span>';
+        if (timeMatch)  html += '<span class="sf-test-badge">⏱ ' + timeMatch[1] + ' Minutes</span>';
+        html += '</div>';
+      }
+      html += '</div><div class="sf-test-body">';
+
+      var inAnswerKey = false;
+
+      lines.forEach(function(line) {
+        if (/ANSWER KEY|ANSWERS|ANSWER SHEET/i.test(line)) {
+          inAnswerKey = true;
+          html += '</div><div class="sf-answer-key"><div class="sf-ak-header">🔑 Answer Key</div><div class="sf-ak-body">';
+          return;
+        }
+        if (/^PART\s+\d+|^SECTION\s+[A-Z]/i.test(line)) {
+          html += '<div class="sf-test-part"><h4 class="sf-part-heading">' + escapeHtml(line) + '</h4>';
+        } else if (/^Q?\.?\d+[.)]\s/.test(line) && !inAnswerKey) {
+          var num = line.match(/\d+/)[0];
+          var qText = line.replace(/^Q?\.?\d+[.)]\s*/, '');
+          html += '<div class="sf-test-question">';
+          html += '<span class="sf-tq-num">' + num + '</span>';
+          html += '<div class="sf-tq-body">' + boldKeyTerms(escapeHtml(qText));
+          if (/true.*false/i.test(qText)) {
+            html += '<div class="sf-tf-options"><label class="sf-tf-label"><input type="radio" name="tf_' + num + '" value="true"> True</label><label class="sf-tf-label"><input type="radio" name="tf_' + num + '" value="false"> False</label></div>';
+          } else if (/^[A-D][.)]\s/.test(lines[lines.indexOf(line) + 1] || '')) {
+            html += '<div class="sf-test-options">';
+            var optLines = [];
+            var nextIdx = lines.indexOf(line) + 1;
+            while (nextIdx < lines.length && /^[A-D][.)]\s/.test(lines[nextIdx])) {
+              var ol = lines[nextIdx];
+              html += '<label class="sf-test-opt"><input type="radio" name="mcq_' + num + '" value="' + ol.charAt(0) + '"><span class="sf-opt-letter">' + ol.charAt(0) + '</span>' + escapeHtml(ol.slice(2).trim()) + '</label>';
+              nextIdx++;
+            }
+            html += '</div>';
+          } else {
+            html += '<div class="sf-test-input-line"></div>';
+          }
+          html += '</div></div>';
+        } else if (/^[A-D][.)]\s/.test(line) && !inAnswerKey) {
+          // options already handled above, skip
+        } else if (line.length > 0) {
+          html += '<p class="sf-test-text' + (inAnswerKey ? ' sf-ak-text' : '') + '">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div>';
+      container.innerHTML = html;
+    }
+
+    /* ── CONCEPTS RENDERER ── */
+    function renderConcepts(text, container, topic) {
+      container.classList.add('sf-output-concepts');
+      var lines = splitLines(text);
+      var html = '<div class="sf-concepts-container">';
+      html += '<div class="sf-result-header"><span class="sf-result-icon">💡</span><div><h3 class="sf-result-title">Core Concepts</h3><span class="sf-result-subtitle">' + escapeHtml(topic) + '</span></div></div>';
+      html += '<div class="sf-concepts-body">';
+      var inDef = false;
+
+      lines.forEach(function(line) {
+        if (/^#{1,3}\s/.test(line) || /^[A-Z][A-Z\s]{3,}:?$/.test(line.trim())) {
+          html += '<div class="sf-concept-block"><h4 class="sf-concept-heading">' + escapeHtml(line.replace(/^#{1,3}\s*/, '')) + '</h4>';
+        } else if (/definition|meaning|refers to/i.test(line) && line.length < 120) {
+          html += '<div class="sf-definition-box"><span class="sf-def-label">📌 Definition</span><p>' + boldKeyTerms(escapeHtml(line)) + '</p></div>';
+        } else if (/example|for instance|e\.g\./i.test(line)) {
+          html += '<div class="sf-example-box"><span class="sf-ex-label">💡 Example</span><p>' + boldKeyTerms(escapeHtml(line)) + '</p></div>';
+        } else if (/exam tip|remember|note:/i.test(line)) {
+          html += '<div class="sf-tip-box"><span class="sf-tip-label">⭐ Exam Tip</span><p>' + boldKeyTerms(escapeHtml(line)) + '</p></div>';
+        } else if (/^[-•*]\s/.test(line)) {
+          html += '<div class="sf-concept-point"><span>●</span><span>' + boldKeyTerms(escapeHtml(line.replace(/^[-•*]\s/, ''))) + '</span></div>';
+        } else if (line.length > 0) {
+          html += '<p class="sf-concept-para">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div>';
+      container.innerHTML = html;
     }
 
     function renderLecture(text, outputBox) {
