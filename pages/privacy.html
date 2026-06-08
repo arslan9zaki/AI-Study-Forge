@@ -2,9 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Theme Script -->
+<script>
+(function(){
+    var t = localStorage.getItem('sf_theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
+    // Set correct icon after DOM loads
+    document.addEventListener('DOMContentLoaded', function() {
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+    });
+})();
+</script>
 
 <title>Privacy Policy | StudyForge AI</title>
 
@@ -15,3 +27,176 @@
 <!-- Design System -->
 <link rel="stylesheet" href="../assets/css/design-system.css">
 <link rel="stylesheet" href="../assets/css/components.css">
+
+<style>
+
+body{
+margin:0;
+font-family:var(--font-family-base);
+background:var(--color-bg-primary);
+color:var(--color-text-primary);
+line-height:var(--line-height-relaxed);
+}
+
+header{
+background:var(--color-bg-secondary);
+padding:var(--spacing-5);
+text-align:center;
+border-bottom:1px solid var(--color-border);
+}
+
+header h1{
+margin:0;
+color:var(--color-primary);
+font-size:var(--font-size-4xl);
+font-weight:var(--font-weight-bold);
+}
+
+nav{
+margin-top:var(--spacing-3);
+}
+
+nav a{
+color:var(--color-text-secondary);
+text-decoration:none;
+margin:0 var(--spacing-4);
+font-size:var(--font-size-base);
+transition:var(--transition-default);
+}
+
+nav a:hover{
+color:var(--color-primary);
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:var(--spacing-16) var(--spacing-5);
+}
+
+.container h2{
+color:var(--color-primary);
+margin-top:var(--spacing-10);
+font-weight:var(--font-weight-bold);
+}
+
+.container p{
+color:var(--color-text-secondary);
+}
+
+.policy-box{
+background:var(--color-bg-elevated);
+padding:var(--spacing-10);
+border-radius:var(--radius-3xl);
+box-shadow:var(--shadow-lg);
+border:1px solid var(--color-border);
+}
+
+footer{
+background:var(--color-bg-secondary);
+padding:var(--spacing-6);
+text-align:center;
+margin-top:var(--spacing-10);
+border-top:1px solid var(--color-border);
+color:var(--color-text-secondary);
+font-size:var(--font-size-sm);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>StudyForge AI</h1>
+
+<nav>
+<a href="../index.html">Home</a>
+<a href="about.html">About</a>
+<a href="../blog/index.html">Blog</a>
+<a href="contact.html">Contact</a>
+<a href="privacy.html">Privacy Policy</a>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
+    <span class="theme-icon" id="themeIcon">🌙</span>
+</button>
+</nav>
+
+</header>
+
+<div class="container">
+
+<div class="policy-box">
+
+<h2>Privacy Policy</h2>
+
+<p>
+At StudyForge AI, we respect your privacy and are committed to protecting your personal information.
+This Privacy Policy explains how we collect, use and safeguard your information when you visit our website.
+</p>
+
+<h2>Information We Collect</h2>
+
+<p>
+We may collect basic information such as your name, email address and browsing behavior when you interact with our website or contact us.
+</p>
+
+<h2>How We Use Information</h2>
+
+<p>
+The collected information helps us improve our website, provide better content and respond to user inquiries effectively.
+</p>
+
+<h2>Cookies</h2>
+
+<p>
+Our website may use cookies to improve user experience and analyze website traffic.
+You can disable cookies through your browser settings if desired.
+</p>
+
+<h2>Third-Party Services</h2>
+
+<p>
+We may use third-party tools such as Google Analytics or advertising services that may collect non-personal information according to their own privacy policies.
+</p>
+
+<h2>Data Protection</h2>
+
+<p>
+We take reasonable security measures to protect your information from unauthorized access or misuse.
+</p>
+
+<h2>Changes to This Policy</h2>
+
+<p>
+AI Biz Tools may update this Privacy Policy from time to time. Any changes will be posted on this page.
+</p>
+
+<h2>Contact Us</h2>
+
+<p>
+If you have questions regarding this Privacy Policy, please contact us through our Contact page.
+</p>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 StudyForge AI — All Rights Reserved
+</footer>
+
+<script>
+/* --- Theme Toggle --- */
+function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('sf_theme', next);
+    var icon = document.getElementById('themeIcon');
+    if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+}
+</script>
+
+</body>
+</html>

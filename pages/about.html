@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>About Us | StudyForge AI</title>
-<meta name="description" content="Learn about StudyForge AI - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources">
-<link rel="canonical" href="https://studyforge.ai/pages/about.html">
+<meta name="description" content="Learn about StudyForge AI - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
+<link rel="canonical" href="https://arslan9zaki.github.io/aibiztools/pages/about.html">
 
 <!-- Open Graph -->
 <meta property="og:title" content="About Us | StudyForge AI">
-<meta property="og:description" content="Learn about StudyForge AI - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning R">
+<meta property="og:description" content="Learn about StudyForge AI - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://studyforge.ai/pages/about.html">
+<meta property="og:url" content="https://arslan9zaki.github.io/aibiztools/pages/about.html">
 <meta property="og:site_name" content="StudyForge AI">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,3 +25,270 @@
 <!-- Design System -->
 <link rel="stylesheet" href="../assets/css/design-system.css">
 <link rel="stylesheet" href="../assets/css/components.css">
+
+<!-- Theme Script -->
+<script>
+(function(){
+    var t = localStorage.getItem('sf_theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
+    // Set correct icon after DOM loads
+    document.addEventListener('DOMContentLoaded', function() {
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+    });
+})();
+</script>
+
+<style>
+
+body{
+margin:0;
+font-family:var(--font-family-base);
+background:var(--color-bg-primary);
+color:var(--color-text-primary);
+}
+
+header{
+background:var(--color-bg-secondary);
+padding:var(--spacing-5);
+text-align:center;
+border-bottom:1px solid var(--color-border);
+}
+
+header h1{
+margin:0;
+color:var(--color-primary);
+font-size:var(--font-size-4xl);
+font-weight:var(--font-weight-bold);
+}
+
+nav{
+margin-top:var(--spacing-3);
+}
+
+nav a{
+color:var(--color-text-secondary);
+text-decoration:none;
+margin:0 var(--spacing-4);
+font-size:var(--font-size-base);
+transition:var(--transition-default);
+}
+
+nav a:hover{
+color:var(--color-primary);
+}
+
+.hero{
+padding:var(--spacing-20) var(--spacing-5);
+text-align:center;
+background:linear-gradient(to right,var(--color-bg-primary),var(--color-bg-secondary));
+}
+
+.hero h2{
+font-size:var(--font-size-5xl);
+color:var(--color-primary);
+margin-bottom:var(--spacing-5);
+font-weight:var(--font-weight-bold);
+}
+
+.hero p{
+max-width:800px;
+margin:auto;
+font-size:var(--font-size-xl);
+line-height:var(--line-height-relaxed);
+color:var(--color-text-secondary);
+}
+
+.section{
+max-width:1100px;
+margin:auto;
+padding:var(--spacing-16) var(--spacing-5);
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:var(--spacing-8);
+}
+
+.card{
+background:var(--color-bg-elevated);
+padding:var(--spacing-8);
+border-radius:var(--radius-3xl);
+transition:var(--transition-default);
+box-shadow:var(--shadow-lg);
+border:1px solid var(--color-border);
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:var(--shadow-xl);
+}
+
+.card h3{
+color:var(--color-primary);
+margin-bottom:var(--spacing-4);
+font-weight:var(--font-weight-bold);
+}
+
+.card p{
+line-height:var(--line-height-relaxed);
+color:var(--color-text-secondary);
+}
+
+footer{
+background:var(--color-bg-secondary);
+padding:var(--spacing-6);
+text-align:center;
+margin-top:var(--spacing-10);
+border-top:1px solid var(--color-border);
+color:var(--color-text-secondary);
+font-size:var(--font-size-sm);
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="main-header">
+    <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+    <nav class="navbar">
+        <a href="../index.html">Home</a>
+        <a href="../tools/studyforge/index.html" class="nav-highlight">StudyForge AI</a>
+        <a href="../index.html#career-tools">Career Tools</a>
+        <a href="about.html" class="nav-highlight">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="../tools/studyforge/index.html" class="nav-btn">Start Learning</a>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
+            <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
+    </nav>
+    <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">Home</a>
+    <a href="../tools/studyforge/index.html" class="nav-highlight">StudyForge AI</a>
+    <a href="../index.html#career-tools">Career Tools</a>
+    <a href="about.html" class="nav-highlight">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="../tools/studyforge/index.html" class="nav-btn">Start Learning</a>
+</nav>
+
+<section class="hero">
+
+<h2>About StudyForge AI</h2>
+
+<p>
+StudyForge AI is a modern AI-powered learning platform dedicated to helping students and educators generate educational resources instantly. We simplify learning with AI tools for Notes, MCQs, Lectures, Presentations and Visual Learning.
+</p>
+
+</section>
+
+<section class="section">
+
+<div class="card">
+<h3>Our Mission</h3>
+
+<p>
+Our mission is to help students and educators leverage AI to generate comprehensive educational resources instantly, making learning more accessible and effective for everyone.
+</p>
+</div>
+
+<div class="card">
+<h3>What We Offer</h3>
+
+<p>
+We provide AI-powered tools for generating Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams across all subjects and curricula.
+</p>
+</div>
+
+<div class="card">
+<h3>Why Choose Us</h3>
+
+<p>
+StudyForge AI focuses on quality educational content, modern design and beginner-friendly learning experiences to help students succeed in their academic journey.
+</p>
+</div>
+
+</section>
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+            <p>AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources Instantly.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Learning Tools</h4>
+            <a href="../tools/studyforge/index.html">Notes</a>
+            <a href="../tools/studyforge/index.html">MCQs</a>
+            <a href="../tools/studyforge/index.html">Concepts</a>
+            <a href="../tools/studyforge/index.html">Get Lecture</a>
+            <a href="../tools/studyforge/index.html">Presentation</a>
+            <a href="../tools/studyforge/index.html">Visual Learning</a>
+        </div>
+        <div class="footer-col">
+            <h4>Career Tools</h4>
+            <a href="../tools/resume-generator/index.html">Resume Generator</a>
+            <a href="../tools/cover-letter-generator/index.html">Cover Letter AI</a>
+        </div>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <a href="about.html">About Us</a>
+            <a href="../blog/index.html">Blog</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Use</a>
+        </div>
+        <div class="footer-col">
+            <h4>Connect</h4>
+            <p class="footer-meta">Follow us on social media for updates and tips.</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 StudyForge AI — All Rights Reserved</p>
+        <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+/* --- Hamburger Menu --- */
+function toggleMenu(){
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+/* Close mobile menu when a link is clicked */
+document.querySelectorAll('.mobile-menu a').forEach(function(link){
+    link.addEventListener('click', function(){
+        document.getElementById('mobileMenu').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+
+/* --- Theme Toggle --- */
+function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('sf_theme', next);
+    var icon = document.getElementById('themeIcon');
+    if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+}
+</script>
+
+</body>
+</html>
