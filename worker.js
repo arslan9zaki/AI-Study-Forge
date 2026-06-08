@@ -1,5 +1,5 @@
 /**
- * AIbiztools — Cloudflare Worker (Gemini Primary + OpenRouter Fallback)
+ * AI Study Forge — Cloudflare Worker (Gemini Primary + OpenRouter Fallback)
  *
  * DEPLOY:
  *   npx wrangler secret put GEMINI_API_KEY
@@ -113,7 +113,7 @@ async function callOpenRouter(apiKey, modelId, messages, temperature) {
         "Content-Type":  "application/json",
         "Authorization": "Bearer " + apiKey,
         "HTTP-Referer":  "https://aibiztools.arslan9zaki.workers.dev",
-        "X-Title":       "AI Biz Tools"
+        "X-Title":       "AI Study Forge"
       },
       body:   JSON.stringify({ model: modelId, messages, temperature, max_tokens: 4096, stream: false }),
       signal: ctrl.signal
