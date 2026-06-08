@@ -3,6 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Theme Script -->
+<script>
+(function(){
+    var t = localStorage.getItem('sf_theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
+    document.addEventListener('DOMContentLoaded', function() {
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+    });
+})();
+</script>
+
 <title>StudyForge AI — AI-Powered Learning Platform</title>
 <meta name="description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
 <link rel="canonical" href="https://studyforge.ai/tools/studyforge/">
@@ -423,7 +437,7 @@ body::before {
     overflow-y: auto;
     line-height: var(--line-height-relaxed);
     color: var(--color-text-primary);
-    white-space: pre-wrap;
+    white-space: normal;
     font-size: var(--font-size-sm);
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 
@@ -1275,6 +1289,9 @@ body::before {
         <a href="../../pages/about.html">About</a>
         <a href="../../blog/index.html">Blog</a>
         <a href="../../pages/contact.html">Contact</a>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
+            <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
     </div>
 </div>
 
@@ -2438,6 +2455,15 @@ Language: ${language}.`,
         svg += '</svg>';
 
         return svg;
+    }
+
+    function toggleTheme() {
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('sf_theme', next);
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
     }
 
 </script>
