@@ -1439,9 +1439,15 @@ function subscribeNewsletter(){
 }
 
 /* Allow Enter key in newsletter input */
-document.getElementById('newsletterEmail').addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){ subscribeNewsletter(); }
-});
+const newsletterEmail = document.getElementById('newsletterEmail');
+
+if (newsletterEmail) {
+    newsletterEmail.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            subscribeNewsletter();
+        }
+    });
+}
 
 </script>
 
