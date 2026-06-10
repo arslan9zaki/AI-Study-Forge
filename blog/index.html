@@ -144,9 +144,13 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
         <a href="../pages/about.html">About</a>
         <a href="index.html">Blog</a>
         <a href="../pages/contact.html">Contact</a>
-        <a href="../tools/content-writer/index.html" class="nav-btn">🚀 Try Free Tools</a>
+        <a href="../tools/resume-generator/index.html" class="nav-btn">📄 Resume Generator</a>
+        <a href="../tools/cover-letter-generator/index.html" class="nav-btn">✉️ Cover Letter AI</a>
+        <a href="../tools/content-writer/index.html" class="nav-btn">✍️ AI Content Writer</a>
+        <a href="../tools/interview-generator/index.html" class="nav-btn">� Interview Generator</a>
+        <a href="../tools/business-name-generator/index.html" class="nav-btn">💼 Business Name Generator</a>
         <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
-            <span class="theme-icon" id="themeIcon">🌙</span>
+            <span class="theme-icon" id="themeIcon" aria-hidden="true">🌙</span>
         </button>
     </nav>
     <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
@@ -158,11 +162,15 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
     <a href="../pages/about.html">About</a>
     <a href="index.html">Blog</a>
     <a href="../pages/contact.html">Contact</a>
-    <a href="../tools/content-writer/index.html" class="nav-btn">🚀 Try Free Tools</a>
+    <a href="../tools/resume-generator/index.html" class="nav-btn">📄 Resume Generator</a>
+    <a href="../tools/cover-letter-generator/index.html" class="nav-btn">✉️ Cover Letter AI</a>
+    <a href="../tools/content-writer/index.html" class="nav-btn">✍️ AI Content Writer</a>
+    <a href="../tools/interview-generator/index.html" class="nav-btn">� Interview Generator</a>
+    <a href="../tools/business-name-generator/index.html" class="nav-btn">💼 Business Name Generator</a>
 </nav>
 
 <section class="page-hero">
-    <div class="badge">📝 Latest Articles</div>
+    <div class="badge"><span aria-hidden="true">📝</span> Latest Articles</div>
     <h1>AI StudyForge <span>Blog</span></h1>
     <p>Guides on AI tools, online earning, career tips and automation for 2026.</p>
 </section>
@@ -200,18 +208,18 @@ function renderPosts(posts) {
     count.textContent = `${posts.length} article${posts.length !== 1 ? 's' : ''}`;
 
     if (posts.length === 0) {
-        grid.innerHTML = `<div class="no-results"><div style="font-size:48px">📝</div><p>No articles found in this category.</p></div>`;
+        grid.innerHTML = `<div class="no-results"><div style="font-size:48px" aria-hidden="true">📝</div><p>No articles found in this category.</p></div>`;
         return;
     }
 
     grid.innerHTML = posts.map((post, i) => `
         <div class="blog-card" onclick="openPost('${post.id}')">
-            <div class="card-thumb ${THUMBS[i % THUMBS.length]}">${post.emoji}</div>
+            <div class="card-thumb ${THUMBS[i % THUMBS.length]}" role="img" aria-label="${post.title} illustration">${post.emoji}</div>
             <div class="card-body">
                 <div class="card-meta">
                     <span class="card-tag">${post.category}</span>
                     <span class="card-date">${post.date}</span>
-                    <span class="card-read">⏱ ${post.readTime}</span>
+                    <span class="card-read"><span aria-hidden="true">⏱</span> ${post.readTime}</span>
                 </div>
                 <h2>${post.title}</h2>
                 <p>${post.excerpt}</p>
@@ -253,7 +261,7 @@ fetch('posts.json')
     .catch(err => {
         console.error('Blog fetch failed:', err);
         document.getElementById('blogGrid').innerHTML =
-            `<div class="blog-error"><p>⚠️ Could not load blog posts. Please refresh the page.</p></div>`;
+            `<div class="blog-error"><p><span aria-hidden="true">⚠️</span> Could not load blog posts. Please refresh the page.</p></div>`;
     });
 
 /* --- Theme Toggle --- */
