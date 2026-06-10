@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyForge AI — AI-Powered Learning Platform</title>
+<title>AI Study Forge — AI-Powered Learning Platform</title>
 <meta name="description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
 <link rel="canonical" href="https://studyforge.ai/tools/studyforge/">
 
 <!-- Open Graph -->
-<meta property="og:title" content="StudyForge AI — AI-Powered Learning Platform">
+<meta property="og:title" content="AI Study Forge — AI-Powered Learning Platform">
 <meta property="og:description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studyforge.ai/tools/studyforge/">
-<meta property="og:site_name" content="StudyForge AI">
+<meta property="og:site_name" content="AI Study Forge">
 
 <link rel="icon" href="../../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -792,13 +792,13 @@ body::before {
 
 <!-- Navbar -->
 <div class="main-header">
-    <div class="logo">AI Biz Tools</div>
+    <div class="logo">AI Study Forge</div>
     <div class="nav-links">
         <a href="../../index.html">Home</a>
         <a href="../../pages/about.html">About</a>
         <a href="../../blog/index.html">Blog</a>
         <a href="../../pages/contact.html">Contact</a>
-        <button class="theme-toggle" onclick="window.AIBizToolsTheme.toggle()" aria-label="Toggle dark/light mode" type="button">
+        <button class="theme-toggle" onclick="window.ai-study-forgeTheme.toggle()" aria-label="Toggle dark/light mode" type="button">
             <span class="theme-icon" aria-hidden="true">🌙</span>
             <span class="theme-label sr-only">Dark Mode</span>
         </button>
@@ -807,7 +807,7 @@ body::before {
 
 <!-- Hero -->
 <section class="hero">
-    <h1>StudyForge AI</h1>
+    <h1>AI Study Forge</h1>
     <p>Generate educational content including notes, MCQs, concepts, lectures, presentations, and visual learning materials for any curriculum, subject, and topic.</p>
 </section>
 
@@ -905,19 +905,19 @@ body::before {
 
 <!-- Footer -->
 <div class="footer">
-    © 2026 StudyForge AI — All Rights Reserved
+    © 2026 AI Study Forge — All Rights Reserved
 </div>
 
 <script>
 /* ══════════════════════════════════════════════════════════
-   StudyForge AI  —  complete render engine
+   AI Study Forge  —  complete render engine
    Fixes: Lecture cards, Presentation deck, Visual diagrams
 ══════════════════════════════════════════════════════════ */
 
 let generatedText = "";
 let presSlides    = [];
 let presIndex     = 0;
-const WORKER      = "https://aibiztools.arslan9zaki.workers.dev";
+const WORKER      = "https://ai-study-forge.arslan9zaki.workers.dev";
 
 /* ── Worker helper ── */
 async function callWorker(prompt, systemPrompt) {

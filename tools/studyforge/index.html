@@ -17,16 +17,16 @@
 })();
 </script>
 
-<title>StudyForge AI — AI-Powered Learning Platform</title>
+<title>AI Study Forge — AI-Powered Learning Platform</title>
 <meta name="description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
 <link rel="canonical" href="https://studyforge.ai/tools/studyforge/">
 
 <!-- Open Graph -->
-<meta property="og:title" content="StudyForge AI — AI-Powered Learning Platform">
+<meta property="og:title" content="AI Study Forge — AI-Powered Learning Platform">
 <meta property="og:description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studyforge.ai/tools/studyforge/">
-<meta property="og:site_name" content="StudyForge AI">
+<meta property="og:site_name" content="AI Study Forge">
 
 <link rel="icon" href="../../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1297,7 +1297,7 @@ body::before {
 
 <!-- Hero -->
 <section class="hero">
-    <h1>StudyForge AI</h1>
+    <h1>AI Study Forge</h1>
     <p>Generate educational content including notes, MCQs, concepts, lectures, presentations, and visual learning materials for any curriculum, subject, and topic.</p>
 </section>
 
@@ -1397,7 +1397,7 @@ body::before {
 
 <!-- Footer -->
 <div class="footer">
-    © 2026 StudyForge AI — All Rights Reserved
+    © 2026 AI Study Forge — All Rights Reserved
 </div>
 
 <script>
@@ -1504,9 +1504,9 @@ Language: ${language}.`,
         };
 
         const prompt = prompts[action] || prompts['Get Lecture'];
-        const systemPrompt = `You are an expert educational AI for StudyForge AI. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
+        const systemPrompt = `You are an expert educational AI for AI Study Forge. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
 
-        const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
+        const WORKER_URL = "https://ai-study-forge.arslan9zaki.workers.dev";
 
         try {
             const response = await fetch(WORKER_URL, {

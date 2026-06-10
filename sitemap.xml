@@ -3,7 +3,7 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.00</priority>
@@ -11,7 +11,7 @@
 
   <!-- Blog -->
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/blog/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/blog/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
@@ -19,35 +19,35 @@
 
   <!-- Tools -->
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/tools/resume-generator/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/tools/resume-generator/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/tools/cover-letter-generator/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/tools/cover-letter-generator/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/tools/content-writer/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/tools/content-writer/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/tools/business-name-generator/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/tools/business-name-generator/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/tools/interview-generator/</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/tools/interview-generator/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -55,28 +55,28 @@
 
   <!-- Pages -->
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/pages/about.html</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/pages/about.html</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/pages/contact.html</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/pages/contact.html</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/pages/privacy.html</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/pages/privacy.html</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.30</priority>
   </url>
 
   <url>
-    <loc>https://arslan9zaki.github.io/aibiztools/pages/terms.html</loc>
+    <loc>https://arslan9zaki.github.io/ai-study-forge/pages/terms.html</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.30</priority>

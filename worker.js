@@ -10,7 +10,7 @@
  */
 
 const ALLOWED_ORIGINS = [
-  "https://aibiztools.arslan9zaki.workers.dev",
+  "https://ai-study-forge.arslan9zaki.workers.dev",
   "https://arslan9zaki.github.io",
   "http://localhost:3000",
   "http://localhost:4000",
@@ -112,7 +112,7 @@ async function callOpenRouter(apiKey, modelId, messages, temperature) {
       headers: {
         "Content-Type":  "application/json",
         "Authorization": "Bearer " + apiKey,
-        "HTTP-Referer":  "https://aibiztools.arslan9zaki.workers.dev",
+        "HTTP-Referer":  "https://ai-study-forge.arslan9zaki.workers.dev",
         "X-Title":       "AI Study Forge"
       },
       body:   JSON.stringify({ model: modelId, messages, temperature, max_tokens: 4096, stream: false }),
@@ -157,7 +157,7 @@ export default {
       const oKey = env.OPENROUTER_API_KEY || "";
       return jsonOk({
         status:               "ok",
-        service:              "aibiztools",
+        service:              "ai-study-forge",
         geminiConfigured:     gKey.length > 0,
         geminiKeyPrefix:      gKey.length > 0 ? gKey.slice(0, 10) + "..." : "NOT SET",
         openrouterConfigured: oKey.length > 0,

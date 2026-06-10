@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "aibiztools",
+  "name": "ai-study-forge",
   "compatibility_date": "2026-05-20",
 
   // Worker entry point — required so Cloudflare runs worker.js instead of serving static assets
