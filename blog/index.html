@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -13,12 +13,12 @@
     // Set correct icon after DOM loads
     document.addEventListener('DOMContentLoaded', function() {
         var icon = document.getElementById('themeIcon');
-        if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+        if (icon) icon.textContent = t === 'dark' ? '??' : '??';
     });
 })();
 </script>
 
-<title>AI StudyForge Blog — Tips & Online Earning | StudyForge AI</title>
+<title>AI Study Forge Blog � Tips & Online Earning | AI Study Forge</title>
 <<<<<<< HEAD
 <link rel="canonical" href="https://studyforge.ai/blog/">
 <link rel="icon" href="../favicon.ico">
@@ -144,13 +144,13 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
         <a href="../pages/about.html">About</a>
         <a href="index.html">Blog</a>
         <a href="../pages/contact.html">Contact</a>
-        <a href="../tools/resume-generator/index.html" class="nav-btn">📄 Resume Generator</a>
-        <a href="../tools/cover-letter-generator/index.html" class="nav-btn">✉️ Cover Letter AI</a>
-        <a href="../tools/content-writer/index.html" class="nav-btn">✍️ AI Content Writer</a>
-        <a href="../tools/interview-generator/index.html" class="nav-btn">� Interview Generator</a>
-        <a href="../tools/business-name-generator/index.html" class="nav-btn">💼 Business Name Generator</a>
+        <a href="../tools/resume-generator/index.html" class="nav-btn">?? Resume Generator</a>
+        <a href="../tools/cover-letter-generator/index.html" class="nav-btn">?? Cover Letter AI</a>
+        <a href="../tools/content-writer/index.html" class="nav-btn">?? AI Content Writer</a>
+        <a href="../tools/interview-generator/index.html" class="nav-btn">? Interview Generator</a>
+        <a href="../tools/business-name-generator/index.html" class="nav-btn">?? Business Name Generator</a>
         <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
-            <span class="theme-icon" id="themeIcon" aria-hidden="true">🌙</span>
+            <span class="theme-icon" id="themeIcon" aria-hidden="true">??</span>
         </button>
     </nav>
     <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
@@ -162,16 +162,16 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
     <a href="../pages/about.html">About</a>
     <a href="index.html">Blog</a>
     <a href="../pages/contact.html">Contact</a>
-    <a href="../tools/resume-generator/index.html" class="nav-btn">📄 Resume Generator</a>
-    <a href="../tools/cover-letter-generator/index.html" class="nav-btn">✉️ Cover Letter AI</a>
-    <a href="../tools/content-writer/index.html" class="nav-btn">✍️ AI Content Writer</a>
-    <a href="../tools/interview-generator/index.html" class="nav-btn">� Interview Generator</a>
-    <a href="../tools/business-name-generator/index.html" class="nav-btn">💼 Business Name Generator</a>
+    <a href="../tools/resume-generator/index.html" class="nav-btn">?? Resume Generator</a>
+    <a href="../tools/cover-letter-generator/index.html" class="nav-btn">?? Cover Letter AI</a>
+    <a href="../tools/content-writer/index.html" class="nav-btn">?? AI Content Writer</a>
+    <a href="../tools/interview-generator/index.html" class="nav-btn">? Interview Generator</a>
+    <a href="../tools/business-name-generator/index.html" class="nav-btn">?? Business Name Generator</a>
 </nav>
 
 <section class="page-hero">
-    <div class="badge"><span aria-hidden="true">📝</span> Latest Articles</div>
-    <h1>AI StudyForge <span>Blog</span></h1>
+    <div class="badge"><span aria-hidden="true">??</span> Latest Articles</div>
+    <h1>AI Study Forge <span>Blog</span></h1>
     <p>Guides on AI tools, online earning, career tips and automation for 2026.</p>
 </section>
 
@@ -183,7 +183,7 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
 </div>
 
 <footer>
-    <span>© 2026 AI StudyForge — All Rights Reserved</span>
+    <span>� 2026 AI Study Forge � All Rights Reserved</span>
     <div class="footer-links">
         <a href="../index.html">Home</a>
         <a href="../pages/about.html">About</a>
@@ -208,7 +208,7 @@ function renderPosts(posts) {
     count.textContent = `${posts.length} article${posts.length !== 1 ? 's' : ''}`;
 
     if (posts.length === 0) {
-        grid.innerHTML = `<div class="no-results"><div style="font-size:48px" aria-hidden="true">📝</div><p>No articles found in this category.</p></div>`;
+        grid.innerHTML = `<div class="no-results"><div style="font-size:48px" aria-hidden="true">??</div><p>No articles found in this category.</p></div>`;
         return;
     }
 
@@ -219,11 +219,11 @@ function renderPosts(posts) {
                 <div class="card-meta">
                     <span class="card-tag">${post.category}</span>
                     <span class="card-date">${post.date}</span>
-                    <span class="card-read"><span aria-hidden="true">⏱</span> ${post.readTime}</span>
+                    <span class="card-read"><span aria-hidden="true">?</span> ${post.readTime}</span>
                 </div>
                 <h2>${post.title}</h2>
                 <p>${post.excerpt}</p>
-                <button class="read-btn">Read Article →</button>
+                <button class="read-btn">Read Article ?</button>
             </div>
         </div>
     `).join('');
@@ -261,7 +261,7 @@ fetch('posts.json')
     .catch(err => {
         console.error('Blog fetch failed:', err);
         document.getElementById('blogGrid').innerHTML =
-            `<div class="blog-error"><p><span aria-hidden="true">⚠️</span> Could not load blog posts. Please refresh the page.</p></div>`;
+            `<div class="blog-error"><p><span aria-hidden="true">??</span> Could not load blog posts. Please refresh the page.</p></div>`;
     });
 
 /* --- Theme Toggle --- */
@@ -271,7 +271,7 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('sf_theme', next);
     var icon = document.getElementById('themeIcon');
-    if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+    if (icon) icon.textContent = next === 'dark' ? '??' : '??';
 }
 </script>
 

@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>About Us | StudyForge AI</title>
-<meta name="description" content="Learn about StudyForge AI - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
+<title>About Us | AI Study Forge</title>
+<meta name="description" content="Learn about AI Study Forge - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
 <link rel="canonical" href="https://arslan9zaki.github.io/aibiztools/pages/about.html">
 
 <!-- Open Graph -->
-<meta property="og:title" content="About Us | StudyForge AI">
-<meta property="og:description" content="Learn about StudyForge AI - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
+<meta property="og:title" content="About Us | AI Study Forge">
+<meta property="og:description" content="Learn about AI Study Forge - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://arslan9zaki.github.io/aibiztools/pages/about.html">
-<meta property="og:site_name" content="StudyForge AI">
+<meta property="og:site_name" content="AI Study Forge">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
@@ -79,6 +79,76 @@ nav a:hover{
 color:var(--color-primary);
 }
 
+.navbar{
+display:flex;
+gap:var(--spacing-6);
+align-items:center;
+}
+
+@media(max-width:768px){
+.navbar{display:none;}
+}
+
+.mobile-menu{
+display:none;
+flex-direction:column;
+background:var(--color-bg-secondary);
+border-top:1px solid var(--color-border);
+}
+
+.mobile-menu.open{
+display:flex;
+}
+
+.mobile-menu a{
+color:var(--color-text-secondary);
+text-decoration:none;
+padding:var(--spacing-3) 8%;
+font-size:var(--font-size-base);
+font-weight:var(--font-weight-medium);
+border-bottom:1px solid var(--color-border);
+}
+
+.mobile-menu a:hover{
+background:var(--color-primary-light);
+color:var(--color-primary);
+}
+
+.mobile-menu .nav-btn{
+margin:var(--spacing-3) 8%;
+border-radius:var(--radius-lg);
+text-align:center;
+border-bottom:none;
+padding:var(--spacing-3);
+}
+
+.hamburger{
+display:none;
+flex-direction:column;
+gap:var(--spacing-1);
+cursor:pointer;
+padding:var(--spacing-1);
+background:none;
+border:none;
+}
+
+.hamburger span{
+display:block;
+width:25px;
+height:2px;
+background:var(--color-text-primary);
+border-radius:var(--radius-sm);
+transition:var(--transition-base);
+}
+
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+@media(max-width:768px){
+.hamburger{display:flex;}
+}
+
 .hero{
 padding:var(--spacing-20) var(--spacing-5);
 text-align:center;
@@ -134,6 +204,135 @@ line-height:var(--line-height-relaxed);
 color:var(--color-text-secondary);
 }
 
+.stats-row{
+display:flex;
+justify-content:center;
+gap:var(--spacing-12);
+padding:var(--spacing-16) var(--spacing-5);
+background:var(--color-bg-secondary);
+}
+
+.stat-item{
+text-align:center;
+}
+
+.stat-num{
+display:block;
+font-size:var(--font-size-3xl);
+font-weight:var(--font-weight-extrabold);
+color:var(--color-primary);
+margin-bottom:var(--spacing-2);
+}
+
+.stat-label{
+font-size:var(--font-size-sm);
+color:var(--color-text-secondary);
+font-weight:var(--font-weight-medium);
+}
+
+.mission-section{
+max-width:900px;
+margin:var(--spacing-20) auto;
+text-align:center;
+padding:0 var(--spacing-5);
+}
+
+.mission-section h3{
+font-size:var(--font-size-3xl);
+font-weight:var(--font-weight-bold);
+color:var(--color-primary);
+margin-bottom:var(--spacing-6);
+}
+
+.mission-section p{
+font-size:var(--font-size-xl);
+line-height:var(--line-height-relaxed);
+color:var(--color-text-secondary);
+}
+
+.offerings-section{
+max-width:1200px;
+margin:var(--spacing-20) auto;
+padding:0 var(--spacing-5);
+}
+
+.offerings-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:var(--spacing-10);
+}
+
+.offering-col h4{
+font-size:var(--font-size-2xl);
+font-weight:var(--font-weight-bold);
+color:var(--color-primary);
+margin-bottom:var(--spacing-6);
+}
+
+.tool-card{
+background:var(--color-bg-elevated);
+padding:var(--spacing-5);
+border-radius:var(--radius-xl);
+margin-bottom:var(--spacing-4);
+border:1px solid var(--color-border);
+font-weight:var(--font-weight-semibold);
+color:var(--color-text-primary);
+transition:var(--transition-default);
+}
+
+.tool-card:hover{
+border-color:var(--color-primary);
+transform:translateX(5px);
+}
+
+.why-section{
+max-width:1200px;
+margin:var(--spacing-20) auto var(--spacing-16);
+padding:0 var(--spacing-5);
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:var(--spacing-8);
+}
+
+.feature-card{
+background:var(--color-bg-elevated);
+padding:var(--spacing-8);
+border-radius:var(--radius-2xl);
+text-align:center;
+border:1px solid var(--color-border);
+transition:var(--transition-default);
+}
+
+.feature-card:hover{
+transform:translateY(-5px);
+border-color:var(--color-primary);
+}
+
+.feature-icon{
+display:block;
+font-size:var(--font-size-3xl);
+margin-bottom:var(--spacing-4);
+}
+
+.feature-card h5{
+font-size:var(--font-size-lg);
+font-weight:var(--font-weight-bold);
+color:var(--color-primary);
+margin-bottom:var(--spacing-3);
+}
+
+.feature-card p{
+font-size:var(--font-size-sm);
+color:var(--color-text-secondary);
+line-height:var(--line-height-relaxed);
+}
+
+@media(max-width:768px){
+.stats-row{gap:var(--spacing-6);}
+.offerings-grid{grid-template-columns:1fr;gap:var(--spacing-8);}
+.why-section{grid-template-columns:1fr;gap:var(--spacing-6);}
+}
+
 footer{
 background:var(--color-bg-secondary);
 padding:var(--spacing-6);
@@ -150,10 +349,10 @@ font-size:var(--font-size-sm);
 <body>
 
 <header class="main-header">
-    <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+    <a href="../index.html" class="logo">AI Study <span>Forge</span></a>
     <nav class="navbar">
         <a href="../index.html">Home</a>
-        <a href="../tools/studyforge/index.html" class="nav-highlight">StudyForge AI</a>
+        <a href="../tools/studyforge/index.html" class="nav-highlight">AI Study Forge</a>
         <a href="../index.html#career-tools">Career Tools</a>
         <a href="about.html" class="nav-highlight">About</a>
         <a href="contact.html">Contact</a>
@@ -174,7 +373,7 @@ font-size:var(--font-size-sm);
 <!-- MOBILE MENU -->
 <nav class="mobile-menu" id="mobileMenu">
     <a href="../index.html">Home</a>
-    <a href="../tools/studyforge/index.html" class="nav-highlight">StudyForge AI</a>
+    <a href="../tools/studyforge/index.html" class="nav-highlight">AI Study Forge</a>
     <a href="../index.html#career-tools">Career Tools</a>
     <a href="about.html" class="nav-highlight">About</a>
     <a href="contact.html">Contact</a>
@@ -183,46 +382,54 @@ font-size:var(--font-size-sm);
 
 <section class="hero">
 
-<h2>About StudyForge AI</h2>
+<h2>We're Building the Future of AI-Powered Learning & Work</h2>
 
 <p>
-StudyForge AI is a modern AI-powered learning platform dedicated to helping students and educators generate educational resources instantly. We simplify learning with AI tools for Notes, MCQs, Lectures, Presentations and Visual Learning.
+AI Study Forge combines AI education tools and career tools to help students, professionals and businesses achieve more — completely free.
 </p>
 
 </section>
 
-<section class="section">
+<section class="stats-row">
+<div class="stat-item"><span class="stat-num">50,000+</span><span class="stat-label">Users</span></div>
+<div class="stat-item"><span class="stat-num">7</span><span class="stat-label">Free Tools</span></div>
+<div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Free Always</span></div>
+</section>
 
-<div class="card">
+<section class="mission-section">
 <h3>Our Mission</h3>
+<p>Our mission is to make AI tools accessible to everyone — students preparing for exams, professionals building their careers, and businesses growing their brand. No subscriptions. No paywalls. Just powerful AI tools that work.</p>
+</section>
 
-<p>
-Our mission is to help students and educators leverage AI to generate comprehensive educational resources instantly, making learning more accessible and effective for everyone.
-</p>
+<section class="offerings-section">
+<div class="offerings-grid">
+<div class="offering-col">
+<h4>📚 Learning Tools</h4>
+<div class="tool-card">Notes & MCQs</div>
+<div class="tool-card">AI Lectures</div>
+<div class="tool-card">Presentations</div>
+<div class="tool-card">Visual Diagrams</div>
 </div>
-
-<div class="card">
-<h3>What We Offer</h3>
-
-<p>
-We provide AI-powered tools for generating Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams across all subjects and curricula.
-</p>
+<div class="offering-col">
+<h4>💼 Career Tools</h4>
+<div class="tool-card">Resume Generator</div>
+<div class="tool-card">Cover Letter AI</div>
+<div class="tool-card">Content Writer</div>
+<div class="tool-card">Business Name Generator</div>
 </div>
-
-<div class="card">
-<h3>Why Choose Us</h3>
-
-<p>
-StudyForge AI focuses on quality educational content, modern design and beginner-friendly learning experiences to help students succeed in their academic journey.
-</p>
 </div>
+</section>
 
+<section class="why-section">
+<div class="feature-card"><span class="feature-icon">⚡</span><h5>Instant Results</h5><p>Generate professional content in seconds</p></div>
+<div class="feature-card"><span class="feature-icon">🆓</span><h5>Always Free</h5><p>No hidden fees, no account required</p></div>
+<div class="feature-card"><span class="feature-icon">🌍</span><h5>Works Everywhere</h5><p>Mobile, tablet, desktop — any browser</p></div>
 </section>
 
 <footer>
     <div class="footer-top">
         <div class="footer-brand">
-            <a href="../index.html" class="logo">StudyForge <span>AI</span></a>
+            <a href="../index.html" class="logo">AI Study <span>Forge</span></a>
             <p>AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources Instantly.</p>
         </div>
         <div class="footer-col">
@@ -253,7 +460,7 @@ StudyForge AI focuses on quality educational content, modern design and beginner
         </div>
     </div>
     <div class="footer-bottom">
-        <p>© 2026 StudyForge AI — All Rights Reserved</p>
+        <p>© 2026 AI Study Forge — All Rights Reserved</p>
         <div class="footer-bottom-links">
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms</a>
