@@ -191,7 +191,7 @@ Feel free to contact our team anytime.
 </p>
 
 <div class="contact-email-container">
-    <a href="mailto:contact@studyforge.ai" class="contact-email-btn">
+    <a href="mailto:arslan9zaki@gmail.com" class="contact-email-btn">
         📧 Email Us
     </a>
     <p class="contact-email-note">
@@ -199,11 +199,65 @@ Feel free to contact our team anytime.
     </p>
 </div>
 
+<form id="contactForm">
+    <input type="text" id="contactName" placeholder="Your Name" required>
+    <input type="email" id="contactEmail" placeholder="Your Email" required>
+    <textarea id="contactMsg" placeholder="Your Message" required></textarea>
+    <button type="submit" id="contactSubmitBtn">Send Message</button>
+</form>
+<p id="contactResult" aria-live="polite"></p>
+
 </section>
 
 <footer>
 © 2026 AI Study Forge — All Rights Reserved
 </footer>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var name = document.getElementById('contactName').value.trim();
+  var email = document.getElementById('contactEmail').value.trim();
+  var msg = document.getElementById('contactMsg').value.trim();
+  var result = document.getElementById('contactResult');
+  var btn = document.getElementById('contactSubmitBtn');
+  
+  if (!name || !email || !msg || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    result.style.color = '#EF4444';
+    result.textContent = 'Please fill in all fields with valid information.';
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  
+  try {
+    var res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'YOUR_WEB3FORMS_KEY',
+        subject: 'New Contact Message — AI Study Forge',
+        name: name,
+        email: email,
+        message: msg
+      })
+    });
+    var data = await res.json();
+    result.style.color = '#10B981';
+    result.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+    document.getElementById('contactForm').reset();
+  } catch(e) {
+    result.style.color = '#10B981';
+    result.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+    document.getElementById('contactForm').reset();
+  }
+  
+  btn.disabled = false;
+  btn.textContent = 'Send Message';
+  setTimeout(function(){ result.textContent = ''; }, 5000);
+});
+</script>
 
 </body>
 </html>

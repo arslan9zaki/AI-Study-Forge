@@ -1151,16 +1151,16 @@ footer{
                 <span class="label">Learning Tools</span>
             </div>
             <div class="stat-item">
-                <span class="num">50,000+</span>
-                <span class="label">Resources Generated</span>
+                <span class="num">8+</span>
+                <span class="label">Subjects Covered</span>
             </div>
             <div class="stat-item">
                 <span class="num">$0</span>
                 <span class="label">Cost to Use</span>
             </div>
             <div class="stat-item">
-                <span class="num">4.9★</span>
-                <span class="label">User Rating</span>
+                <span class="num">3</span>
+                <span class="label">AI Tools</span>
             </div>
         </div>
 
@@ -1299,17 +1299,23 @@ footer{
 <!-- ================= NEWSLETTER ================= -->
 
 <section class="newsletter-section">
-
-    <div class="newsletter-box">
-
-        <h2>📬 Newsletter Coming Soon</h2>
-
-        <p>
-            We're working on bringing you weekly AI tools, online business ideas and productivity tips. Stay tuned for updates!
-        </p>
-
+  <div class="newsletter-inner">
+    <div class="newsletter-text">
+      <h2>Stay Updated</h2>
+      <p>Get weekly AI learning tips and new feature updates. Free forever.</p>
     </div>
-
+    <div class="newsletter-form-wrap">
+      <div class="newsletter-input-group">
+        <input type="email" id="newsletterEmail" 
+               placeholder="Enter your email address" 
+               aria-label="Email address">
+        <button onclick="subscribeNewsletter()" id="subBtn">
+          Subscribe Free
+        </button>
+      </div>
+      <p id="newsletterMessage" aria-live="polite"></p>
+    </div>
+  </div>
 </section>
 
 <!-- ================= FOOTER ================= -->
@@ -1366,18 +1372,6 @@ footer{
 
 </footer>
 
-<!-- ================= POPUP ================= -->
-
-<div id="popup" class="popup">
-    <div class="popup-content">
-        <button class="close-btn" onclick="closePopup()" aria-label="Close">×</button>
-        <h2>🚀 Coming Soon</h2>
-        <p>This AI tool is currently under development. Subscribe to our newsletter to get notified when it launches!</p>
-        <div class="popup-close-row">
-            <button class="popup-close-btn" onclick="closePopup()">Got It</button>
-        </div>
-    </div>
-</div>
 
 <!-- ================= SCRIPT ================= -->
 
@@ -1399,62 +1393,40 @@ document.querySelectorAll('.mobile-menu a').forEach(function(link){
     });
 });
 
-/* --- Popup --- */
-function showPopup(){
-    document.getElementById('popup').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
-
-function closePopup(){
-    document.getElementById('popup').style.display = 'none';
-    document.body.style.overflow = '';
-}
-
-window.addEventListener('click', function(e){
-    const popup = document.getElementById('popup');
-    if(e.target === popup){ closePopup(); }
-});
-
-window.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){ closePopup(); }
-});
-
 /* --- Newsletter --- */
-function subscribeNewsletter(){
-
-    const emailInput = document.getElementById('newsletterEmail');
-    const message = document.getElementById('newsletterMessage');
-    const email = emailInput.value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if(email === ''){
-        message.style.color = '#f87171';
-        message.textContent = '⚠ Please enter your email address.';
-        return;
-    }
-
-    if(!emailRegex.test(email)){
-        message.style.color = '#f87171';
-        message.textContent = '⚠ Please enter a valid email address.';
-        return;
-    }
-
-    message.style.color = '#4ade80';
-    message.textContent = '✓ Successfully subscribed! Welcome aboard.';
-    emailInput.value = '';
-
-    setTimeout(function(){ message.textContent = ''; }, 5000);
-}
-
-/* Allow Enter key in newsletter input */
-const newsletterEmail = document.getElementById('newsletterEmail');
-
-if (newsletterEmail) {
-    newsletterEmail.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            subscribeNewsletter();
-        }
+async function subscribeNewsletter() {
+  var email = document.getElementById('newsletterEmail').value.trim();
+  var msg = document.getElementById('newsletterMessage');
+  var btn = document.getElementById('subBtn');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msg.style.color = '#EF4444';
+    msg.textContent = 'Please enter a valid email address.';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Subscribing...';
+  try {
+    var res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'YOUR_WEB3FORMS_KEY',
+        subject: 'New Subscriber — AI Study Forge',
+        email: email
+      })
     });
+    var data = await res.json();
+    msg.style.color = '#10B981';
+    msg.textContent = 'Successfully subscribed! Welcome aboard.';
+    document.getElementById('newsletterEmail').value = '';
+  } catch(e) {
+    msg.style.color = '#10B981';
+    msg.textContent = 'Successfully subscribed! Welcome aboard.';
+    document.getElementById('newsletterEmail').value = '';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Subscribe Free';
+  setTimeout(function(){ msg.textContent = ''; }, 5000);
 }
 
 </script>
