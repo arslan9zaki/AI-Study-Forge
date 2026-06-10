@@ -58,15 +58,11 @@ body { background:var(--color-bg-primary); color:var(--color-text-primary); min-
 .blog-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:var(--spacing-7); }
 
 /* Blog card */
-.blog-card { background:var(--color-bg-elevated); border-radius:var(--radius-3xl); border:1px solid var(--color-border); overflow:hidden; display:flex; flex-direction:column; transition:var(--transition-slow); cursor:pointer; min-height:420px; }
-.blog-card:hover { transform:translateY(-8px); box-shadow:var(--shadow-2xl); border-color:var(--color-primary); }
-.card-thumb { height:200px; display:flex; align-items:center; justify-content:center; font-size:64px; position:relative; overflow:hidden; }
-.thumb-blue   { background:linear-gradient(135deg,#1e3a5f,#1e293b); }
-.thumb-purple { background:linear-gradient(135deg,#2d1b5e,#1e293b); }
-.thumb-green  { background:linear-gradient(135deg,#0f3328,#1e293b); }
-.thumb-orange { background:linear-gradient(135deg,#3d2000,#1e293b); }
-.thumb-red    { background:linear-gradient(135deg,#3d0a00,#1e293b); }
-.card-body { padding:var(--spacing-7); flex:1; display:flex; flex-direction:column; }
+.blog-card { background:var(--color-bg-elevated); border-radius:var(--radius-3xl); border:1px solid var(--color-border); overflow:hidden; display:flex; flex-direction:column; transition:var(--transition-slow); cursor:pointer; min-height:380px; position:relative; }
+.blog-card:hover { transform:translateY(-12px); box-shadow:var(--shadow-2xl); border-color:var(--color-primary); }
+.card-icon-wrap { width:80px; height:80px; background:linear-gradient(135deg,var(--color-primary-light),var(--color-primary)); border-radius:var(--radius-2xl); display:flex; align-items:center; justify-content:center; margin:var(--spacing-10) auto var(--spacing-6); font-size:32px; transition:var(--transition-base); box-shadow:var(--shadow-md); }
+.blog-card:hover .card-icon-wrap { transform:scale(1.1) rotate(5deg); box-shadow:var(--shadow-lg); }
+.card-body { padding:0 var(--spacing-8) var(--spacing-10); flex:1; display:flex; flex-direction:column; }
 .card-meta { display:flex; align-items:center; gap:var(--spacing-3); margin-bottom:var(--spacing-4); flex-wrap:wrap; }
 .card-tag { font-size:var(--font-size-xs); font-weight:var(--font-weight-bold); text-transform:uppercase; letter-spacing:var(--letter-spacing-wide); padding:var(--spacing-2) var(--spacing-3); border-radius:var(--radius-full); background:linear-gradient(135deg,var(--color-primary-light),var(--color-primary)); color:var(--color-text-inverse); }
 .card-date { font-size:var(--font-size-xs); color:var(--color-text-tertiary); font-weight:var(--font-weight-medium); }
@@ -96,15 +92,14 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
     .navbar { display:none; }
     .hamburger { display:flex; }
     .blog-grid { grid-template-columns:1fr; }
-    .card-thumb{ height:180px; font-size:56px; }
-    .blog-card{ min-height:380px; }
+    .card-icon-wrap{ width:70px; height:70px; font-size:28px; margin:var(--spacing-8) auto var(--spacing-5); }
+    .card-body{ padding:0 var(--spacing-6) var(--spacing-8); }
 }
 
 /* Small Mobile */
 @media(max-width:480px){
-    .blog-card{ min-height:360px; }
-    .card-thumb{ height:160px; font-size:48px; }
-    .card-body{ padding:var(--spacing-5); }
+    .card-icon-wrap{ width:64px; height:64px; font-size:24px; margin:var(--spacing-6) auto var(--spacing-4); }
+    .card-body{ padding:0 var(--spacing-5) var(--spacing-6); }
     .blog-card h2{ font-size:var(--font-size-lg); }
     .blog-card p{ font-size:var(--font-size-sm); }
 }
@@ -157,7 +152,6 @@ footer { padding:var(--spacing-6); text-align:center; border-top:1px solid var(-
 </footer>
 
 <script>
-const THUMBS = ['thumb-blue','thumb-purple','thumb-green','thumb-orange','thumb-red'];
 let allPosts = [];
 let activeFilter = 'All';
 
@@ -176,9 +170,9 @@ function renderPosts(posts) {
         return;
     }
 
-    grid.innerHTML = posts.map((post, i) => `
+    grid.innerHTML = posts.map((post) => `
         <div class="blog-card" onclick="openPost('${post.id}')">
-            <div class="card-thumb ${THUMBS[i % THUMBS.length]}">${post.emoji}</div>
+            <div class="card-icon-wrap">${post.emoji}</div>
             <div class="card-body">
                 <div class="card-meta">
                     <span class="card-tag">${post.category}</span>

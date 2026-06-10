@@ -2,16 +2,1674 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Resume Builder | AI Study Forge</title>
-<meta name="description" content="Create beautiful professional resumes with live preview and premium templates in minutes. Free AI-powered resume builder tool.">
+<title>AI Resume Generator | AI Study Forge</title>
+<meta name="description" content="Generate professional resumes with AI. 10+ styles, auto-summary, PDF & Word download. Free tool — no signup required.">
 <link rel="canonical" href="https://arslan9zaki.github.io/AI-Study-Forge/tools/resume-generator/">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Design System -->
 <link rel="stylesheet" href="../../assets/css/design-system.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: var(--font-family-base);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+}
+body::before {
+    content: '';
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(79, 70, 229, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(6, 182, 212, 0.08), transparent);
+    pointer-events: none; z-index: 0;
+}
+
+/* Navbar */
+.main-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--spacing-4) 8%;
+    background: var(--color-surface-backdrop);
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: var(--z-sticky);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+}
+.logo {
+    font-size: var(--font-size-2xl); font-weight: var(--font-weight-extrabold);
+    background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: var(--letter-spacing-tight); text-decoration: none;
+}
+.logo span {
+    background: linear-gradient(135deg, #0F172A 0%, #4F46E5 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.nav-links { display: flex; gap: var(--spacing-6); align-items: center; }
+.nav-links a {
+    color: var(--color-text-secondary); text-decoration: none;
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+    transition: var(--transition-default); position: relative;
+}
+.nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 2px; background: linear-gradient(90deg, #4F46E5, #8B5CF6);
+    transition: width var(--transition-default);
+}
+.nav-links a:hover { color: var(--color-primary); }
+.nav-links a:hover::after { width: 100%; }
+.nav-btn {
+    background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+    color: #FFFFFF !important; padding: var(--spacing-3) var(--spacing-5);
+    border-radius: var(--radius-lg); font-weight: var(--font-weight-semibold) !important;
+    font-size: var(--font-size-sm) !important; white-space: nowrap;
+    transition: var(--transition-default);
+    box-shadow: 0 4px 6px -1px rgba(79,70,229,0.4), 0 2px 4px -1px rgba(79,70,229,0.2);
+}
+.nav-btn:hover {
+    background: linear-gradient(135deg, #4338CA 0%, #7C3AED 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(79,70,229,0.5), 0 4px 8px -1px rgba(79,70,229,0.3);
+}
+.hamburger { display: none; flex-direction: column; gap: var(--spacing-1); cursor: pointer; padding: var(--spacing-1); background: none; border: none; }
+.hamburger span { display: block; width: 25px; height: 2px; background: var(--color-text-primary); border-radius: var(--radius-sm); transition: var(--transition-base); }
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display: none; flex-direction: column; gap: 0; background: var(--color-bg-secondary); border-top: 1px solid var(--color-border); padding: var(--spacing-2) 0; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { color: var(--color-text-secondary); text-decoration: none; padding: var(--spacing-3) 8%; font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); border-bottom: 1px solid var(--color-border-light); transition: var(--transition-base); }
+.mobile-menu a:hover { background: var(--color-primary-light); color: var(--color-primary); }
+.mobile-menu .nav-btn { margin: var(--spacing-3) 8%; text-align: center; border-radius: var(--radius-lg); padding: var(--spacing-3); border-bottom: none; }
+
+/* Hero */
+.page-hero { text-align: center; padding: var(--spacing-16) 8% var(--spacing-12); position: relative; z-index: 1; }
+.page-hero::before {
+    content: ''; position: absolute; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(79,70,229,0.12), transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+}
+.badge {
+    display: inline-flex; align-items: center; gap: var(--spacing-2);
+    background: var(--color-primary-light); border: 1px solid var(--color-primary);
+    color: var(--color-primary); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+    padding: var(--spacing-2) var(--spacing-4); border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-4); letter-spacing: var(--letter-spacing-wide);
+}
+.page-hero h1 {
+    font-size: clamp(32px, 5vw, 54px); font-weight: var(--font-weight-extrabold);
+    line-height: var(--line-height-tight); margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-tight);
+    background: linear-gradient(135deg, #0F172A 0%, #4F46E5 50%, #8B5CF6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.page-hero p { color: var(--color-text-secondary); font-size: var(--font-size-lg); max-width: 520px; margin: 0 auto; line-height: var(--line-height-relaxed); }
+
+/* Main Layout */
+.main-wrap { flex: 1; width: 90%; max-width: 1400px; margin: 0 auto; padding: var(--spacing-8) 0 var(--spacing-16); position: relative; z-index: 1; }
+.main-grid { display: grid; grid-template-columns: 380px 1fr; gap: var(--spacing-8); align-items: start; }
+
+/* Style Selector */
+.style-selector {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6); box-shadow: var(--shadow-sm);
+}
+.style-selector h3 {
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary); margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide); text-transform: uppercase;
+}
+.style-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-3); }
+.style-card {
+    padding: var(--spacing-4); border: 2px solid var(--color-border);
+    border-radius: var(--radius-xl); cursor: pointer;
+    transition: var(--transition-default); text-align: center;
+    background: var(--color-bg-primary);
+}
+.style-card:hover { border-color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.style-card.active { border-color: var(--color-primary); background: var(--color-primary-light); box-shadow: var(--shadow-md); }
+.style-card .style-icon { font-size: 28px; margin-bottom: var(--spacing-2); display: block; }
+.style-card .style-name { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); display: block; }
+.style-card .style-desc { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+/* Form Box */
+.form-box {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); padding: var(--spacing-8);
+    box-shadow: var(--shadow-sm); transition: var(--transition-default);
+}
+.form-box:hover { box-shadow: var(--shadow-md); }
+.form-section-title {
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-bold);
+    color: var(--color-primary); letter-spacing: var(--letter-spacing-wider);
+    text-transform: uppercase; margin: var(--spacing-6) 0 var(--spacing-4);
+    padding-bottom: var(--spacing-2); border-bottom: 2px solid var(--color-primary-light);
+}
+.form-section-title:first-child { margin-top: 0; }
+
+.input-group { margin-bottom: var(--spacing-4); }
+.input-group label {
+    display: block; margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary); letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+}
+.input-group input, .input-group textarea, .input-group select {
+    width: 100%; padding: var(--spacing-3) var(--spacing-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal); color: var(--color-text-primary);
+    background: var(--color-bg-primary); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); transition: var(--transition-default);
+    -webkit-appearance: none; appearance: none;
+}
+.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+    outline: none; border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+.input-group input::placeholder, .input-group textarea::placeholder { color: var(--color-text-tertiary); }
+.input-group textarea { resize: vertical; min-height: 90px; max-height: 200px; line-height: var(--line-height-relaxed); }
+
+/* Photo */
+.photo-upload { position: relative; margin-bottom: var(--spacing-4); }
+.photo-upload input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.photo-preview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-primary); display: none; margin-bottom: var(--spacing-3); }
+.photo-placeholder {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: var(--color-primary-light); border: 2px dashed var(--color-primary);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-primary); font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-3); cursor: pointer; transition: var(--transition-default);
+}
+.photo-placeholder:hover { background: var(--color-primary); color: var(--color-text-inverse); }
+.photo-upload-text { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
+
+/* Dynamic boxes */
+.dynamic-box {
+    background: var(--color-bg-primary); border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl); padding: var(--spacing-5);
+    margin-bottom: var(--spacing-4); position: relative;
+}
+.dynamic-box .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-3); }
+.card-num { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: var(--color-primary); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); }
+.btn-remove {
+    padding: var(--spacing-1) var(--spacing-3); background: var(--color-error-bg);
+    color: var(--color-error); border: 1px solid var(--color-error);
+    border-radius: var(--radius-md); font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold); font-family: var(--font-family-base);
+    cursor: pointer; transition: var(--transition-default);
+}
+.btn-remove:hover { background: var(--color-error); color: white; }
+
+/* Buttons */
+.btn {
+    display: inline-flex; align-items: center; gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5); border: none;
+    border-radius: var(--radius-lg); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+    cursor: pointer; transition: var(--transition-default);
+}
+.btn-primary { background: var(--color-primary); color: var(--color-text-inverse); box-shadow: var(--shadow-primary); }
+.btn-primary:hover { background: var(--color-primary-hover); transform: translateY(-2px); box-shadow: 0 8px 12px -1px rgba(79,70,229,0.5); }
+.btn-secondary { background: var(--color-bg-tertiary); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.btn-secondary:hover { background: var(--color-primary-light); color: var(--color-primary); border-color: var(--color-primary); }
+.btn-success { background: var(--color-success); color: white; }
+.btn-success:hover { background: #16a34a; transform: translateY(-2px); }
+.btn-outline { background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); }
+.btn-outline:hover { background: var(--color-primary-light); }
+.btn-sm { padding: var(--spacing-2) var(--spacing-3); font-size: var(--font-size-xs); }
+
+/* AI Summary Button */
+.ai-summary-btn {
+    width: 100%; padding: var(--spacing-4);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    color: white; border: none; border-radius: var(--radius-xl);
+    font-family: var(--font-family-base); font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold); cursor: pointer;
+    transition: var(--transition-default); display: flex;
+    align-items: center; justify-content: center; gap: var(--spacing-2);
+    margin-bottom: var(--spacing-4); box-shadow: 0 4px 6px -1px rgba(79,70,229,0.4);
+}
+.ai-summary-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 12px -1px rgba(79,70,229,0.5); }
+.ai-summary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.ai-summary-btn .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+.ai-summary-btn.loading .spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error */
+.error-msg {
+    display: none; align-items: center; gap: var(--spacing-2);
+    margin-top: var(--spacing-2); padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-medium);
+    color: var(--color-error-text); background: var(--color-error-bg);
+    border: 1px solid var(--color-error); border-radius: var(--radius-md);
+}
+.error-msg.visible { display: flex; }
+
+/* Action row */
+.action-row { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-6); padding-top: var(--spacing-6); border-top: 1px solid var(--color-border); }
+
+/* Preview Box */
+.preview-box {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); overflow: hidden;
+    position: sticky; top: 90px; box-shadow: var(--shadow-sm);
+}
+.preview-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--spacing-5) var(--spacing-6);
+    border-bottom: 1px solid var(--color-border); background: var(--color-bg-secondary);
+}
+.preview-header h2 { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-text-primary); }
+.preview-actions { display: flex; gap: var(--spacing-2); }
+.action-btn {
+    padding: var(--spacing-2) var(--spacing-3); border-radius: var(--radius-lg);
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family-base); cursor: pointer;
+    transition: var(--transition-default); display: inline-flex;
+    align-items: center; gap: var(--spacing-1); border: 1px solid var(--color-border);
+    background: var(--color-bg-primary); color: var(--color-text-secondary);
+}
+.action-btn:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+
+/* Resume doc */
+.resume-doc {
+    background: white; margin: var(--spacing-6);
+    border-radius: var(--radius-xl); padding: 48px 44px;
+    min-height: 600px; max-height: 800px; overflow-y: auto;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.resume-doc::-webkit-scrollbar { width: 6px; }
+.resume-doc::-webkit-scrollbar-track { background: var(--color-bg-tertiary); border-radius: var(--radius-full); }
+.resume-doc::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: var(--radius-full); }
+
+/* Placeholder */
+.preview-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 500px; color: var(--color-text-tertiary); text-align: center; gap: var(--spacing-4);
+}
+.preview-placeholder svg { opacity: 0.3; }
+.preview-placeholder p { font-size: var(--font-size-sm); max-width: 260px; line-height: var(--line-height-relaxed); }
+
+/* Toast */
+#toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--color-success); color: white;
+    padding: var(--spacing-3) var(--spacing-5); border-radius: var(--radius-xl);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+    opacity: 0; pointer-events: none; transform: translateY(12px);
+    transition: opacity 0.3s, transform 0.3s; z-index: 9999; box-shadow: var(--shadow-lg);
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+#toast.error { background: var(--color-error); }
+
+/* Print */
+@media print {
+    .main-header, .form-box, .preview-header, .preview-actions, .action-row, .style-selector, #toast { display: none !important; }
+    body { background: white; }
+    .main-wrap, .main-grid { display: block; width: 100%; padding: 0; margin: 0; }
+    .preview-box { border: none; box-shadow: none; position: static; }
+    .resume-doc { box-shadow: none; border: none; max-height: none; margin: 0; padding: 20px; }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .preview-box { position: static; }
+    .style-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .style-grid { grid-template-columns: repeat(2, 1fr); }
+    .page-hero h1 { font-size: var(--font-size-3xl); }
+    .resume-doc { padding: 32px 24px; margin: var(--spacing-4); }
+}
+@media (max-width: 480px) {
+    .style-grid { grid-template-columns: 1fr 1fr; }
+    .form-box { padding: var(--spacing-5); }
+    .resume-doc { padding: 24px 20px; }
+}
+
+/* ═══════════════════════════════════════════
+   10 RESUME STYLES
+═══════════════════════════════════════════ */
+
+/* Style 1: Minimal */
+.rs-minimal { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-minimal .rs-header { text-align: center; padding-bottom: 24px; border-bottom: 2px solid #e2e8f0; margin-bottom: 24px; }
+.rs-minimal .rs-name { font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin-bottom: 6px; }
+.rs-minimal .rs-title { font-size: 16px; color: #4F46E5; font-weight: 600; margin-bottom: 12px; }
+.rs-minimal .rs-contact { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #64748b; }
+.rs-minimal .rs-section { margin-bottom: 24px; }
+.rs-minimal .rs-section-title { font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 14px; }
+.rs-minimal .rs-item { margin-bottom: 16px; }
+.rs-minimal .rs-item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.rs-minimal .rs-item-title { font-size: 15px; font-weight: 700; color: #0f172a; }
+.rs-minimal .rs-item-subtitle { font-size: 14px; color: #4F46E5; font-weight: 600; margin-top: 2px; }
+.rs-minimal .rs-item-date { font-size: 12px; color: #94a3b8; font-weight: 500; white-space: nowrap; }
+.rs-minimal .rs-item-desc { font-size: 13px; color: #475569; line-height: 1.6; margin-top: 6px; }
+.rs-minimal .rs-skills { display: flex; flex-wrap: wrap; gap: 8px; }
+.rs-minimal .rs-skill { background: #f1f5f9; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.rs-minimal .rs-summary { font-size: 14px; color: #475569; line-height: 1.7; text-align: center; max-width: 90%; margin: 0 auto 20px; }
+
+/* Style 2: Modern */
+.rs-modern { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-modern .rs-header { background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%); color: white; padding: 36px 40px; margin: -48px -44px 28px; border-radius: 12px 12px 0 0; display: flex; align-items: center; gap: 24px; }
+.rs-modern .rs-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.3); flex-shrink: 0; }
+.rs-modern .rs-avatar-placeholder { width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: white; flex-shrink: 0; }
+.rs-modern .rs-name { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.rs-modern .rs-title { font-size: 15px; opacity: 0.9; margin-bottom: 10px; }
+.rs-modern .rs-contact { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; opacity: 0.85; }
+.rs-modern .rs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.rs-modern .rs-section { margin-bottom: 20px; }
+.rs-modern .rs-section-title { font-size: 13px; font-weight: 700; color: #4F46E5; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #4F46E5; }
+.rs-modern .rs-item { margin-bottom: 14px; }
+.rs-modern .rs-item-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+.rs-modern .rs-item-subtitle { font-size: 13px; color: #4F46E5; font-weight: 600; }
+.rs-modern .rs-item-date { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.rs-modern .rs-item-desc { font-size: 12px; color: #475569; line-height: 1.6; margin-top: 4px; }
+.rs-modern .rs-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rs-modern .rs-skill { background: linear-gradient(135deg, #4F46E5, #8B5CF6); color: white; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.rs-modern .rs-summary { font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 20px; grid-column: 1 / -1; }
+
+/* Style 3: Academic */
+.rs-academic { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-academic .rs-header { text-align: center; padding-bottom: 20px; border-bottom: 3px double #1e3a5f; margin-bottom: 24px; }
+.rs-academic .rs-name { font-size: 26px; font-weight: 700; color: #1e3a5f; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.rs-academic .rs-title { font-size: 14px; color: #475569; font-style: italic; margin-bottom: 10px; }
+.rs-academic .rs-contact { font-size: 12px; color: #64748b; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+.rs-academic .rs-section { margin-bottom: 22px; }
+.rs-academic .rs-section-title { font-size: 13px; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #1e3a5f; padding-bottom: 4px; margin-bottom: 12px; }
+.rs-academic .rs-item { margin-bottom: 14px; padding-left: 16px; border-left: 3px solid #cbd5e1; }
+.rs-academic .rs-item-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+.rs-academic .rs-item-subtitle { font-size: 13px; color: #1e3a5f; font-weight: 600; }
+.rs-academic .rs-item-date { font-size: 11px; color: #94a3b8; }
+.rs-academic .rs-item-desc { font-size: 12px; color: #475569; line-height: 1.6; margin-top: 4px; }
+.rs-academic .rs-skills { display: flex; flex-wrap: wrap; gap: 8px; }
+.rs-academic .rs-skill { background: #f1f5f9; color: #1e3a5f; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; border: 1px solid #cbd5e1; }
+.rs-academic .rs-summary { font-size: 13px; color: #475569; line-height: 1.7; text-align: justify; margin-bottom: 20px; }
+
+/* Style 4: Executive */
+.rs-executive { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-executive .rs-header { background: #0f172a; color: white; padding: 32px 36px; margin: -48px -44px 28px; display: flex; align-items: center; gap: 24px; }
+.rs-executive .rs-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #f59e0b; flex-shrink: 0; }
+.rs-executive .rs-avatar-placeholder { width: 80px; height: 80px; border-radius: 50%; background: #1e293b; border: 3px solid #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: #f59e0b; flex-shrink: 0; }
+.rs-executive .rs-name { font-size: 26px; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+.rs-executive .rs-title { font-size: 15px; color: #f59e0b; font-weight: 600; margin-bottom: 10px; }
+.rs-executive .rs-contact { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #94a3b8; }
+.rs-executive .rs-body { display: grid; grid-template-columns: 2fr 1fr; gap: 28px; }
+.rs-executive .rs-section { margin-bottom: 20px; }
+.rs-executive .rs-section-title { font-size: 13px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #f59e0b; padding-bottom: 6px; margin-bottom: 14px; }
+.rs-executive .rs-item { margin-bottom: 16px; }
+.rs-executive .rs-item-header { display: flex; justify-content: space-between; align-items: baseline; }
+.rs-executive .rs-item-title { font-size: 15px; font-weight: 700; color: #0f172a; }
+.rs-executive .rs-item-subtitle { font-size: 13px; color: #64748b; font-weight: 600; margin-top: 2px; }
+.rs-executive .rs-item-date { font-size: 11px; color: #94a3b8; font-weight: 500; background: #f1f5f9; padding: 2px 10px; border-radius: 12px; }
+.rs-executive .rs-item-desc { font-size: 12px; color: #475569; line-height: 1.6; margin-top: 6px; }
+.rs-executive .rs-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rs-executive .rs-skill { background: #f59e0b; color: white; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.rs-executive .rs-summary { font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 20px; grid-column: 1 / -1; background: #f8fafc; padding: 16px; border-left: 4px solid #f59e0b; }
+
+/* Style 5: Infographic */
+.rs-infographic { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-infographic .rs-header { display: flex; align-items: center; gap: 24px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 3px solid #06B6D4; }
+.rs-infographic .rs-avatar { width: 100px; height: 100px; border-radius: 16px; object-fit: cover; border: 3px solid #06B6D4; flex-shrink: 0; }
+.rs-infographic .rs-avatar-placeholder { width: 100px; height: 100px; border-radius: 16px; background: linear-gradient(135deg, #06B6D4, #0891B2); display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: white; flex-shrink: 0; }
+.rs-infographic .rs-name { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+.rs-infographic .rs-title { font-size: 15px; color: #06B6D4; font-weight: 700; margin-bottom: 8px; }
+.rs-infographic .rs-contact { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: #64748b; }
+.rs-infographic .rs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.rs-infographic .rs-section { margin-bottom: 18px; }
+.rs-infographic .rs-section-title { font-size: 12px; font-weight: 800; color: white; background: #06B6D4; padding: 6px 14px; border-radius: 6px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.rs-infographic .rs-item { margin-bottom: 12px; padding: 10px 14px; background: #f0fdff; border-radius: 8px; border-left: 4px solid #06B6D4; }
+.rs-infographic .rs-item-title { font-size: 13px; font-weight: 700; color: #0f172a; }
+.rs-infographic .rs-item-subtitle { font-size: 12px; color: #06B6D4; font-weight: 600; }
+.rs-infographic .rs-item-date { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.rs-infographic .rs-item-desc { font-size: 11px; color: #475569; line-height: 1.5; margin-top: 4px; }
+.rs-infographic .rs-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rs-infographic .rs-skill { background: white; color: #06B6D4; border: 2px solid #06B6D4; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+.rs-infographic .rs-summary { font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 20px; grid-column: 1 / -1; background: #f0fdff; padding: 16px; border-radius: 12px; border: 2px solid #06B6D4; }
+
+/* Style 6: European */
+.rs-european { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-european .rs-header { background: #003399; color: white; padding: 24px 32px; margin: -48px -44px 24px; display: flex; align-items: center; gap: 20px; }
+.rs-european .rs-avatar { width: 100px; height: 120px; object-fit: cover; border: 2px solid white; flex-shrink: 0; }
+.rs-european .rs-avatar-placeholder { width: 100px; height: 120px; background: #002266; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: white; flex-shrink: 0; }
+.rs-european .rs-name { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.rs-european .rs-title { font-size: 14px; color: #93c5fd; margin-bottom: 8px; }
+.rs-european .rs-contact { font-size: 12px; color: #bfdbfe; display: flex; flex-wrap: wrap; gap: 10px; }
+.rs-european .rs-body { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+.rs-european .rs-sidebar { border-right: 1px solid #e2e8f0; padding-right: 20px; }
+.rs-european .rs-section { margin-bottom: 18px; }
+.rs-european .rs-section-title { font-size: 12px; font-weight: 700; color: #003399; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #003399; padding-bottom: 4px; margin-bottom: 10px; }
+.rs-european .rs-item { margin-bottom: 12px; }
+.rs-european .rs-item-title { font-size: 13px; font-weight: 700; color: #0f172a; }
+.rs-european .rs-item-subtitle { font-size: 12px; color: #003399; font-weight: 600; }
+.rs-european .rs-item-date { font-size: 11px; color: #94a3b8; }
+.rs-european .rs-item-desc { font-size: 11px; color: #475569; line-height: 1.5; margin-top: 4px; }
+.rs-european .rs-skills { display: flex; flex-wrap: wrap; gap: 4px; }
+.rs-european .rs-skill { background: #e8eeff; color: #003399; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.rs-european .rs-summary { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 16px; }
+
+/* Style 7: ATS */
+.rs-ats { font-family: 'Inter', sans-serif; color: #000; line-height: 1.5; max-width: 700px; margin: 0 auto; }
+.rs-ats .rs-header { text-align: left; padding-bottom: 16px; border-bottom: 1px solid #000; margin-bottom: 20px; }
+.rs-ats .rs-name { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 4px; }
+.rs-ats .rs-title { font-size: 14px; color: #333; font-weight: 600; margin-bottom: 8px; }
+.rs-ats .rs-contact { font-size: 11px; color: #333; display: flex; flex-wrap: wrap; gap: 12px; }
+.rs-ats .rs-section { margin-bottom: 18px; }
+.rs-ats .rs-section-title { font-size: 13px; font-weight: 700; color: #000; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; }
+.rs-ats .rs-item { margin-bottom: 12px; }
+.rs-ats .rs-item-header { display: flex; justify-content: space-between; }
+.rs-ats .rs-item-title { font-size: 13px; font-weight: 700; color: #000; }
+.rs-ats .rs-item-subtitle { font-size: 12px; color: #333; font-weight: 600; }
+.rs-ats .rs-item-date { font-size: 11px; color: #666; }
+.rs-ats .rs-item-desc { font-size: 11px; color: #333; line-height: 1.5; margin-top: 4px; }
+.rs-ats .rs-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rs-ats .rs-skill { background: #f0f0f0; color: #000; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; }
+.rs-ats .rs-summary { font-size: 12px; color: #333; line-height: 1.6; margin-bottom: 16px; }
+
+/* Style 8: Portfolio */
+.rs-portfolio { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-portfolio .rs-header { display: flex; align-items: center; gap: 28px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 3px solid #ec4899; }
+.rs-portfolio .rs-avatar { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid #ec4899; flex-shrink: 0; }
+.rs-portfolio .rs-avatar-placeholder { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #ec4899, #f472b6); display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; color: white; flex-shrink: 0; }
+.rs-portfolio .rs-name { font-size: 30px; font-weight: 800; color: #0f172a; letter-spacing: -1px; margin-bottom: 6px; }
+.rs-portfolio .rs-title { font-size: 16px; color: #ec4899; font-weight: 700; margin-bottom: 10px; }
+.rs-portfolio .rs-contact { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #64748b; }
+.rs-portfolio .rs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.rs-portfolio .rs-section { margin-bottom: 20px; }
+.rs-portfolio .rs-section-title { font-size: 13px; font-weight: 800; color: #ec4899; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px dashed #ec4899; }
+.rs-portfolio .rs-item { margin-bottom: 14px; }
+.rs-portfolio .rs-item-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+.rs-portfolio .rs-item-subtitle { font-size: 13px; color: #ec4899; font-weight: 600; }
+.rs-portfolio .rs-item-date { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.rs-portfolio .rs-item-desc { font-size: 12px; color: #475569; line-height: 1.6; margin-top: 4px; }
+.rs-portfolio .rs-skills { display: flex; flex-wrap: wrap; gap: 8px; }
+.rs-portfolio .rs-skill { background: #fce7f3; color: #be185d; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.rs-portfolio .rs-summary { font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 20px; grid-column: 1 / -1; background: #fdf2f8; padding: 18px; border-radius: 12px; border-left: 4px solid #ec4899; }
+
+/* Style 9: Medical */
+.rs-medical { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.rs-medical .rs-header { background: #059669; color: white; padding: 28px 32px; margin: -48px -44px 24px; display: flex; align-items: center; gap: 20px; border-radius: 12px 12px 0 0; }
+.rs-medical .rs-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; flex-shrink: 0; }
+.rs-medical .rs-avatar-placeholder { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: white; flex-shrink: 0; }
+.rs-medical .rs-name { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.rs-medical .rs-title { font-size: 15px; color: #a7f3d0; font-weight: 600; margin-bottom: 8px; }
+.rs-medical .rs-contact { font-size: 12px; color: #d1fae5; display: flex; flex-wrap: wrap; gap: 12px; }
+.rs-medical .rs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.rs-medical .rs-section { margin-bottom: 18px; }
+.rs-medical .rs-section-title { font-size: 13px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 2px solid #059669; padding-bottom: 6px; margin-bottom: 12px; }
+.rs-medical .rs-item { margin-bottom: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border-left: 4px solid #059669; }
+.rs-medical .rs-item-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+.rs-medical .rs-item-subtitle { font-size: 13px; color: #059669; font-weight: 600; }
+.rs-medical .rs-item-date { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.rs-medical .rs-item-desc { font-size: 12px; color: #475569; line-height: 1.5; margin-top: 4px; }
+.rs-medical .rs-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rs-medical .rs-skill { background: #059669; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.rs-medical .rs-summary { font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 20px; grid-column: 1 / -1; background: #ecfdf5; padding: 16px; border-radius: 10px; border: 1px solid #059669; }
+
+/* Style 10: Technical */
+.rs-technical { font-family: 'Inter', sans-serif; color: #e2e8f0; line-height: 1.6; background: #0f172a; padding: 40px; margin: -48px -44px; min-height: 100%; }
+.rs-technical .rs-header { display: flex; align-items: center; gap: 24px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #6366f1; }
+.rs-technical .rs-avatar { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; border: 2px solid #6366f1; flex-shrink: 0; }
+.rs-technical .rs-avatar-placeholder { width: 90px; height: 90px; border-radius: 12px; background: #1e293b; border: 2px solid #6366f1; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: #6366f1; flex-shrink: 0; }
+.rs-technical .rs-name { font-size: 28px; font-weight: 800; color: #f8fafc; margin-bottom: 4px; }
+.rs-technical .rs-title { font-size: 15px; color: #818cf8; font-weight: 600; margin-bottom: 10px; }
+.rs-technical .rs-contact { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #94a3b8; }
+.rs-technical .rs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.rs-technical .rs-section { margin-bottom: 20px; }
+.rs-technical .rs-section-title { font-size: 13px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-bottom: 12px; }
+.rs-technical .rs-item { margin-bottom: 14px; padding: 10px 14px; background: #1e293b; border-radius: 8px; border-left: 3px solid #6366f1; }
+.rs-technical .rs-item-title { font-size: 14px; font-weight: 700; color: #f8fafc; }
+.rs-technical .rs-item-subtitle { font-size: 13px; color: #818cf8; font-weight: 600; }
+.rs-technical .rs-item-date { font-size: 11px; color: #64748b; margin-top: 2px; }
+.rs-technical .rs-item-desc { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-top: 4px; }
+.rs-technical .rs-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rs-technical .rs-skill { background: #334155; color: #c7d2fe; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; }
+.rs-technical .rs-summary { font-size: 13px; color: #94a3b8; line-height: 1.7; margin-bottom: 20px; grid-column: 1 / -1; background: #1e293b; padding: 16px; border-radius: 8px; border: 1px solid #6366f1; }
+
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="main-header">
+    <a href="../../index.html" class="logo">AI Study <span>Forge</span></a>
+    <nav class="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="../../pages/about.html">About</a>
+        <a href="../../blog/index.html">Blog</a>
+        <a href="../../pages/contact.html">Contact</a>
+        <a href="../studyforge/index.html" class="nav-btn">🎓 Study Hub</a>
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../../index.html">Home</a>
+    <a href="../../pages/about.html">About</a>
+    <a href="../../blog/index.html">Blog</a>
+    <a href="../../pages/contact.html">Contact</a>
+    <a href="../studyforge/index.html" class="nav-btn">🎓 Study Hub</a>
+</nav>
+
+<!-- Hero -->
+<section class="page-hero">
+    <div class="badge">📄 AI-Powered Resume Builder</div>
+    <h1>Professional Resume <span>Generator</span></h1>
+    <p>Create stunning, ATS-friendly resumes with AI-generated summaries. Choose from 10+ professional styles. Export as PDF or Word.</p>
+</section>
+
+<!-- Main -->
+<div class="main-wrap">
+    <div class="main-grid">
+
+        <!-- LEFT: Form -->
+        <div class="form-column">
+
+            <!-- Style Selector -->
+            <div class="style-selector">
+                <h3>Choose Resume Style</h3>
+                <div class="style-grid" id="styleGrid">
+                    <div class="style-card active" data-style="minimal" onclick="selectStyle(this)">
+                        <span class="style-icon">✨</span>
+                        <span class="style-name">Minimal</span>
+                        <span class="style-desc">Clean & Simple</span>
+                    </div>
+                    <div class="style-card" data-style="modern" onclick="selectStyle(this)">
+                        <span class="style-icon">🎨</span>
+                        <span class="style-name">Modern</span>
+                        <span class="style-desc">Creative Gradient</span>
+                    </div>
+                    <div class="style-card" data-style="academic" onclick="selectStyle(this)">
+                        <span class="style-icon">🎓</span>
+                        <span class="style-name">Academic</span>
+                        <span class="style-desc">Research Focus</span>
+                    </div>
+                    <div class="style-card" data-style="executive" onclick="selectStyle(this)">
+                        <span class="style-icon">💼</span>
+                        <span class="style-name">Executive</span>
+                        <span class="style-desc">Corporate Elite</span>
+                    </div>
+                    <div class="style-card" data-style="infographic" onclick="selectStyle(this)">
+                        <span class="style-icon">📊</span>
+                        <span class="style-name">Infographic</span>
+                        <span class="style-desc">Visual Impact</span>
+                    </div>
+                    <div class="style-card" data-style="european" onclick="selectStyle(this)">
+                        <span class="style-icon">🇪🇺</span>
+                        <span class="style-name">European</span>
+                        <span class="style-desc">Europass Style</span>
+                    </div>
+                    <div class="style-card" data-style="ats" onclick="selectStyle(this)">
+                        <span class="style-icon">🤖</span>
+                        <span class="style-name">ATS-Optimized</span>
+                        <span class="style-desc">No Graphics</span>
+                    </div>
+                    <div class="style-card" data-style="portfolio" onclick="selectStyle(this)">
+                        <span class="style-icon">🎭</span>
+                        <span class="style-name">Portfolio</span>
+                        <span class="style-desc">Designer Style</span>
+                    </div>
+                    <div class="style-card" data-style="medical" onclick="selectStyle(this)">
+                        <span class="style-icon">🏥</span>
+                        <span class="style-name">Medical</span>
+                        <span class="style-desc">Healthcare Pro</span>
+                    </div>
+                    <div class="style-card" data-style="technical" onclick="selectStyle(this)">
+                        <span class="style-icon">💻</span>
+                        <span class="style-name">Technical</span>
+                        <span class="style-desc">Developer CV</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Box -->
+            <div class="form-box">
+
+                <!-- Personal Info -->
+                <div class="form-section-title">Personal Information</div>
+
+                <div class="photo-upload" id="photoUpload">
+                    <img id="photoPreview" class="photo-preview" alt="Profile">
+                    <div class="photo-placeholder" id="photoPlaceholder" onclick="document.getElementById('photoInput').click()">
+                        📷
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" onchange="loadPhoto(event)">
+                    <p class="photo-upload-text">Click to upload photo (optional)</p>
+                    <p class="photo-upload-text" id="photoNote" style="color: var(--color-warning); margin-top: 4px; display: none;">⚠ Photo not recommended for ATS/Canada styles</p>
+                </div>
+
+                <div class="input-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="name" placeholder="e.g. Jane Smith" oninput="generateResume()">
+                    <div class="error-msg" id="nameErr">Please enter your name</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Professional Title *</label>
+                    <input type="text" id="title" placeholder="e.g. Senior UX Designer" oninput="generateResume()">
+                </div>
+
+                <div class="input-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" placeholder="jane@example.com" oninput="generateResume()">
+                    <div class="error-msg" id="emailErr">Please enter a valid email</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="+1 234 567 8900" oninput="generateResume()">
+                </div>
+
+                <div class="input-group">
+                    <label>Location</label>
+                    <input type="text" id="location" placeholder="City, Country" oninput="generateResume()">
+                </div>
+
+                <div class="input-group">
+                    <label>LinkedIn</label>
+                    <input type="text" id="linkedin" placeholder="linkedin.com/in/yourname" oninput="generateResume()">
+                </div>
+
+                <div class="input-group">
+                    <label>Portfolio / Website</label>
+                    <input type="text" id="portfolio" placeholder="yoursite.com" oninput="generateResume()">
+                </div>
+
+                <!-- Experience -->
+                <div class="form-section-title">Work Experience</div>
+                <div id="experienceContainer"></div>
+                <button class="btn btn-secondary" onclick="addExperience()">+ Add Experience</button>
+
+                <!-- Education -->
+                <div class="form-section-title">Education</div>
+                <div id="educationContainer"></div>
+                <button class="btn btn-secondary" onclick="addEducation()">+ Add Education</button>
+
+                <!-- Skills -->
+                <div class="form-section-title">Skills & Languages</div>
+
+                <div class="input-group">
+                    <label>Skills <small style="font-weight:400; text-transform:none; color:var(--color-text-tertiary);">(comma separated)</small></label>
+                    <input type="text" id="skills" placeholder="JavaScript, React, Node.js, Figma, Project Management" oninput="generateResume()">
+                </div>
+
+                <div class="input-group">
+                    <label>Languages <small style="font-weight:400; text-transform:none; color:var(--color-text-tertiary);">(comma separated)</small></label>
+                    <input type="text" id="languages" placeholder="English, Spanish, French" oninput="generateResume()">
+                </div>
+
+                <!-- Certifications -->
+                <div class="form-section-title">Certifications <small style="font-weight:400; font-size:12px; color:var(--color-text-tertiary);">(optional)</small></div>
+                <div id="certContainer"></div>
+                <button class="btn btn-secondary" onclick="addCert()">+ Add Certification</button>
+
+                <!-- AI Summary (at the end) -->
+                <div class="form-section-title">Professional Summary</div>
+                <p style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:12px;">
+                    💡 Don't write this yourself! Click below and AI will generate a professional summary based on your details.
+                </p>
+
+                <button class="ai-summary-btn" id="aiSummaryBtn" onclick="generateSummary()">
+                    <div class="spinner"></div>
+                    <span id="aiBtnText">✨ Generate AI Summary</span>
+                </button>
+
+                <div class="input-group">
+                    <textarea id="summary" rows="4" placeholder="Your AI-generated summary will appear here..." oninput="generateResume()"></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-row">
+                    <button class="btn btn-success" onclick="downloadPDF()">📄 Download PDF</button>
+                    <button class="btn btn-primary" onclick="downloadWord()">📝 Download Word</button>
+                    <button class="btn btn-secondary" onclick="saveDraft()">💾 Save Draft</button>
+                    <button class="btn btn-secondary" onclick="loadDraft()">📂 Load Draft</button>
+                    <button class="btn btn-outline" onclick="clearAll()" style="color:var(--color-error); border-color:var(--color-error);">🗑 Clear</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT: Preview -->
+        <div class="preview-column">
+            <div class="preview-box">
+                <div class="preview-header">
+                    <h2>Live Preview</h2>
+                    <div class="preview-actions">
+                        <button class="action-btn" onclick="copyResume()">📋 Copy</button>
+                        <button class="action-btn" onclick="window.print()">🖨 Print</button>
+                    </div>
+                </div>
+                <div class="resume-doc" id="resumeDoc">
+                    <div class="preview-placeholder" id="placeholder">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <line x1="7" y1="8" x2="17" y2="8"/>
+                            <line x1="7" y1="12" x2="17" y2="12"/>
+                            <line x1="7" y1="16" x2="13" y2="16"/>
+                        </svg>
+                        <p>Start filling in your details to see your resume preview here.</p>
+                    </div>
+                    <div id="resumeOutput" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let selectedStyle = 'minimal';
+let profileImage = '';
+let experiences = [];
+let educations = [];
+let certifications = [];
+
+const WORKER_URL = 'https://ai-study-forge.arslan9zaki.workers.dev';
+
+const STYLE_CONFIG = {
+    minimal:    { name: 'Minimal',       hasPhoto: true,  columns: 1 },
+    modern:     { name: 'Modern',        hasPhoto: true,  columns: 2 },
+    academic:   { name: 'Academic',      hasPhoto: false, columns: 1 },
+    executive:  { name: 'Executive',     hasPhoto: true,  columns: 2 },
+    infographic:{ name: 'Infographic',   hasPhoto: true,  columns: 2 },
+    european:   { name: 'European',      hasPhoto: true,  columns: 2 },
+    ats:        { name: 'ATS-Optimized', hasPhoto: false, columns: 1 },
+    portfolio:  { name: 'Portfolio',     hasPhoto: true,  columns: 2 },
+    medical:    { name: 'Medical',       hasPhoto: true,  columns: 2 },
+    technical:  { name: 'Technical',     hasPhoto: true,  columns: 2 },
+};
+
+/* ═══════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════ */
+function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+
+function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (isError ? ' error' : '');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.className = '', 3000);
+}
+
+function esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ═══════════════════════════════════════════
+   STYLE SELECTOR
+═══════════════════════════════════════════ */
+function selectStyle(el) {
+    document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedStyle = el.dataset.style;
+
+    // Show/hide photo based on style
+    const config = STYLE_CONFIG[selectedStyle];
+    const photoUpload = document.getElementById('photoUpload');
+    const photoNote = document.getElementById('photoNote');
+
+    if (!config.hasPhoto) {
+        photoUpload.style.opacity = '0.5';
+        photoUpload.style.pointerEvents = 'none';
+        photoNote.style.display = 'block';
+        photoNote.textContent = '⚠ Photo not recommended for ' + config.name + ' style';
+    } else {
+        photoUpload.style.opacity = '1';
+        photoUpload.style.pointerEvents = 'auto';
+        photoNote.style.display = 'none';
+    }
+
+    generateResume();
+}
+
+/* ═══════════════════════════════════════════
+   PHOTO
+═══════════════════════════════════════════ */
+function loadPhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file', true);
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function() {
+        profileImage = reader.result;
+        document.getElementById('photoPreview').src = profileImage;
+        document.getElementById('photoPreview').style.display = 'block';
+        document.getElementById('photoPlaceholder').style.display = 'none';
+        generateResume();
+    };
+    reader.readAsDataURL(file);
+}
+
+/* ═══════════════════════════════════════════
+   DYNAMIC FIELDS
+═══════════════════════════════════════════ */
+function addExperience() {
+    experiences.push({ job: '', company: '', startDate: '', endDate: '', current: false, details: '' });
+    renderExperiences();
+    generateResume();
+}
+
+function removeExperience(i) {
+    experiences.splice(i, 1);
+    renderExperiences();
+    generateResume();
+}
+
+function renderExperiences() {
+    const container = document.getElementById('experienceContainer');
+    container.innerHTML = experiences.map((exp, i) => `
+        <div class="dynamic-box">
+            <div class="card-header">
+                <span class="card-num">Job #${i + 1}</span>
+                <button class="btn-remove" onclick="removeExperience(${i})">✕ Remove</button>
+            </div>
+            <div class="input-group">
+                <label>Job Title</label>
+                <input type="text" value="${esc(exp.job)}" placeholder="e.g. Frontend Developer"
+                    oninput="experiences[${i}].job = this.value; generateResume()">
+            </div>
+            <div class="input-group">
+                <label>Company</label>
+                <input type="text" value="${esc(exp.company)}" placeholder="e.g. Acme Corp"
+                    oninput="experiences[${i}].company = this.value; generateResume()">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="input-group">
+                    <label>Start Date</label>
+                    <input type="text" value="${esc(exp.startDate)}" placeholder="Jan 2020"
+                        oninput="experiences[${i}].startDate = this.value; generateResume()">
+                </div>
+                <div class="input-group">
+                    <label>End Date</label>
+                    <input type="text" id="endDate_${i}" value="${esc(exp.endDate)}" placeholder="Dec 2023"
+                        ${exp.current ? 'disabled style="opacity:0.5"' : ''}
+                        oninput="experiences[${i}].endDate = this.value; generateResume()">
+                </div>
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; margin-top:8px; cursor:pointer; font-size:13px; font-weight:500; color:var(--color-text-secondary); text-transform:none; letter-spacing:0;">
+                <input type="checkbox" ${exp.current ? 'checked' : ''} style="width:auto; margin:0;"
+                    onchange="experiences[${i}].current = this.checked; experiences[${i}].endDate = ''; renderExperiences(); generateResume();">
+                Currently working here
+            </label>
+            <div class="input-group" style="margin-top:12px;">
+                <label>Details & Achievements</label>
+                <textarea placeholder="• Led a team of 5 developers\n• Reduced load time by 40%"
+                    oninput="experiences[${i}].details = this.value; generateResume()">${esc(exp.details)}</textarea>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addEducation() {
+    educations.push({ degree: '', institute: '', years: '', grade: '' });
+    renderEducations();
+    generateResume();
+}
+
+function removeEducation(i) {
+    educations.splice(i, 1);
+    renderEducations();
+    generateResume();
+}
+
+function renderEducations() {
+    const container = document.getElementById('educationContainer');
+    container.innerHTML = educations.map((edu, i) => `
+        <div class="dynamic-box">
+            <div class="card-header">
+                <span class="card-num">Education #${i + 1}</span>
+                <button class="btn-remove" onclick="removeEducation(${i})">✕ Remove</button>
+            </div>
+            <div class="input-group">
+                <label>Degree / Qualification</label>
+                <input type="text" value="${esc(edu.degree)}" placeholder="e.g. BSc Computer Science"
+                    oninput="educations[${i}].degree = this.value; generateResume()">
+            </div>
+            <div class="input-group">
+                <label>Institution</label>
+                <input type="text" value="${esc(edu.institute)}" placeholder="e.g. MIT"
+                    oninput="educations[${i}].institute = this.value; generateResume()">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="input-group">
+                    <label>Years</label>
+                    <input type="text" value="${esc(edu.years)}" placeholder="2016 – 2020"
+                        oninput="educations[${i}].years = this.value; generateResume()">
+                </div>
+                <div class="input-group">
+                    <label>Grade / GPA <small style="font-weight:400; text-transform:none;">(optional)</small></label>
+                    <input type="text" value="${esc(edu.grade)}" placeholder="3.8 / 4.0"
+                        oninput="educations[${i}].grade = this.value; generateResume()">
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addCert() {
+    certifications.push({ name: '', issuer: '', year: '' });
+    renderCerts();
+    generateResume();
+}
+
+function removeCert(i) {
+    certifications.splice(i, 1);
+    renderCerts();
+    generateResume();
+}
+
+function renderCerts() {
+    const container = document.getElementById('certContainer');
+    container.innerHTML = certifications.map((cert, i) => `
+        <div class="dynamic-box">
+            <div class="card-header">
+                <span class="card-num">Cert #${i + 1}</span>
+                <button class="btn-remove" onclick="removeCert(${i})">✕ Remove</button>
+            </div>
+            <div class="input-group">
+                <label>Certification Name</label>
+                <input type="text" value="${esc(cert.name)}" placeholder="e.g. AWS Solutions Architect"
+                    oninput="certifications[${i}].name = this.value; generateResume()">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="input-group">
+                    <label>Issuing Organization</label>
+                    <input type="text" value="${esc(cert.issuer)}" placeholder="e.g. Amazon Web Services"
+                        oninput="certifications[${i}].issuer = this.value; generateResume()">
+                </div>
+                <div class="input-group">
+                    <label>Year</label>
+                    <input type="text" value="${esc(cert.year)}" placeholder="2023"
+                        oninput="certifications[${i}].year = this.value; generateResume()">
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+/* ═══════════════════════════════════════════
+   COLLECT DATA
+═══════════════════════════════════════════ */
+function collectData() {
+    const g = id => document.getElementById(id)?.value?.trim() || '';
+    return {
+        name: g('name'), title: g('title'), email: g('email'), phone: g('phone'),
+        location: g('location'), linkedin: g('linkedin'), portfolio: g('portfolio'),
+        summary: g('summary'), skills: g('skills'), languages: g('languages'),
+        experiences, educations, certifications, profileImage
+    };
+}
+
+function isEmpty(data) {
+    return !data.name && !data.title && !data.email && experiences.length === 0 && educations.length === 0;
+}
+
+/* ═══════════════════════════════════════════
+   AI SUMMARY GENERATION
+═══════════════════════════════════════════ */
+async function generateSummary() {
+    const data = collectData();
+    const btn = document.getElementById('aiSummaryBtn');
+    const btnText = document.getElementById('aiBtnText');
+
+    if (!data.name || !data.title) {
+        showToast('Please fill in your name and title first', true);
+        return;
+    }
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btnText.textContent = 'Generating...';
+
+    const expList = experiences.filter(e => e.job).map(e => `${e.job} at ${e.company}`).join(', ');
+    const eduList = educations.filter(e => e.degree).map(e => `${e.degree} from ${e.institute}`).join(', ');
+
+    const prompt = `Write a professional resume summary (3-4 sentences, max 120 words) for:
+
+Name: ${data.name}
+Title: ${data.title}
+Skills: ${data.skills || 'Not specified'}
+Experience: ${expList || 'Not specified'}
+Education: ${eduList || 'Not specified'}
+
+Write in third-person implied, professional tone. No "I" statements. Focus on key strengths and career highlights. Return ONLY the summary text.`;
+
+    try {
+        const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'gemini-2.0-flash',
+                prompt: prompt,
+                systemPrompt: 'You are an expert resume writer. Write compelling, professional resume summaries. Output only the summary text with no preamble or commentary.'
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) throw new Error(result.error || 'Worker error');
+
+        const summary = (result.text || '').trim();
+        if (summary) {
+            document.getElementById('summary').value = summary;
+            generateResume();
+            showToast('✨ AI summary generated!');
+        } else {
+            throw new Error('Empty response');
+        }
+    } catch (err) {
+        showToast('❌ Error: ' + err.message, true);
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btnText.textContent = '✨ Generate AI Summary';
+    }
+}
+
+/* ═══════════════════════════════════════════
+   RENDER RESUME
+═══════════════════════════════════════════ */
+function generateResume() {
+    const data = collectData();
+    const output = document.getElementById('resumeOutput');
+    const placeholder = document.getElementById('placeholder');
+
+    if (isEmpty(data)) {
+        output.style.display = 'none';
+        placeholder.style.display = 'flex';
+        return;
+    }
+
+    placeholder.style.display = 'none';
+    output.style.display = 'block';
+
+    const renderFn = RENDERERS[selectedStyle] || RENDERERS.minimal;
+    output.innerHTML = renderFn(data);
+}
+
+/* ═══════════════════════════════════════════
+   RENDERER FUNCTIONS
+═══════════════════════════════════════════ */
+
+function buildAvatar(data, size, shape, border) {
+    if (!STYLE_CONFIG[selectedStyle].hasPhoto || !data.profileImage) {
+        const initial = (data.name || '?')[0].toUpperCase();
+        return `<div class="rs-avatar-placeholder" style="width:${size}px; height:${size}px; border-radius:${shape};">${initial}</div>`;
+    }
+    return `<img class="rs-avatar" src="${data.profileImage}" alt="Profile" style="width:${size}px; height:${size}px; border-radius:${shape};">`;
+}
+
+function buildContact(data) {
+    const items = [];
+    if (data.email) items.push(`<span>✉ ${esc(data.email)}</span>`);
+    if (data.phone) items.push(`<span>📞 ${esc(data.phone)}</span>`);
+    if (data.location) items.push(`<span>📍 ${esc(data.location)}</span>`);
+    if (data.linkedin) items.push(`<span>🔗 ${esc(data.linkedin)}</span>`);
+    if (data.portfolio) items.push(`<span>🌐 ${esc(data.portfolio)}</span>`);
+    return items.join('');
+}
+
+function buildSkills(data) {
+    if (!data.skills) return '';
+    return data.skills.split(',').map(s => s.trim()).filter(Boolean)
+        .map(s => `<span class="rs-skill">${esc(s)}</span>`).join('');
+}
+
+function buildLanguages(data) {
+    if (!data.languages) return '';
+    return data.languages.split(',').map(l => l.trim()).filter(Boolean)
+        .map(l => `<span class="rs-lang">${esc(l)}</span>`).join('');
+}
+
+function buildExperience(data) {
+    if (!data.experiences.length) return '';
+    return data.experiences.filter(e => e.job).map(exp => {
+        const duration = exp.startDate ? `${esc(exp.startDate)} – ${exp.current ? 'Present' : esc(exp.endDate || '')}` : '';
+        return `<div class="rs-item">
+            <div class="rs-item-header">
+                <div>
+                    <div class="rs-item-title">${esc(exp.job)}</div>
+                    ${exp.company ? `<div class="rs-item-subtitle">${esc(exp.company)}</div>` : ''}
+                </div>
+                ${duration ? `<div class="rs-item-date">${duration}</div>` : ''}
+            </div>
+            ${exp.details ? `<div class="rs-item-desc">${esc(exp.details).replace(/\n/g, '<br>')}</div>` : ''}
+        </div>`;
+    }).join('');
+}
+
+function buildEducation(data) {
+    if (!data.educations.length) return '';
+    return data.educations.filter(e => e.degree).map(edu => {
+        return `<div class="rs-item">
+            <div class="rs-item-header">
+                <div>
+                    <div class="rs-item-title">${esc(edu.degree)}</div>
+                    ${edu.institute ? `<div class="rs-item-subtitle">${esc(edu.institute)}</div>` : ''}
+                </div>
+                ${edu.years ? `<div class="rs-item-date">${esc(edu.years)}</div>` : ''}
+            </div>
+            ${edu.grade ? `<div class="rs-item-desc">Grade: ${esc(edu.grade)}</div>` : ''}
+        </div>`;
+    }).join('');
+}
+
+function buildCertifications(data) {
+    if (!data.certifications.length) return '';
+    return data.certifications.filter(c => c.name).map(cert => {
+        return `<div class="rs-item">
+            <div class="rs-item-header">
+                <div>
+                    <div class="rs-item-title">${esc(cert.name)}</div>
+                    ${cert.issuer ? `<div class="rs-item-subtitle">${esc(cert.issuer)}</div>` : ''}
+                </div>
+                ${cert.year ? `<div class="rs-item-date">${esc(cert.year)}</div>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* ── RENDERERS ── */
+const RENDERERS = {
+
+    minimal: (d) => {
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-minimal">
+            <div class="rs-header">
+                <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                <div class="rs-title">${esc(d.title)}</div>
+                <div class="rs-contact">${buildContact(d)}</div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            ${exp ? `<div class="rs-section"><div class="rs-section-title">Experience</div>${exp}</div>` : ''}
+            ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+            ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+            ${skills ? `<div class="rs-section"><div class="rs-section-title">Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+            ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+        </div>`;
+    },
+
+    modern: (d) => {
+        const avatar = buildAvatar(d, 90, '50%', '4px solid rgba(255,255,255,0.3)');
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-modern">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            <div class="rs-body">
+                <div>
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+                </div>
+                <div>
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    },
+
+    academic: (d) => {
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-academic">
+            <div class="rs-header">
+                <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                <div class="rs-title">${esc(d.title)}</div>
+                <div class="rs-contact">${buildContact(d)}</div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+            ${exp ? `<div class="rs-section"><div class="rs-section-title">Research & Experience</div>${exp}</div>` : ''}
+            ${certs ? `<div class="rs-section"><div class="rs-section-title">Publications & Certifications</div>${certs}</div>` : ''}
+            ${skills ? `<div class="rs-section"><div class="rs-section-title">Research Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+            ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+        </div>`;
+    },
+
+    executive: (d) => {
+        const avatar = buildAvatar(d, 80, '50%', '3px solid #f59e0b');
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-executive">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            <div class="rs-body">
+                <div>
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Executive Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Board & Certifications</div>${certs}</div>` : ''}
+                </div>
+                <div>
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Core Competencies</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    },
+
+    infographic: (d) => {
+        const avatar = buildAvatar(d, 100, '16px', '3px solid #06B6D4');
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-infographic">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            <div class="rs-body">
+                <div>
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                </div>
+                <div>
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    },
+
+    european: (d) => {
+        const avatar = STYLE_CONFIG.european.hasPhoto && d.profileImage
+            ? `<img class="rs-avatar" src="${d.profileImage}" alt="Profile">`
+            : `<div class="rs-avatar-placeholder">${(d.name || '?')[0].toUpperCase()}</div>`;
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-european">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            <div class="rs-body">
+                <div class="rs-sidebar">
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+                </div>
+                <div>
+                    ${d.summary ? `<div class="rs-section"><div class="rs-section-title">Profile</div><div class="rs-summary">${esc(d.summary)}</div></div>` : ''}
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Work Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    },
+
+    ats: (d) => {
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-ats">
+            <div class="rs-header">
+                <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                <div class="rs-title">${esc(d.title)}</div>
+                <div class="rs-contact">${buildContact(d)}</div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            ${skills ? `<div class="rs-section"><div class="rs-section-title">Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+            ${exp ? `<div class="rs-section"><div class="rs-section-title">Experience</div>${exp}</div>` : ''}
+            ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+            ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+            ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+        </div>`;
+    },
+
+    portfolio: (d) => {
+        const avatar = buildAvatar(d, 110, '50%', '4px solid #ec4899');
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-portfolio">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            <div class="rs-body">
+                <div>
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                </div>
+                <div>
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    },
+
+    medical: (d) => {
+        const avatar = buildAvatar(d, 80, '50%', '3px solid white');
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-medical">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            <div class="rs-body">
+                <div>
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Clinical Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                </div>
+                <div>
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Licenses & Certifications</div>${certs}</div>` : ''}
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Clinical Skills</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    },
+
+    technical: (d) => {
+        const avatar = buildAvatar(d, 90, '12px', '2px solid #6366f1');
+        const skills = buildSkills(d);
+        const langs = buildLanguages(d);
+        const exp = buildExperience(d);
+        const edu = buildEducation(d);
+        const certs = buildCertifications(d);
+
+        return `<div class="rs-technical">
+            <div class="rs-header">
+                ${avatar}
+                <div>
+                    <div class="rs-name">${esc(d.name) || 'Your Name'}</div>
+                    <div class="rs-title">${esc(d.title)}</div>
+                    <div class="rs-contact">${buildContact(d)}</div>
+                </div>
+            </div>
+            ${d.summary ? `<div class="rs-summary">${esc(d.summary)}</div>` : ''}
+            <div class="rs-body">
+                <div>
+                    ${exp ? `<div class="rs-section"><div class="rs-section-title">Work Experience</div>${exp}</div>` : ''}
+                    ${edu ? `<div class="rs-section"><div class="rs-section-title">Education</div>${edu}</div>` : ''}
+                </div>
+                <div>
+                    ${certs ? `<div class="rs-section"><div class="rs-section-title">Certifications</div>${certs}</div>` : ''}
+                    ${skills ? `<div class="rs-section"><div class="rs-section-title">Tech Stack</div><div class="rs-skills">${skills}</div></div>` : ''}
+                    ${langs ? `<div class="rs-section"><div class="rs-section-title">Languages</div><div class="rs-skills">${langs}</div></div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    }
+};
+
+/* ═══════════════════════════════════════════
+   DOWNLOAD FUNCTIONS
+═══════════════════════════════════════════ */
+async function downloadPDF() {
+    const element = document.getElementById('resumeOutput');
+    if (!element || element.style.display === 'none') {
+        showToast('Please generate a resume first', true);
+        return;
+    }
+
+    showToast('Generating PDF...');
+
+    try {
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+        const name = document.getElementById('name').value.trim() || 'resume';
+        pdf.save(`${name}_resume.pdf`);
+
+        showToast('✅ PDF downloaded!');
+    } catch (err) {
+        showToast('❌ PDF generation failed: ' + err.message, true);
+        console.error(err);
+    }
+}
+
+function downloadWord() {
+    const element = document.getElementById('resumeOutput');
+    if (!element || element.style.display === 'none') {
+        showToast('Please generate a resume first', true);
+        return;
+    }
+
+    const name = document.getElementById('name').value.trim() || 'resume';
+    const html = element.innerHTML;
+
+    // Create a simple HTML document for Word
+    const wordContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>Resume</title></head>
+        <body>${html}</body>
+        </html>
+    `;
+
+    const blob = new Blob(['\ufeff', wordContent], {
+        type: 'application/msword'
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${name}_resume.doc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast('✅ Word document downloaded!');
+}
+
+function copyResume() {
+    const element = document.getElementById('resumeOutput');
+    if (!element || element.style.display === 'none') {
+        showToast('Please generate a resume first', true);
+        return;
+    }
+
+    // Copy plain text
+    const text = element.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('✅ Resume copied to clipboard!');
+    }).catch(() => {
+        showToast('❌ Copy failed', true);
+    });
+}
+
+/* ═══════════════════════════════════════════
+   SAVE / LOAD DRAFT
+═══════════════════════════════════════════ */
+function saveDraft() {
+    const data = collectData();
+    try {
+        localStorage.setItem('resumeDraft', JSON.stringify(data));
+        showToast('✅ Draft saved!');
+    } catch (e) {
+        showToast('❌ Could not save draft', true);
+    }
+}
+
+function loadDraft() {
+    try {
+        const raw = localStorage.getItem('resumeDraft');
+        if (!raw) {
+            showToast('No saved draft found', true);
+            return;
+        }
+
+        const data = JSON.parse(raw);
+        const s = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+        s('name', data.name); s('title', data.title); s('email', data.email);
+        s('phone', data.phone); s('location', data.location); s('linkedin', data.linkedin);
+        s('portfolio', data.portfolio); s('summary', data.summary);
+        s('skills', data.skills); s('languages', data.languages);
+
+        if (data.profileImage) {
+            profileImage = data.profileImage;
+            document.getElementById('photoPreview').src = profileImage;
+            document.getElementById('photoPreview').style.display = 'block';
+            document.getElementById('photoPlaceholder').style.display = 'none';
+        }
+
+        experiences = data.experiences || [];
+        educations = data.educations || [];
+        certifications = data.certifications || [];
+
+        renderExperiences();
+        renderEducations();
+        renderCerts();
+        generateResume();
+
+        showToast('✅ Draft loaded!');
+    } catch (e) {
+        showToast('❌ Failed to load draft', true);
+    }
+}
+
+function clearAll() {
+    if (!confirm('Clear all data? This cannot be undone.')) return;
+
+    ['name', 'title', 'email', 'phone', 'location', 'linkedin', 'portfolio', 'summary', 'skills', 'languages']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+
+    profileImage = '';
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('photoPlaceholder').style.display = 'flex';
+
+    experiences = [];
+    educations = [];
+    certifications = [];
+
+    renderExperiences();
+    renderEducations();
+    renderCerts();
+    generateResume();
+
+    showToast('🗑 All data cleared');
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+// Initialize with one empty experience and education
+addExperience();
+addEducation();
+
+</script>
+
+<!-- Theme System -->
+<script src="../../assets/js/theme.js"></script>
+
+</body>
+</html>

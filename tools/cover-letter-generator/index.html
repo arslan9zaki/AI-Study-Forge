@@ -2,17 +2,1105 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Cover Letter Generator | AI Study Forge</title>
+<meta name="description" content="Generate professional, job-winning cover letters with AI. Multiple styles matching your resume. Export as PDF or Word. Free tool — no signup required.">
 <link rel="canonical" href="https://arslan9zaki.github.io/AI-Study-Forge/tools/cover-letter-generator/">
-<meta name="description" content="Generate professional, job-winning cover letters instantly using AI. Free tool — no signup required.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Design System -->
 <link rel="stylesheet" href="../../assets/css/design-system.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: var(--font-family-base);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+}
+body::before {
+    content: '';
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(79, 70, 229, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(6, 182, 212, 0.08), transparent);
+    pointer-events: none; z-index: 0;
+}
+
+/* Navbar */
+.main-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--spacing-4) 8%;
+    background: var(--color-surface-backdrop);
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: var(--z-sticky);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+}
+.logo {
+    font-size: var(--font-size-2xl); font-weight: var(--font-weight-extrabold);
+    background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: var(--letter-spacing-tight); text-decoration: none;
+}
+.logo span {
+    background: linear-gradient(135deg, #0F172A 0%, #4F46E5 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.nav-links { display: flex; gap: var(--spacing-6); align-items: center; }
+.nav-links a {
+    color: var(--color-text-secondary); text-decoration: none;
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+    transition: var(--transition-default); position: relative;
+}
+.nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 2px; background: linear-gradient(90deg, #4F46E5, #8B5CF6);
+    transition: width var(--transition-default);
+}
+.nav-links a:hover { color: var(--color-primary); }
+.nav-links a:hover::after { width: 100%; }
+.nav-btn {
+    background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+    color: #FFFFFF !important; padding: var(--spacing-3) var(--spacing-5);
+    border-radius: var(--radius-lg); font-weight: var(--font-weight-semibold) !important;
+    font-size: var(--font-size-sm) !important; white-space: nowrap;
+    transition: var(--transition-default);
+    box-shadow: 0 4px 6px -1px rgba(79,70,229,0.4), 0 2px 4px -1px rgba(79,70,229,0.2);
+}
+.nav-btn:hover {
+    background: linear-gradient(135deg, #4338CA 0%, #7C3AED 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(79,70,229,0.5), 0 4px 8px -1px rgba(79,70,229,0.3);
+}
+.hamburger { display: none; flex-direction: column; gap: var(--spacing-1); cursor: pointer; padding: var(--spacing-1); background: none; border: none; }
+.hamburger span { display: block; width: 25px; height: 2px; background: var(--color-text-primary); border-radius: var(--radius-sm); transition: var(--transition-base); }
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display: none; flex-direction: column; gap: 0; background: var(--color-bg-secondary); border-top: 1px solid var(--color-border); padding: var(--spacing-2) 0; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { color: var(--color-text-secondary); text-decoration: none; padding: var(--spacing-3) 8%; font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); border-bottom: 1px solid var(--color-border-light); transition: var(--transition-base); }
+.mobile-menu a:hover { background: var(--color-primary-light); color: var(--color-primary); }
+.mobile-menu .nav-btn { margin: var(--spacing-3) 8%; text-align: center; border-radius: var(--radius-lg); padding: var(--spacing-3); border-bottom: none; }
+
+/* Hero */
+.page-hero { text-align: center; padding: var(--spacing-16) 8% var(--spacing-12); position: relative; z-index: 1; }
+.page-hero::before {
+    content: ''; position: absolute; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(79,70,229,0.12), transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+}
+.badge {
+    display: inline-flex; align-items: center; gap: var(--spacing-2);
+    background: var(--color-primary-light); border: 1px solid var(--color-primary);
+    color: var(--color-primary); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+    padding: var(--spacing-2) var(--spacing-4); border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-4); letter-spacing: var(--letter-spacing-wide);
+}
+.page-hero h1 {
+    font-size: clamp(32px, 5vw, 54px); font-weight: var(--font-weight-extrabold);
+    line-height: var(--line-height-tight); margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-tight);
+    background: linear-gradient(135deg, #0F172A 0%, #4F46E5 50%, #8B5CF6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.page-hero p { color: var(--color-text-secondary); font-size: var(--font-size-lg); max-width: 520px; margin: 0 auto; line-height: var(--line-height-relaxed); }
+
+/* Main Layout */
+.main-wrap { flex: 1; width: 90%; max-width: 1400px; margin: 0 auto; padding: var(--spacing-8) 0 var(--spacing-16); position: relative; z-index: 1; }
+.main-grid { display: grid; grid-template-columns: 380px 1fr; gap: var(--spacing-8); align-items: start; }
+
+/* Style Selector */
+.style-selector {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6); box-shadow: var(--shadow-sm);
+}
+.style-selector h3 {
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary); margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide); text-transform: uppercase;
+}
+.style-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-3); }
+.style-card {
+    padding: var(--spacing-4); border: 2px solid var(--color-border);
+    border-radius: var(--radius-xl); cursor: pointer;
+    transition: var(--transition-default); text-align: center;
+    background: var(--color-bg-primary);
+}
+.style-card:hover { border-color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.style-card.active { border-color: var(--color-primary); background: var(--color-primary-light); box-shadow: var(--shadow-md); }
+.style-card .style-icon { font-size: 28px; margin-bottom: var(--spacing-2); display: block; }
+.style-card .style-name { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); display: block; }
+.style-card .style-desc { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+/* Tone Selector */
+.tone-selector {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6); box-shadow: var(--shadow-sm);
+}
+.tone-selector h3 {
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary); margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide); text-transform: uppercase;
+}
+.tone-chips { display: flex; flex-wrap: wrap; gap: var(--spacing-2); }
+.tone-chip {
+    padding: var(--spacing-2) var(--spacing-4); border-radius: var(--radius-full);
+    border: 1px solid var(--color-border); background: transparent;
+    color: var(--color-text-secondary); font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium); cursor: pointer;
+    transition: var(--transition-default); font-family: var(--font-family-base);
+}
+.tone-chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.tone-chip.active { background: var(--color-primary-light); border-color: var(--color-primary); color: var(--color-primary); }
+
+/* Form Box */
+.form-box {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); padding: var(--spacing-8);
+    box-shadow: var(--shadow-sm); transition: var(--transition-default);
+}
+.form-box:hover { box-shadow: var(--shadow-md); }
+.form-section-title {
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-bold);
+    color: var(--color-primary); letter-spacing: var(--letter-spacing-wider);
+    text-transform: uppercase; margin: var(--spacing-6) 0 var(--spacing-4);
+    padding-bottom: var(--spacing-2); border-bottom: 2px solid var(--color-primary-light);
+}
+.form-section-title:first-child { margin-top: 0; }
+
+.input-group { margin-bottom: var(--spacing-4); }
+.input-group label {
+    display: block; margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary); letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+}
+.input-group input, .input-group textarea, .input-group select {
+    width: 100%; padding: var(--spacing-3) var(--spacing-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal); color: var(--color-text-primary);
+    background: var(--color-bg-primary); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); transition: var(--transition-default);
+    -webkit-appearance: none; appearance: none;
+}
+.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+    outline: none; border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+.input-group input::placeholder, .input-group textarea::placeholder { color: var(--color-text-tertiary); }
+.input-group textarea { resize: vertical; min-height: 90px; max-height: 200px; line-height: var(--line-height-relaxed); }
+
+/* Generate Button */
+.generate-btn {
+    width: 100%; padding: var(--spacing-4);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    color: white; border: none; border-radius: var(--radius-xl);
+    font-family: var(--font-family-base); font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold); cursor: pointer;
+    transition: var(--transition-default); display: flex;
+    align-items: center; justify-content: center; gap: var(--spacing-2);
+    margin-bottom: var(--spacing-4); box-shadow: 0 4px 6px -1px rgba(79,70,229,0.4);
+}
+.generate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 12px -1px rgba(79,70,229,0.5); }
+.generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.generate-btn .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+.generate-btn.loading .spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error */
+.error-msg {
+    display: none; align-items: center; gap: var(--spacing-2);
+    margin-top: var(--spacing-2); padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-medium);
+    color: var(--color-error-text); background: var(--color-error-bg);
+    border: 1px solid var(--color-error); border-radius: var(--radius-md);
+}
+.error-msg.visible { display: flex; }
+
+/* Action row */
+.action-row { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-6); padding-top: var(--spacing-6); border-top: 1px solid var(--color-border); }
+
+/* Buttons */
+.btn {
+    display: inline-flex; align-items: center; gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5); border: none;
+    border-radius: var(--radius-lg); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+    cursor: pointer; transition: var(--transition-default);
+}
+.btn-primary { background: var(--color-primary); color: var(--color-text-inverse); box-shadow: var(--shadow-primary); }
+.btn-primary:hover { background: var(--color-primary-hover); transform: translateY(-2px); box-shadow: 0 8px 12px -1px rgba(79,70,229,0.5); }
+.btn-secondary { background: var(--color-bg-tertiary); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.btn-secondary:hover { background: var(--color-primary-light); color: var(--color-primary); border-color: var(--color-primary); }
+.btn-success { background: var(--color-success); color: white; }
+.btn-success:hover { background: #16a34a; transform: translateY(-2px); }
+.btn-outline { background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); }
+.btn-outline:hover { background: var(--color-primary-light); }
+
+/* Preview Box */
+.preview-box {
+    background: var(--color-bg-elevated); border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl); overflow: hidden;
+    position: sticky; top: 90px; box-shadow: var(--shadow-sm);
+}
+.preview-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--spacing-5) var(--spacing-6);
+    border-bottom: 1px solid var(--color-border); background: var(--color-bg-secondary);
+}
+.preview-header h2 { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-text-primary); }
+.preview-actions { display: flex; gap: var(--spacing-2); }
+.action-btn {
+    padding: var(--spacing-2) var(--spacing-3); border-radius: var(--radius-lg);
+    font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family-base); cursor: pointer;
+    transition: var(--transition-default); display: inline-flex;
+    align-items: center; gap: var(--spacing-1); border: 1px solid var(--color-border);
+    background: var(--color-bg-primary); color: var(--color-text-secondary);
+}
+.action-btn:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+
+/* Letter doc */
+.letter-doc {
+    background: white; margin: var(--spacing-6);
+    border-radius: var(--radius-xl); padding: 48px 44px;
+    min-height: 600px; max-height: 800px; overflow-y: auto;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.letter-doc::-webkit-scrollbar { width: 6px; }
+.letter-doc::-webkit-scrollbar-track { background: var(--color-bg-tertiary); border-radius: var(--radius-full); }
+.letter-doc::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: var(--radius-full); }
+
+/* Placeholder */
+.preview-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 500px; color: var(--color-text-tertiary); text-align: center; gap: var(--spacing-4);
+}
+.preview-placeholder svg { opacity: 0.3; }
+.preview-placeholder p { font-size: var(--font-size-sm); max-width: 260px; line-height: var(--line-height-relaxed); }
+
+/* Toast */
+#toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--color-success); color: white;
+    padding: var(--spacing-3) var(--spacing-5); border-radius: var(--radius-xl);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+    opacity: 0; pointer-events: none; transform: translateY(12px);
+    transition: opacity 0.3s, transform 0.3s; z-index: 9999; box-shadow: var(--shadow-lg);
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+#toast.error { background: var(--color-error); }
+
+/* Print */
+@media print {
+    .main-header, .form-box, .preview-header, .preview-actions, .action-row, .style-selector, .tone-selector, #toast { display: none !important; }
+    body { background: white; }
+    .main-wrap, .main-grid { display: block; width: 100%; padding: 0; margin: 0; }
+    .preview-box { border: none; box-shadow: none; position: static; }
+    .letter-doc { box-shadow: none; border: none; max-height: none; margin: 0; padding: 20px; }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .preview-box { position: static; }
+    .style-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .style-grid { grid-template-columns: repeat(2, 1fr); }
+    .page-hero h1 { font-size: var(--font-size-3xl); }
+    .letter-doc { padding: 32px 24px; margin: var(--spacing-4); }
+}
+@media (max-width: 480px) {
+    .style-grid { grid-template-columns: 1fr 1fr; }
+    .form-box { padding: var(--spacing-5); }
+    .letter-doc { padding: 24px 20px; }
+}
+
+/* ═══════════════════════════════════════════
+   COVER LETTER STYLES
+═══════════════════════════════════════════ */
+
+/* Style 1: Minimal */
+.cl-minimal { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; max-width: 600px; margin: 0 auto; }
+.cl-minimal .cl-date { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+.cl-minimal .cl-recipient { margin-bottom: 24px; }
+.cl-minimal .cl-recipient-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+.cl-minimal .cl-recipient-title { font-size: 13px; color: #475569; }
+.cl-minimal .cl-recipient-company { font-size: 13px; color: #475569; }
+.cl-minimal .cl-salutation { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #0f172a; }
+.cl-minimal .cl-body { font-size: 14px; color: #374151; margin-bottom: 16px; text-align: justify; }
+.cl-minimal .cl-closing { font-size: 14px; color: #374151; margin-top: 24px; }
+.cl-minimal .cl-signature { font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 32px; }
+.cl-minimal .cl-contact { font-size: 12px; color: #64748b; margin-top: 8px; }
+
+/* Style 2: Modern */
+.cl-modern { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; }
+.cl-modern .cl-header {
+    background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+    color: white; padding: 28px 32px; margin: -48px -44px 28px;
+    border-radius: 12px 12px 0 0;
+}
+.cl-modern .cl-header-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.cl-modern .cl-header-title { font-size: 13px; opacity: 0.9; }
+.cl-modern .cl-header-contact { font-size: 12px; opacity: 0.85; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 12px; }
+.cl-modern .cl-date { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+.cl-modern .cl-recipient { margin-bottom: 20px; }
+.cl-modern .cl-recipient-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+.cl-modern .cl-recipient-title, .cl-modern .cl-recipient-company { font-size: 13px; color: #475569; }
+.cl-modern .cl-salutation { font-size: 15px; font-weight: 600; color: #4F46E5; margin-bottom: 16px; }
+.cl-modern .cl-body { font-size: 14px; color: #374151; margin-bottom: 16px; }
+.cl-modern .cl-closing { font-size: 14px; color: #374151; margin-top: 20px; }
+.cl-modern .cl-signature { font-size: 15px; font-weight: 700; color: #4F46E5; margin-top: 28px; }
+
+/* Style 3: Professional */
+.cl-professional { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; border: 2px solid #e2e8f0; padding: 36px; border-radius: 8px; }
+.cl-professional .cl-letterhead { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 16px; margin-bottom: 24px; }
+.cl-professional .cl-letterhead-name { font-size: 20px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
+.cl-professional .cl-letterhead-contact { font-size: 12px; color: #64748b; margin-top: 6px; }
+.cl-professional .cl-date { font-size: 13px; color: #64748b; margin-bottom: 20px; text-align: right; }
+.cl-professional .cl-recipient { margin-bottom: 20px; }
+.cl-professional .cl-recipient-name { font-size: 15px; font-weight: 700; }
+.cl-professional .cl-salutation { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+.cl-professional .cl-body { font-size: 14px; color: #374151; margin-bottom: 16px; text-align: justify; }
+.cl-professional .cl-closing { margin-top: 24px; }
+.cl-professional .cl-signature { font-size: 15px; font-weight: 700; margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+
+/* Style 4: Creative */
+.cl-creative { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; }
+.cl-creative .cl-sidebar {
+    float: left; width: 160px; margin-right: 24px; padding-right: 20px;
+    border-right: 3px solid #ec4899;
+}
+.cl-creative .cl-sidebar-name { font-size: 18px; font-weight: 800; color: #ec4899; margin-bottom: 8px; }
+.cl-creative .cl-sidebar-contact { font-size: 11px; color: #64748b; line-height: 1.8; }
+.cl-creative .cl-main { overflow: hidden; }
+.cl-creative .cl-date { font-size: 12px; color: #94a3b8; margin-bottom: 16px; }
+.cl-creative .cl-recipient { margin-bottom: 16px; }
+.cl-creative .cl-recipient-name { font-size: 15px; font-weight: 700; }
+.cl-creative .cl-salutation { font-size: 15px; font-weight: 600; color: #ec4899; margin-bottom: 14px; }
+.cl-creative .cl-body { font-size: 13px; color: #475569; margin-bottom: 14px; }
+.cl-creative .cl-closing { margin-top: 20px; }
+.cl-creative .cl-signature { font-size: 14px; font-weight: 700; color: #ec4899; margin-top: 24px; }
+.cl-creative::after { content: ''; display: table; clear: both; }
+
+/* Style 5: Elegant */
+.cl-elegant { font-family: 'Georgia', serif; color: #1e293b; line-height: 1.8; max-width: 580px; margin: 0 auto; }
+.cl-elegant .cl-date { font-size: 13px; color: #64748b; font-style: italic; margin-bottom: 24px; }
+.cl-elegant .cl-recipient { margin-bottom: 24px; }
+.cl-elegant .cl-recipient-name { font-size: 16px; font-weight: 700; }
+.cl-elegant .cl-salutation { font-size: 16px; font-weight: 600; margin-bottom: 18px; font-style: italic; }
+.cl-elegant .cl-body { font-size: 15px; color: #374151; margin-bottom: 18px; text-align: justify; }
+.cl-elegant .cl-closing { font-size: 15px; margin-top: 28px; font-style: italic; }
+.cl-elegant .cl-signature { font-size: 16px; font-weight: 700; margin-top: 36px; font-family: 'Brush Script MT', cursive; color: #4F46E5; }
+
+/* Style 6: Corporate */
+.cl-corporate { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.6; }
+.cl-corporate .cl-header { background: #0f172a; color: white; padding: 24px 28px; margin: -48px -44px 24px; }
+.cl-corporate .cl-header-name { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.cl-corporate .cl-header-contact { font-size: 11px; color: #94a3b8; margin-top: 6px; }
+.cl-corporate .cl-date { font-size: 12px; color: #64748b; margin-bottom: 20px; }
+.cl-corporate .cl-recipient { margin-bottom: 20px; }
+.cl-corporate .cl-recipient-name { font-size: 14px; font-weight: 700; }
+.cl-corporate .cl-salutation { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+.cl-corporate .cl-body { font-size: 13px; color: #475569; margin-bottom: 14px; }
+.cl-corporate .cl-closing { margin-top: 20px; }
+.cl-corporate .cl-signature { font-size: 14px; font-weight: 700; margin-top: 28px; }
+
+/* Style 7: Compact */
+.cl-compact { font-family: 'Inter', sans-serif; color: #000; line-height: 1.5; font-size: 12px; }
+.cl-compact .cl-header { border-bottom: 1px solid #000; padding-bottom: 8px; margin-bottom: 16px; }
+.cl-compact .cl-header-name { font-size: 14px; font-weight: 700; }
+.cl-compact .cl-header-contact { font-size: 10px; color: #333; }
+.cl-compact .cl-date { font-size: 10px; color: #666; margin-bottom: 12px; }
+.cl-compact .cl-recipient { margin-bottom: 12px; }
+.cl-compact .cl-recipient-name { font-size: 12px; font-weight: 700; }
+.cl-compact .cl-salutation { font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+.cl-compact .cl-body { font-size: 11px; color: #333; margin-bottom: 10px; }
+.cl-compact .cl-closing { margin-top: 14px; }
+.cl-compact .cl-signature { font-size: 12px; font-weight: 700; margin-top: 20px; }
+
+/* Style 8: Bold */
+.cl-bold { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; }
+.cl-bold .cl-header { text-align: center; margin-bottom: 28px; }
+.cl-bold .cl-header-name { font-size: 28px; font-weight: 900; color: #0f172a; letter-spacing: -1px; text-transform: uppercase; }
+.cl-bold .cl-header-contact { font-size: 12px; color: #64748b; margin-top: 8px; }
+.cl-bold .cl-date { font-size: 13px; color: #64748b; margin-bottom: 20px; text-align: center; }
+.cl-bold .cl-recipient { text-align: center; margin-bottom: 20px; }
+.cl-bold .cl-recipient-name { font-size: 16px; font-weight: 800; }
+.cl-bold .cl-salutation { font-size: 16px; font-weight: 700; color: #4F46E5; margin-bottom: 16px; text-align: center; }
+.cl-bold .cl-body { font-size: 14px; color: #374151; margin-bottom: 16px; }
+.cl-bold .cl-closing { margin-top: 24px; text-align: center; }
+.cl-bold .cl-signature { font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 32px; text-align: center; text-transform: uppercase; }
+
+/* Style 9: Warm */
+.cl-warm { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.7; background: #fffbeb; padding: 36px; margin: -48px -44px; min-height: 100%; }
+.cl-warm .cl-date { font-size: 13px; color: #92400e; margin-bottom: 20px; }
+.cl-warm .cl-recipient { margin-bottom: 20px; }
+.cl-warm .cl-recipient-name { font-size: 15px; font-weight: 700; color: #78350f; }
+.cl-warm .cl-salutation { font-size: 15px; font-weight: 600; color: #b45309; margin-bottom: 16px; }
+.cl-warm .cl-body { font-size: 14px; color: #451a03; margin-bottom: 16px; }
+.cl-warm .cl-closing { margin-top: 24px; color: #78350f; }
+.cl-warm .cl-signature { font-size: 15px; font-weight: 700; color: #92400e; margin-top: 28px; }
+
+/* Style 10: Technical */
+.cl-technical { font-family: 'Courier New', monospace; color: #e2e8f0; line-height: 1.6; background: #0f172a; padding: 40px; margin: -48px -44px; min-height: 100%; }
+.cl-technical .cl-header { border-bottom: 2px solid #6366f1; padding-bottom: 16px; margin-bottom: 24px; }
+.cl-technical .cl-header-name { font-size: 20px; font-weight: 700; color: #f8fafc; }
+.cl-technical .cl-header-contact { font-size: 11px; color: #94a3b8; margin-top: 6px; }
+.cl-technical .cl-date { font-size: 12px; color: #64748b; margin-bottom: 20px; }
+.cl-technical .cl-recipient { margin-bottom: 20px; }
+.cl-technical .cl-recipient-name { font-size: 14px; font-weight: 700; color: #f8fafc; }
+.cl-technical .cl-salutation { font-size: 14px; font-weight: 600; color: #818cf8; margin-bottom: 14px; }
+.cl-technical .cl-body { font-size: 13px; color: #94a3b8; margin-bottom: 14px; }
+.cl-technical .cl-closing { margin-top: 20px; color: #94a3b8; }
+.cl-technical .cl-signature { font-size: 14px; font-weight: 700; color: #818cf8; margin-top: 28px; }
+
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="main-header">
+    <a href="../../index.html" class="logo">AI Study <span>Forge</span></a>
+    <nav class="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="../../pages/about.html">About</a>
+        <a href="../../blog/index.html">Blog</a>
+        <a href="../../pages/contact.html">Contact</a>
+        <a href="../studyforge/index.html" class="nav-btn">🎓 Study Hub</a>
+    </nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../../index.html">Home</a>
+    <a href="../../pages/about.html">About</a>
+    <a href="../../blog/index.html">Blog</a>
+    <a href="../../pages/contact.html">Contact</a>
+    <a href="../studyforge/index.html" class="nav-btn">🎓 Study Hub</a>
+</nav>
+
+<!-- Hero -->
+<section class="page-hero">
+    <div class="badge">✉️ AI-Powered Writing</div>
+    <h1>AI Cover Letter <span>Generator</span></h1>
+    <p>Create professional, job-winning cover letters tailored to any role. Multiple styles matching your resume. Export as PDF or Word.</p>
+</section>
+
+<!-- Main -->
+<div class="main-wrap">
+    <div class="main-grid">
+
+        <!-- LEFT: Form -->
+        <div class="form-column">
+
+            <!-- Style Selector -->
+            <div class="style-selector">
+                <h3>Choose Letter Style</h3>
+                <div class="style-grid" id="styleGrid">
+                    <div class="style-card active" data-style="minimal" onclick="selectStyle(this)">
+                        <span class="style-icon">✨</span>
+                        <span class="style-name">Minimal</span>
+                        <span class="style-desc">Clean & Simple</span>
+                    </div>
+                    <div class="style-card" data-style="modern" onclick="selectStyle(this)">
+                        <span class="style-icon">🎨</span>
+                        <span class="style-name">Modern</span>
+                        <span class="style-desc">Gradient Header</span>
+                    </div>
+                    <div class="style-card" data-style="professional" onclick="selectStyle(this)">
+                        <span class="style-icon">📋</span>
+                        <span class="style-name">Professional</span>
+                        <span class="style-desc">Formal Border</span>
+                    </div>
+                    <div class="style-card" data-style="creative" onclick="selectStyle(this)">
+                        <span class="style-icon">🎭</span>
+                        <span class="style-name">Creative</span>
+                        <span class="style-desc">Side Accent</span>
+                    </div>
+                    <div class="style-card" data-style="elegant" onclick="selectStyle(this)">
+                        <span class="style-icon">✒️</span>
+                        <span class="style-name">Elegant</span>
+                        <span class="style-desc">Serif Classic</span>
+                    </div>
+                    <div class="style-card" data-style="corporate" onclick="selectStyle(this)">
+                        <span class="style-icon">🏢</span>
+                        <span class="style-name">Corporate</span>
+                        <span class="style-desc">Dark Header</span>
+                    </div>
+                    <div class="style-card" data-style="compact" onclick="selectStyle(this)">
+                        <span class="style-icon">📝</span>
+                        <span class="style-name">Compact</span>
+                        <span class="style-desc">Space Saver</span>
+                    </div>
+                    <div class="style-card" data-style="bold" onclick="selectStyle(this)">
+                        <span class="style-icon">💪</span>
+                        <span class="style-name">Bold</span>
+                        <span class="style-desc">Big & Centered</span>
+                    </div>
+                    <div class="style-card" data-style="warm" onclick="selectStyle(this)">
+                        <span class="style-icon">🌅</span>
+                        <span class="style-name">Warm</span>
+                        <span class="style-desc">Friendly Tone</span>
+                    </div>
+                    <div class="style-card" data-style="technical" onclick="selectStyle(this)">
+                        <span class="style-icon">💻</span>
+                        <span class="style-name">Technical</span>
+                        <span class="style-desc">Dev Style</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tone Selector -->
+            <div class="tone-selector">
+                <h3>Writing Tone</h3>
+                <div class="tone-chips" id="toneChips">
+                    <button class="tone-chip active" data-tone="professional" onclick="selectTone(this)">Professional</button>
+                    <button class="tone-chip" data-tone="enthusiastic" onclick="selectTone(this)">Enthusiastic</button>
+                    <button class="tone-chip" data-tone="confident" onclick="selectTone(this)">Confident</button>
+                    <button class="tone-chip" data-tone="formal" onclick="selectTone(this)">Formal</button>
+                    <button class="tone-chip" data-tone="creative" onclick="selectTone(this)">Creative</button>
+                </div>
+            </div>
+
+            <!-- Form Box -->
+            <div class="form-box">
+
+                <div class="form-section-title">Your Information</div>
+
+                <div class="input-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="name" placeholder="e.g. Jane Smith">
+                </div>
+
+                <div class="input-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" placeholder="jane@example.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="+1 234 567 8900">
+                </div>
+
+                <div class="input-group">
+                    <label>Your Address</label>
+                    <input type="text" id="address" placeholder="123 Main St, City, State, ZIP">
+                </div>
+
+                <div class="form-section-title">Job Details</div>
+
+                <div class="input-group">
+                    <label>Job Position *</label>
+                    <input type="text" id="position" placeholder="e.g. Senior Marketing Manager">
+                </div>
+
+                <div class="input-group">
+                    <label>Company Name *</label>
+                    <input type="text" id="company" placeholder="e.g. Google, Microsoft, Shopify">
+                </div>
+
+                <div class="input-group">
+                    <label>Hiring Manager Name <small style="font-weight:400; text-transform:none; color:var(--color-text-tertiary);">(optional)</small></label>
+                    <input type="text" id="hiringManager" placeholder="e.g. John Doe">
+                </div>
+
+                <div class="input-group">
+                    <label>Company Address <small style="font-weight:400; text-transform:none; color:var(--color-text-tertiary);">(optional)</small></label>
+                    <input type="text" id="companyAddress" placeholder="Company address">
+                </div>
+
+                <div class="form-section-title">Your Background</div>
+
+                <div class="input-group">
+                    <label>Key Experience *</label>
+                    <textarea id="experience" rows="3" placeholder="Briefly describe your most relevant experience..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Key Skills *</label>
+                    <input type="text" id="skills" placeholder="e.g. SEO, content strategy, team leadership">
+                </div>
+
+                <div class="input-group">
+                    <label>Why This Company? *</label>
+                    <textarea id="whyCompany" rows="2" placeholder="What attracts you to this company specifically?"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Achievement Highlight <small style="font-weight:400; text-transform:none; color:var(--color-text-tertiary);">(optional)</small></label>
+                    <textarea id="achievement" rows="2" placeholder="A specific achievement that makes you stand out..."></textarea>
+                </div>
+
+                <!-- Error message -->
+                <div class="error-msg" id="errorMsg">
+                    ⚠ <span id="errorText">Please fill in all required fields.</span>
+                </div>
+
+                <!-- Generate Button -->
+                <button class="generate-btn" id="generateBtn" onclick="generateLetter()">
+                    <div class="spinner"></div>
+                    <span id="btnText">✨ Generate Cover Letter</span>
+                </button>
+
+                <!-- Action Buttons -->
+                <div class="action-row">
+                    <button class="btn btn-success" onclick="downloadPDF()">📄 Download PDF</button>
+                    <button class="btn btn-primary" onclick="downloadWord()">📝 Download Word</button>
+                    <button class="btn btn-secondary" onclick="copyLetter()">📋 Copy</button>
+                    <button class="btn btn-outline" onclick="clearAll()" style="color:var(--color-error); border-color:var(--color-error);">🗑 Clear</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT: Preview -->
+        <div class="preview-column">
+            <div class="preview-box">
+                <div class="preview-header">
+                    <h2>Live Preview</h2>
+                    <div class="preview-actions">
+                        <button class="action-btn" onclick="copyLetter()">📋 Copy</button>
+                        <button class="action-btn" onclick="window.print()">🖨 Print</button>
+                    </div>
+                </div>
+                <div class="letter-doc" id="letterDoc">
+                    <div class="preview-placeholder" id="placeholder">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p>Fill in your details and click "Generate Cover Letter" to see your letter here.</p>
+                    </div>
+                    <div id="letterOutput" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let selectedStyle = 'minimal';
+let selectedTone = 'professional';
+let generatedLetter = '';
+
+const WORKER_URL = 'https://ai-study-forge.arslan9zaki.workers.dev';
+
+/* ═══════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════ */
+function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+
+function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (isError ? ' error' : '');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.className = '', 3000);
+}
+
+function esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ═══════════════════════════════════════════
+   STYLE & TONE SELECTORS
+═══════════════════════════════════════════ */
+function selectStyle(el) {
+    document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedStyle = el.dataset.style;
+}
+
+function selectTone(el) {
+    document.querySelectorAll('.tone-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedTone = el.dataset.tone;
+}
+
+/* ═══════════════════════════════════════════
+   VALIDATION
+═══════════════════════════════════════════ */
+function validate() {
+    const required = ['name', 'email', 'position', 'company', 'experience', 'skills', 'whyCompany'];
+    const errorMsg = document.getElementById('errorMsg');
+    const errorText = document.getElementById('errorText');
+
+    for (const field of required) {
+        const val = document.getElementById(field).value.trim();
+        if (!val) {
+            errorText.textContent = `Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}.`;
+            errorMsg.classList.add('visible');
+            document.getElementById(field).focus();
+            return false;
+        }
+    }
+
+    // Email validation
+    const email = document.getElementById('email').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errorText.textContent = 'Please enter a valid email address.';
+        errorMsg.classList.add('visible');
+        document.getElementById('email').focus();
+        return false;
+    }
+
+    errorMsg.classList.remove('visible');
+    return true;
+}
+
+/* ═══════════════════════════════════════════
+   GENERATE COVER LETTER
+═══════════════════════════════════════════ */
+async function generateLetter() {
+    if (!validate()) return;
+
+    const btn = document.getElementById('generateBtn');
+    const btnText = document.getElementById('btnText');
+    const output = document.getElementById('letterOutput');
+    const placeholder = document.getElementById('placeholder');
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btnText.textContent = 'Generating...';
+
+    const g = id => document.getElementById(id).value.trim();
+
+    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    const prompt = `Write a ${selectedTone} cover letter for a job application with these details:
+
+Applicant: ${g('name')}
+Email: ${g('email')}
+Phone: ${g('phone') || 'Not provided'}
+Address: ${g('address') || 'Not provided'}
+
+Job Position: ${g('position')}
+Company: ${g('company')}
+Hiring Manager: ${g('hiringManager') || 'Hiring Manager'}
+Company Address: ${g('companyAddress') || 'Not provided'}
+
+Experience: ${g('experience')}
+Skills: ${g('skills')}
+Why this company: ${g('whyCompany')}
+Key Achievement: ${g('achievement') || 'Not provided'}
+
+Tone: ${selectedTone}
+Date: ${today}
+
+Write a complete, compelling cover letter with:
+1. Date at top
+2. Applicant's contact info
+3. Recipient info (Hiring Manager, Company, Address)
+4. Salutation: "Dear [Hiring Manager],"
+5. Opening paragraph: strong hook mentioning the position and company
+6. Body paragraph 1: relevant experience and skills
+7. Body paragraph 2: why this company specifically
+8. Body paragraph 3: key achievement or unique value proposition
+9. Closing paragraph: call to action and enthusiasm
+10. Sign-off: "Sincerely," followed by name
+
+Return ONLY the letter text. No explanations, no markdown, no commentary.`;
+
+    try {
+        const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'gemini-2.0-flash',
+                prompt: prompt,
+                systemPrompt: 'You are an expert career coach and cover letter writer. Write polished, personalized cover letters that help candidates stand out. Output only the letter text with no preamble, headers, or commentary.'
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) throw new Error(result.error || 'Worker error');
+
+        generatedLetter = (result.text || '').trim();
+
+        if (generatedLetter) {
+            placeholder.style.display = 'none';
+            output.style.display = 'block';
+            renderLetter(generatedLetter);
+            showToast('✨ Cover letter generated!');
+        } else {
+            throw new Error('Empty response');
+        }
+    } catch (err) {
+        showToast('❌ Error: ' + err.message, true);
+        console.error(err);
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btnText.textContent = '✨ Generate Cover Letter';
+    }
+}
+
+/* ═══════════════════════════════════════════
+   RENDER LETTER
+═══════════════════════════════════════════ */
+function renderLetter(text) {
+    const output = document.getElementById('letterOutput');
+    const g = id => document.getElementById(id)?.value?.trim() || '';
+
+    // Parse the letter into sections
+    const lines = text.split('\n');
+    let date = '';
+    let recipientLines = [];
+    let salutation = '';
+    let bodyParagraphs = [];
+    let closing = '';
+    let signature = '';
+
+    let section = 'header';
+    let currentParagraph = [];
+
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) {
+            if (currentParagraph.length > 0) {
+                bodyParagraphs.push(currentParagraph.join(' '));
+                currentParagraph = [];
+            }
+            continue;
+        }
+
+        if (section === 'header') {
+            if (trimmed.match(/^(January|February|March|April|May|June|July|August|September|October|November|December)/i)) {
+                date = trimmed;
+            } else if (trimmed.match(/^Dear\s/i)) {
+                salutation = trimmed;
+                section = 'body';
+            } else {
+                recipientLines.push(trimmed);
+            }
+        } else if (section === 'body') {
+            if (trimmed.match(/^(Sincerely|Best regards|Yours truly|Regards)/i)) {
+                closing = trimmed;
+                section = 'signature';
+            } else {
+                currentParagraph.push(trimmed);
+            }
+        } else if (section === 'signature') {
+            signature = trimmed;
+        }
+    }
+
+    if (currentParagraph.length > 0) {
+        bodyParagraphs.push(currentParagraph.join(' '));
+    }
+
+    // Build HTML based on style
+    const styleClass = 'cl-' + selectedStyle;
+
+    let html = `<div class="${styleClass}">`;
+
+    // Header section varies by style
+    if (selectedStyle === 'modern' || selectedStyle === 'corporate') {
+        html += `<div class="cl-header">
+            <div class="cl-header-name">${esc(g('name'))}</div>
+            <div class="cl-header-contact">
+                ${g('email') ? `✉ ${esc(g('email'))}` : ''}
+                ${g('phone') ? `📞 ${esc(g('phone'))}` : ''}
+                ${g('address') ? `📍 ${esc(g('address'))}` : ''}
+            </div>
+        </div>`;
+    } else if (selectedStyle === 'professional' || selectedStyle === 'bold') {
+        html += `<div class="cl-letterhead">
+            <div class="cl-letterhead-name">${esc(g('name'))}</div>
+            <div class="cl-letterhead-contact">
+                ${g('email') ? esc(g('email')) : ''}
+                ${g('phone') ? ' | ' + esc(g('phone')) : ''}
+                ${g('address') ? ' | ' + esc(g('address')) : ''}
+            </div>
+        </div>`;
+    } else if (selectedStyle === 'creative') {
+        html += `<div class="cl-sidebar">
+            <div class="cl-sidebar-name">${esc(g('name'))}</div>
+            <div class="cl-sidebar-contact">
+                ${g('email') ? esc(g('email')) + '<br>' : ''}
+                ${g('phone') ? esc(g('phone')) + '<br>' : ''}
+                ${g('address') ? esc(g('address')) : ''}
+            </div>
+        </div>
+        <div class="cl-main">`;
+    } else if (selectedStyle === 'technical') {
+        html += `<div class="cl-header">
+            <div class="cl-header-name">${esc(g('name'))}</div>
+            <div class="cl-header-contact">
+                ${g('email') ? esc(g('email')) : ''}
+                ${g('phone') ? ' | ' + esc(g('phone')) : ''}
+            </div>
+        </div>`;
+    }
+
+    // Date
+    html += `<div class="cl-date">${esc(date) || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>`;
+
+    // Recipient
+    html += `<div class="cl-recipient">`;
+    if (g('hiringManager')) html += `<div class="cl-recipient-name">${esc(g('hiringManager'))}</div>`;
+    else html += `<div class="cl-recipient-name">Hiring Manager</div>`;
+    if (g('company')) html += `<div class="cl-recipient-company">${esc(g('company'))}</div>`;
+    if (g('companyAddress')) html += `<div class="cl-recipient-title">${esc(g('companyAddress'))}</div>`;
+    html += `</div>`;
+
+    // Salutation
+    html += `<div class="cl-salutation">${esc(salutation) || 'Dear Hiring Manager,'}</div>`;
+
+    // Body paragraphs
+    for (const para of bodyParagraphs) {
+        html += `<div class="cl-body">${esc(para)}</div>`;
+    }
+
+    // Closing
+    html += `<div class="cl-closing">${esc(closing) || 'Sincerely,'}</div>`;
+
+    // Signature
+    html += `<div class="cl-signature">${esc(signature) || esc(g('name'))}</div>`;
+
+    if (selectedStyle === 'creative') html += `</div>`; // close cl-main
+
+    html += `</div>`;
+
+    output.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════
+   DOWNLOAD FUNCTIONS
+═══════════════════════════════════════════ */
+async function downloadPDF() {
+    const element = document.getElementById('letterOutput');
+    if (!element || element.style.display === 'none') {
+        showToast('Please generate a letter first', true);
+        return;
+    }
+
+    showToast('Generating PDF...');
+
+    try {
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+        const name = document.getElementById('name').value.trim() || 'cover_letter';
+        const company = document.getElementById('company').value.trim() || 'company';
+        pdf.save(`${name}_${company}_cover_letter.pdf`);
+
+        showToast('✅ PDF downloaded!');
+    } catch (err) {
+        showToast('❌ PDF generation failed: ' + err.message, true);
+        console.error(err);
+    }
+}
+
+function downloadWord() {
+    const element = document.getElementById('letterOutput');
+    if (!element || element.style.display === 'none') {
+        showToast('Please generate a letter first', true);
+        return;
+    }
+
+    const name = document.getElementById('name').value.trim() || 'cover_letter';
+    const company = document.getElementById('company').value.trim() || 'company';
+    const html = element.innerHTML;
+
+    const wordContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>Cover Letter</title></head>
+        <body>${html}</body>
+        </html>
+    `;
+
+    const blob = new Blob(['\ufeff', wordContent], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${name}_${company}_cover_letter.doc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast('✅ Word document downloaded!');
+}
+
+function copyLetter() {
+    const element = document.getElementById('letterOutput');
+    if (!element || element.style.display === 'none') {
+        showToast('Please generate a letter first', true);
+        return;
+    }
+
+    const text = element.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('✅ Letter copied to clipboard!');
+    }).catch(() => {
+        showToast('❌ Copy failed', true);
+    });
+}
+
+/* ═══════════════════════════════════════════
+   CLEAR ALL
+═══════════════════════════════════════════ */
+function clearAll() {
+    if (!confirm('Clear all data? This cannot be undone.')) return;
+
+    ['name', 'email', 'phone', 'address', 'position', 'company', 'hiringManager', 'companyAddress', 'experience', 'skills', 'whyCompany', 'achievement']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+
+    document.getElementById('letterOutput').style.display = 'none';
+    document.getElementById('placeholder').style.display = 'flex';
+    generatedLetter = '';
+
+    showToast('🗑 All data cleared');
+}
+
+</script>
+
+<!-- Theme System -->
+<script src="../../assets/js/theme.js"></script>
+
+</body>
+</html>
