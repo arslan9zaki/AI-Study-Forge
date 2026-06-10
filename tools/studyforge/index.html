@@ -1479,6 +1479,21 @@ body::before {
 <script>
 
     let generatedText = "";
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
+
+    async function checkHealth() {
+        try {
+            const response = await fetch("https://aibiztools.arslan9zaki.workers.dev/health", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await response.json();
+            return response.ok && data.status === "ok";
+        } catch (e) {
+            return false;
+        }
+    }
 
     async function generateContent() {
 
@@ -1501,9 +1516,27 @@ body::before {
 
         errorMsg.classList.remove("visible");
 
-        // Loading state
+        // Health check before generation
         btn.classList.add("loading");
         btn.disabled = true;
+        outputBox.innerHTML = '<div class="output-placeholder"><p style="color:#3a5070">🔍 Checking service status…</p></div>';
+
+        const isHealthy = await checkHealth();
+        if (!isHealthy) {
+            outputBox.innerHTML = "";
+            outputBox.innerHTML = `
+                <div style="text-align:center; padding:2rem;">
+                    <p style="color:#EF4444; font-size:1.1rem; margin-bottom:1rem;">⚠ AI service temporarily unavailable</p>
+                    <p style="color:#64748B; margin-bottom:1.5rem;">The service is currently down or overloaded. Please try again later.</p>
+                    <button onclick="generateContent()" style="padding:0.75rem 1.5rem; background:#3B82F6; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem;">Try Again</button>
+                </div>
+            `;
+            btn.classList.remove("loading");
+            btn.disabled = false;
+            return;
+        }
+
+        // Loading state
         copyBtn.classList.remove("visible");
         wordCountEl.textContent = "";
         generatedText = "";
@@ -1629,6 +1662,9 @@ Language: ${language}.`,
                 throw new Error("AI returned no content. Try a different topic or rephrase your request.");
             }
 
+            // Reset retry count on success
+            retryCount = 0;
+
             // Render output based on action type
             renderResult(action, generatedText, outputBox, topic, subject, curriculum);
 
@@ -1640,8 +1676,28 @@ Language: ${language}.`,
             copyBtn.classList.add("visible");
 
         } catch (err) {
+            retryCount++;
+            if (retryCount < MAX_RETRIES) {
+                outputBox.innerHTML = "";
+                outputBox.innerHTML = `
+                    <div style="text-align:center; padding:2rem;">
+                        <p style="color:#F59E0B; font-size:1.1rem; margin-bottom:1rem;">⚠ Request failed (attempt ${retryCount}/${MAX_RETRIES})</p>
+                        <p style="color:#64748B; margin-bottom:1.5rem;">${err.message || "Something went wrong"}</p>
+                        <p style="color:#64748B; margin-bottom:1.5rem;">Retrying automatically...</p>
+                    </div>
+                `;
+                setTimeout(() => generateContent(), 2000);
+                return;
+            }
+            
             outputBox.innerHTML = "";
-            outputBox.textContent = "⚠ Error: " + (err.message || "Something went wrong. Please try again.");
+            outputBox.innerHTML = `
+                <div style="text-align:center; padding:2rem;">
+                    <p style="color:#EF4444; font-size:1.1rem; margin-bottom:1rem;">⚠ AI service temporarily unavailable</p>
+                    <p style="color:#64748B; margin-bottom:1.5rem;">${err.message || "Something went wrong. Please try again later."}</p>
+                    <button onclick="retryCount=0; generateContent()" style="padding:0.75rem 1.5rem; background:#3B82F6; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem;">Try Again</button>
+                </div>
+            `;
         }
 
         // Reset button

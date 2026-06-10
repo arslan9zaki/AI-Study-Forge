@@ -69,7 +69,7 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
     body.systemInstruction = { role: "system", parts: [{ text: systemPrompt.trim() }] };
   }
   const ctrl = new AbortController();
-  const tid  = setTimeout(() => ctrl.abort(), 25000);
+  const tid  = setTimeout(() => ctrl.abort(), 15000);
   let res;
   try {
     res = await fetch(
@@ -104,7 +104,7 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
 
 async function callOpenRouter(apiKey, modelId, messages, temperature) {
   const ctrl = new AbortController();
-  const tid  = setTimeout(() => ctrl.abort(), 30000);
+  const tid  = setTimeout(() => ctrl.abort(), 15000);
   let res;
   try {
     res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -146,11 +146,22 @@ async function callOpenRouter(apiKey, modelId, messages, temperature) {
 export default {
   async fetch(request, env) {
     const origin = getAllowedOrigin(request);
+    const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders(origin || ALLOWED_ORIGINS[0]) });
     }
     if (!origin) return jsonError("Origin not allowed", 403, ALLOWED_ORIGINS[0]);
+
+    // Health endpoint
+    if (request.method === "GET" && url.pathname === "/health") {
+      return jsonOk({
+        status: "ok",
+        timestamp: Date.now(),
+        geminiConfigured: !!env.GEMINI_API_KEY,
+        openrouterConfigured: !!env.OPENROUTER_API_KEY
+      }, origin);
+    }
 
     if (request.method === "GET") {
       const gKey = env.GEMINI_API_KEY || "";
@@ -197,12 +208,18 @@ export default {
       }
       messages.push({ role: "user", content: prompt.trim() });
 
+      let lastError = null;
       for (const modelId of OR_MODELS) {
         const r = await callOpenRouter(env.OPENROUTER_API_KEY, modelId, messages, temperature);
         if (r.ok) return jsonOk({ text: r.text, model: r.model, finishReason: r.finishReason, provider: "openrouter" }, origin);
-        if (r.skip) continue;
-        break;
+        if (r.skip) {
+          lastError = r.error;
+          continue;
+        }
+        return jsonError(r.error, r.status, origin);
       }
+      // All OpenRouter models were skipped (rate limited, not found, etc.)
+      return jsonError("OpenRouter fallback failed: " + (lastError || "All models unavailable"), 503, origin);
     }
 
     return jsonError("All AI providers are busy. Please try again in 30 seconds.", 429, origin);
