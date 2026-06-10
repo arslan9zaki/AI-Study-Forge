@@ -3,499 +3,348 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>About Us | AI Study Forge</title>
-<meta name="description" content="Learn about AI Study Forge - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
-<link rel="canonical" href="https://arslan9zaki.github.io/aibiztools/pages/about.html">
-
-<!-- Open Graph -->
+<meta name="description" content="Learn about AI Study Forge — a free AI-powered platform offering career tools, learning tools and business tools for students, professionals and entrepreneurs.">
 <meta property="og:title" content="About Us | AI Study Forge">
-<meta property="og:description" content="Learn about AI Study Forge - an AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources instantly.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://arslan9zaki.github.io/aibiztools/pages/about.html">
+<meta property="og:description" content="Free AI tools for resumes, cover letters, content writing, MCQs, lectures, presentations and more. No signup required.">
 <meta property="og:site_name" content="AI Study Forge">
-
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+<meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- Design System -->
 <link rel="stylesheet" href="../assets/css/design-system.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 
-<!-- Theme Script -->
-<script>
-(function(){
-    var t = localStorage.getItem('sf_theme') || 
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', t);
-    // Set correct icon after DOM loads
-    document.addEventListener('DOMContentLoaded', function() {
-        var icon = document.getElementById('themeIcon');
-        if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
-    });
-})();
-</script>
-
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font-family-base);background:var(--color-bg-primary);color:var(--color-text-primary);}
 
-body{
-margin:0;
-font-family:var(--font-family-base);
-background:var(--color-bg-primary);
-color:var(--color-text-primary);
+/* ── HEADER ── */
+.site-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--spacing-4) 8%;
+  background:var(--color-bg-secondary);
+  border-bottom:1px solid var(--color-border);
+  position:sticky;top:0;z-index:100;
+}
+.logo{font-size:var(--font-size-xl);font-weight:var(--font-weight-extrabold);color:var(--color-primary);text-decoration:none;letter-spacing:-0.02em;}
+.logo span{color:var(--color-text-primary);}
+.navbar{display:flex;align-items:center;gap:var(--spacing-2);}
+.navbar a{color:var(--color-text-secondary);text-decoration:none;padding:var(--spacing-2) var(--spacing-3);border-radius:var(--radius-lg);font-size:var(--font-size-sm);font-weight:var(--font-weight-medium);transition:var(--transition-default);}
+.navbar a:hover,.navbar a.active{color:var(--color-primary);background:var(--color-primary-light);}
+.nav-btn{background:var(--color-primary)!important;color:#fff!important;padding:var(--spacing-2) var(--spacing-5)!important;border-radius:var(--radius-lg)!important;}
+.nav-btn:hover{opacity:0.9;background:var(--color-primary-hover)!important;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:var(--spacing-1);}
+.hamburger span{display:block;width:22px;height:2px;background:var(--color-text-primary);border-radius:2px;transition:var(--transition-default);}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;flex-direction:column;background:var(--color-bg-secondary);border-bottom:1px solid var(--color-border);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{color:var(--color-text-secondary);text-decoration:none;padding:var(--spacing-3) 8%;font-size:var(--font-size-sm);border-bottom:1px solid var(--color-border);transition:var(--transition-default);}
+.mobile-menu a:hover{color:var(--color-primary);background:var(--color-primary-light);}
+.mobile-menu .nav-btn{background:var(--color-primary);color:#fff!important;text-align:center;margin:var(--spacing-3) 8%;border-radius:var(--radius-lg);}
+
+/* ── HERO ── */
+.about-hero{
+  padding:var(--spacing-20) 8% var(--spacing-16);
+  background:linear-gradient(135deg,var(--color-bg-primary) 0%,var(--color-bg-secondary) 100%);
+  text-align:center;
+  border-bottom:1px solid var(--color-border);
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:var(--spacing-2);
+  background:var(--color-primary-light);color:var(--color-primary);
+  font-size:var(--font-size-xs);font-weight:var(--font-weight-bold);
+  letter-spacing:0.08em;text-transform:uppercase;
+  padding:var(--spacing-2) var(--spacing-4);border-radius:var(--radius-full);
+  margin-bottom:var(--spacing-6);
+}
+.about-hero h1{
+  font-size:clamp(28px,4vw,52px);
+  font-weight:var(--font-weight-extrabold);
+  color:var(--color-text-primary);
+  letter-spacing:-0.03em;
+  line-height:1.15;
+  max-width:780px;margin:0 auto var(--spacing-6);
+}
+.about-hero h1 span{color:var(--color-primary);}
+.about-hero p{
+  font-size:var(--font-size-lg);
+  color:var(--color-text-secondary);
+  max-width:600px;margin:0 auto;
+  line-height:var(--line-height-relaxed);
 }
 
-header{
-background:var(--color-bg-secondary);
-padding:var(--spacing-5);
-text-align:center;
-border-bottom:1px solid var(--color-border);
-}
-
-header h1{
-margin:0;
-color:var(--color-primary);
-font-size:var(--font-size-4xl);
-font-weight:var(--font-weight-bold);
-}
-
-nav{
-margin-top:var(--spacing-3);
-}
-
-nav a{
-color:var(--color-text-secondary);
-text-decoration:none;
-margin:0 var(--spacing-4);
-font-size:var(--font-size-base);
-transition:var(--transition-default);
-}
-
-nav a:hover{
-color:var(--color-primary);
-}
-
-.navbar{
-display:flex;
-gap:var(--spacing-6);
-align-items:center;
-}
-
-@media(max-width:768px){
-.navbar{display:none;}
-}
-
-.mobile-menu{
-display:none;
-flex-direction:column;
-background:var(--color-bg-secondary);
-border-top:1px solid var(--color-border);
-}
-
-.mobile-menu.open{
-display:flex;
-}
-
-.mobile-menu a{
-color:var(--color-text-secondary);
-text-decoration:none;
-padding:var(--spacing-3) 8%;
-font-size:var(--font-size-base);
-font-weight:var(--font-weight-medium);
-border-bottom:1px solid var(--color-border);
-}
-
-.mobile-menu a:hover{
-background:var(--color-primary-light);
-color:var(--color-primary);
-}
-
-.mobile-menu .nav-btn{
-margin:var(--spacing-3) 8%;
-border-radius:var(--radius-lg);
-text-align:center;
-border-bottom:none;
-padding:var(--spacing-3);
-}
-
-.hamburger{
-display:none;
-flex-direction:column;
-gap:var(--spacing-1);
-cursor:pointer;
-padding:var(--spacing-1);
-background:none;
-border:none;
-}
-
-.hamburger span{
-display:block;
-width:25px;
-height:2px;
-background:var(--color-text-primary);
-border-radius:var(--radius-sm);
-transition:var(--transition-base);
-}
-
-.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
-.hamburger.open span:nth-child(2){ opacity:0; }
-.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
-
-@media(max-width:768px){
-.hamburger{display:flex;}
-}
-
-.hero{
-padding:var(--spacing-20) var(--spacing-5);
-text-align:center;
-background:linear-gradient(to right,var(--color-bg-primary),var(--color-bg-secondary));
-}
-
-.hero h2{
-font-size:var(--font-size-5xl);
-color:var(--color-primary);
-margin-bottom:var(--spacing-5);
-font-weight:var(--font-weight-bold);
-}
-
-.hero p{
-max-width:800px;
-margin:auto;
-font-size:var(--font-size-xl);
-line-height:var(--line-height-relaxed);
-color:var(--color-text-secondary);
-}
-
-.section{
-max-width:1100px;
-margin:auto;
-padding:var(--spacing-16) var(--spacing-5);
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:var(--spacing-8);
-}
-
-.card{
-background:var(--color-bg-elevated);
-padding:var(--spacing-8);
-border-radius:var(--radius-3xl);
-transition:var(--transition-default);
-box-shadow:var(--shadow-lg);
-border:1px solid var(--color-border);
-}
-
-.card:hover{
-transform:translateY(-5px);
-box-shadow:var(--shadow-xl);
-}
-
-.card h3{
-color:var(--color-primary);
-margin-bottom:var(--spacing-4);
-font-weight:var(--font-weight-bold);
-}
-
-.card p{
-line-height:var(--line-height-relaxed);
-color:var(--color-text-secondary);
-}
-
+/* ── STATS ── */
 .stats-row{
-display:flex;
-justify-content:center;
-gap:var(--spacing-12);
-padding:var(--spacing-16) var(--spacing-5);
-background:var(--color-bg-secondary);
+  display:flex;justify-content:center;flex-wrap:wrap;gap:var(--spacing-1);
+  padding:var(--spacing-12) 8%;
+  background:var(--color-bg-primary);
+  border-bottom:1px solid var(--color-border);
+}
+.stat-box{
+  flex:1;min-width:160px;max-width:220px;
+  text-align:center;
+  padding:var(--spacing-8) var(--spacing-6);
+  background:var(--color-bg-elevated);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-2xl);
+}
+.stat-box .num{
+  font-size:var(--font-size-5xl);font-weight:var(--font-weight-extrabold);
+  color:var(--color-primary);display:block;line-height:1;margin-bottom:var(--spacing-2);
+}
+.stat-box .lbl{font-size:var(--font-size-sm);color:var(--color-text-secondary);font-weight:var(--font-weight-medium);}
+
+/* ── SECTIONS ── */
+.content-section{max-width:1100px;margin:0 auto;padding:var(--spacing-20) 8%;}
+.section-label{
+  font-size:var(--font-size-xs);font-weight:var(--font-weight-bold);
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--color-primary);margin-bottom:var(--spacing-3);
+}
+.section-title{
+  font-size:clamp(22px,3vw,36px);font-weight:var(--font-weight-bold);
+  color:var(--color-text-primary);letter-spacing:-0.02em;
+  margin-bottom:var(--spacing-5);
+}
+.section-text{
+  font-size:var(--font-size-lg);color:var(--color-text-secondary);
+  line-height:var(--line-height-relaxed);max-width:680px;
 }
 
-.stat-item{
-text-align:center;
+/* ── OFFER GRID ── */
+.offer-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:var(--spacing-6);margin-top:var(--spacing-10);
 }
-
-.stat-num{
-display:block;
-font-size:var(--font-size-3xl);
-font-weight:var(--font-weight-extrabold);
-color:var(--color-primary);
-margin-bottom:var(--spacing-2);
+.offer-col{
+  background:var(--color-bg-elevated);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-2xl);
+  padding:var(--spacing-8);
 }
-
-.stat-label{
-font-size:var(--font-size-sm);
-color:var(--color-text-secondary);
-font-weight:var(--font-weight-medium);
+.offer-col h3{
+  font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);
+  margin-bottom:var(--spacing-5);color:var(--color-text-primary);
 }
-
-.mission-section{
-max-width:900px;
-margin:var(--spacing-20) auto;
-text-align:center;
-padding:0 var(--spacing-5);
+.offer-items{display:flex;flex-direction:column;gap:var(--spacing-3);}
+.offer-item{
+  display:flex;align-items:center;gap:var(--spacing-3);
+  padding:var(--spacing-3) var(--spacing-4);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);
+  font-size:var(--font-size-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-secondary);
 }
+.offer-item .oi-icon{font-size:18px;width:26px;text-align:center;}
 
-.mission-section h3{
-font-size:var(--font-size-3xl);
-font-weight:var(--font-weight-bold);
-color:var(--color-primary);
-margin-bottom:var(--spacing-6);
+/* ── WHY CHOOSE US ── */
+.why-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:var(--spacing-5);margin-top:var(--spacing-10);
 }
-
-.mission-section p{
-font-size:var(--font-size-xl);
-line-height:var(--line-height-relaxed);
-color:var(--color-text-secondary);
+.why-card{
+  background:var(--color-bg-elevated);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-2xl);
+  padding:var(--spacing-8) var(--spacing-6);
+  text-align:center;
+  transition:var(--transition-default);
 }
+.why-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--color-primary);}
+.why-icon{font-size:36px;margin-bottom:var(--spacing-4);display:block;}
+.why-card h4{font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);margin-bottom:var(--spacing-3);color:var(--color-text-primary);}
+.why-card p{font-size:var(--font-size-sm);color:var(--color-text-secondary);line-height:var(--line-height-relaxed);}
 
-.offerings-section{
-max-width:1200px;
-margin:var(--spacing-20) auto;
-padding:0 var(--spacing-5);
-}
+/* ── FOOTER ── */
+.site-footer{background:var(--color-bg-secondary);border-top:1px solid var(--color-border);padding:var(--spacing-16) 8% var(--spacing-8);}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:var(--spacing-10);margin-bottom:var(--spacing-10);}
+.footer-brand .logo{display:block;margin-bottom:var(--spacing-4);}
+.footer-brand p{font-size:var(--font-size-sm);color:var(--color-text-secondary);line-height:var(--line-height-relaxed);max-width:260px;}
+.footer-col h4{font-size:var(--font-size-xs);font-weight:var(--font-weight-bold);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:var(--spacing-5);}
+.footer-col a{display:block;color:var(--color-text-secondary);text-decoration:none;font-size:var(--font-size-sm);margin-bottom:var(--spacing-3);transition:var(--transition-default);}
+.footer-col a:hover{color:var(--color-primary);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--spacing-4);padding-top:var(--spacing-8);border-top:1px solid var(--color-border);font-size:var(--font-size-sm);color:var(--color-text-secondary);}
+.footer-bottom a{color:var(--color-text-secondary);text-decoration:none;transition:var(--transition-default);}
+.footer-bottom a:hover{color:var(--color-primary);}
 
-.offerings-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:var(--spacing-10);
-}
-
-.offering-col h4{
-font-size:var(--font-size-2xl);
-font-weight:var(--font-weight-bold);
-color:var(--color-primary);
-margin-bottom:var(--spacing-6);
-}
-
-.tool-card{
-background:var(--color-bg-elevated);
-padding:var(--spacing-5);
-border-radius:var(--radius-xl);
-margin-bottom:var(--spacing-4);
-border:1px solid var(--color-border);
-font-weight:var(--font-weight-semibold);
-color:var(--color-text-primary);
-transition:var(--transition-default);
-}
-
-.tool-card:hover{
-border-color:var(--color-primary);
-transform:translateX(5px);
-}
-
-.why-section{
-max-width:1200px;
-margin:var(--spacing-20) auto var(--spacing-16);
-padding:0 var(--spacing-5);
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:var(--spacing-8);
-}
-
-.feature-card{
-background:var(--color-bg-elevated);
-padding:var(--spacing-8);
-border-radius:var(--radius-2xl);
-text-align:center;
-border:1px solid var(--color-border);
-transition:var(--transition-default);
-}
-
-.feature-card:hover{
-transform:translateY(-5px);
-border-color:var(--color-primary);
-}
-
-.feature-icon{
-display:block;
-font-size:var(--font-size-3xl);
-margin-bottom:var(--spacing-4);
-}
-
-.feature-card h5{
-font-size:var(--font-size-lg);
-font-weight:var(--font-weight-bold);
-color:var(--color-primary);
-margin-bottom:var(--spacing-3);
-}
-
-.feature-card p{
-font-size:var(--font-size-sm);
-color:var(--color-text-secondary);
-line-height:var(--line-height-relaxed);
-}
-
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){.footer-top{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){
-.stats-row{gap:var(--spacing-6);}
-.offerings-grid{grid-template-columns:1fr;gap:var(--spacing-8);}
-.why-section{grid-template-columns:1fr;gap:var(--spacing-6);}
+  .navbar{display:none;}
+  .hamburger{display:flex;}
+  .offer-grid{grid-template-columns:1fr;}
+  .why-grid{grid-template-columns:1fr;}
+  .stats-row{gap:var(--spacing-3);}
+  .footer-top{grid-template-columns:1fr 1fr;}
 }
-
-footer{
-background:var(--color-bg-secondary);
-padding:var(--spacing-6);
-text-align:center;
-margin-top:var(--spacing-10);
-border-top:1px solid var(--color-border);
-color:var(--color-text-secondary);
-font-size:var(--font-size-sm);
+@media(max-width:480px){
+  .footer-top{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;text-align:center;}
 }
-
 </style>
 </head>
-
 <body>
 
-<header class="main-header">
-    <a href="../index.html" class="logo">AI Study <span>Forge</span></a>
-    <nav class="navbar">
-        <a href="../index.html">Home</a>
-        <a href="../tools/studyforge/index.html" class="nav-highlight">AI Study Forge</a>
-        <a href="../index.html#career-tools">Career Tools</a>
-        <a href="about.html" class="nav-highlight">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="../tools/studyforge/index.html" class="nav-btn">Start Learning</a>
-        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
-            <span class="theme-icon" id="themeIcon">🌙</span>
-        </button>
-    </nav>
-    <div class="header-actions">
-        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </div>
+<!-- HEADER -->
+<header class="site-header">
+  <a href="../index.html" class="logo">AI <span>Study</span> Forge</a>
+  <nav class="navbar">
+    <a href="../index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="../blog/index.html">Blog</a>
+    <a href="../tools/studyforge/index.html">🎓 Study Hub</a>
+    <a href="contact.html">Contact</a>
+    <a href="../tools/resume-generator/index.html" class="nav-btn">🚀 Try Free Tools</a>
+  </nav>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
-<!-- MOBILE MENU -->
 <nav class="mobile-menu" id="mobileMenu">
-    <a href="../index.html">Home</a>
-    <a href="../tools/studyforge/index.html" class="nav-highlight">AI Study Forge</a>
-    <a href="../index.html#career-tools">Career Tools</a>
-    <a href="about.html" class="nav-highlight">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="../tools/studyforge/index.html" class="nav-btn">Start Learning</a>
+  <a href="../index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="../blog/index.html">Blog</a>
+  <a href="../tools/studyforge/index.html">🎓 Study Hub</a>
+  <a href="contact.html">Contact</a>
+  <a href="../tools/resume-generator/index.html" class="nav-btn">🚀 Try Free Tools</a>
 </nav>
 
-<section class="hero">
-
-<h2>We're Building the Future of AI-Powered Learning & Work</h2>
-
-<p>
-AI Study Forge combines AI education tools and career tools to help students, professionals and businesses achieve more — completely free.
-</p>
-
+<!-- HERO -->
+<section class="about-hero">
+  <div class="hero-tag">✨ 100% Free — No Signup Required</div>
+  <h1>We're Building the Future of<br><span>AI-Powered Learning &amp; Work</span></h1>
+  <p>AI Study Forge combines AI learning tools and career tools to help students, professionals and businesses achieve more — completely free.</p>
 </section>
 
-<section class="stats-row">
-<div class="stat-item"><span class="stat-num">50,000+</span><span class="stat-label">Users</span></div>
-<div class="stat-item"><span class="stat-num">7</span><span class="stat-label">Free Tools</span></div>
-<div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Free Always</span></div>
-</section>
-
-<section class="mission-section">
-<h3>Our Mission</h3>
-<p>Our mission is to make AI tools accessible to everyone — students preparing for exams, professionals building their careers, and businesses growing their brand. No subscriptions. No paywalls. Just powerful AI tools that work.</p>
-</section>
-
-<section class="offerings-section">
-<div class="offerings-grid">
-<div class="offering-col">
-<h4>📚 Learning Tools</h4>
-<div class="tool-card">Notes & MCQs</div>
-<div class="tool-card">AI Lectures</div>
-<div class="tool-card">Presentations</div>
-<div class="tool-card">Visual Diagrams</div>
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-box"><span class="num">50K+</span><span class="lbl">Users Helped</span></div>
+  <div class="stat-box"><span class="num">7</span><span class="lbl">Free AI Tools</span></div>
+  <div class="stat-box"><span class="num">$0</span><span class="lbl">Cost to Use</span></div>
+  <div class="stat-box"><span class="num">100%</span><span class="lbl">Always Free</span></div>
 </div>
-<div class="offering-col">
-<h4>💼 Career Tools</h4>
-<div class="tool-card">Resume Generator</div>
-<div class="tool-card">Cover Letter AI</div>
-<div class="tool-card">Content Writer</div>
-<div class="tool-card">Business Name Generator</div>
-</div>
-</div>
-</section>
 
-<section class="why-section">
-<div class="feature-card"><span class="feature-icon">⚡</span><h5>Instant Results</h5><p>Generate professional content in seconds</p></div>
-<div class="feature-card"><span class="feature-icon">🆓</span><h5>Always Free</h5><p>No hidden fees, no account required</p></div>
-<div class="feature-card"><span class="feature-icon">🌍</span><h5>Works Everywhere</h5><p>Mobile, tablet, desktop — any browser</p></div>
-</section>
+<!-- MISSION -->
+<section class="content-section">
+  <div class="section-label">Our Mission</div>
+  <h2 class="section-title">AI Tools That Work for Everyone</h2>
+  <p class="section-text">Our mission is to make AI tools accessible to everyone — students preparing for exams, professionals building their careers, and businesses growing their brand. No subscriptions. No paywalls. Just powerful AI tools that work.</p>
 
-<footer>
-    <div class="footer-top">
-        <div class="footer-brand">
-            <a href="../index.html" class="logo">AI Study <span>Forge</span></a>
-            <p>AI-powered learning platform for students and educators. Generate Notes, MCQs, Lectures, Presentations and Visual Learning Resources Instantly.</p>
+  <!-- WHAT WE OFFER -->
+  <div style="margin-top:var(--spacing-16)">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Tools for Learning &amp; Career Growth</h2>
+    <p class="section-text">Two complete AI toolsets in one place — whether you're studying for exams or applying for jobs.</p>
+
+    <div class="offer-grid">
+      <div class="offer-col">
+        <h3>📚 Learning Tools</h3>
+        <div class="offer-items">
+          <div class="offer-item"><span class="oi-icon">📝</span> Notes &amp; MCQs Generator</div>
+          <div class="offer-item"><span class="oi-icon">🎓</span> AI Lecture Mode</div>
+          <div class="offer-item"><span class="oi-icon">📊</span> Presentation Generator</div>
+          <div class="offer-item"><span class="oi-icon">🎨</span> Visual Diagrams &amp; Flowcharts</div>
+          <div class="offer-item"><span class="oi-icon">🎴</span> Flashcards &amp; Practice Tests</div>
         </div>
-        <div class="footer-col">
-            <h4>Learning Tools</h4>
-            <a href="../tools/studyforge/index.html">Notes</a>
-            <a href="../tools/studyforge/index.html">MCQs</a>
-            <a href="../tools/studyforge/index.html">Concepts</a>
-            <a href="../tools/studyforge/index.html">Get Lecture</a>
-            <a href="../tools/studyforge/index.html">Presentation</a>
-            <a href="../tools/studyforge/index.html">Visual Learning</a>
+      </div>
+      <div class="offer-col">
+        <h3>💼 Career Tools</h3>
+        <div class="offer-items">
+          <div class="offer-item"><span class="oi-icon">📄</span> AI Resume Generator</div>
+          <div class="offer-item"><span class="oi-icon">✉️</span> Cover Letter Generator</div>
+          <div class="offer-item"><span class="oi-icon">✍️</span> AI Content Writer</div>
+          <div class="offer-item"><span class="oi-icon">💡</span> Business Name Generator</div>
+          <div class="offer-item"><span class="oi-icon">🎤</span> Interview Questions Generator</div>
         </div>
-        <div class="footer-col">
-            <h4>Career Tools</h4>
-            <a href="../tools/resume-generator/index.html">Resume Generator</a>
-            <a href="../tools/cover-letter-generator/index.html">Cover Letter AI</a>
-        </div>
-        <div class="footer-col">
-            <h4>Company</h4>
-            <a href="about.html">About Us</a>
-            <a href="../blog/index.html">Blog</a>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Use</a>
-        </div>
-        <div class="footer-col">
-            <h4>Connect</h4>
-            <p class="footer-meta">Follow us on social media for updates and tips.</p>
-        </div>
+      </div>
     </div>
-    <div class="footer-bottom">
-        <p>© 2026 AI Study Forge — All Rights Reserved</p>
-        <div class="footer-bottom-links">
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms</a>
-            <a href="contact.html">Contact</a>
-        </div>
+  </div>
+
+  <!-- WHY CHOOSE US -->
+  <div style="margin-top:var(--spacing-16)">
+    <div class="section-label">Why Choose Us</div>
+    <h2 class="section-title">Built for Real People, Not Paywalls</h2>
+    <p class="section-text">No credit card. No account. No limits. Just open the tool and generate.</p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="why-icon">⚡</span>
+        <h4>Instant Results</h4>
+        <p>Generate professional resumes, notes, cover letters and presentations in seconds — not hours.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🆓</span>
+        <h4>Always Free</h4>
+        <p>Every tool on AI Study Forge is completely free. No hidden fees, no premium tier, no credit card required.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🌍</span>
+        <h4>Works Everywhere</h4>
+        <p>Use from your phone, tablet or laptop — any browser, any device, no app download needed.</p>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="../index.html" class="logo">AI <span>Study</span> Forge</a>
+      <p>Free AI-powered tools to help you study, build your career and grow your business — available to everyone, always free.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Learning Tools</h4>
+      <a href="../tools/studyforge/index.html">Notes &amp; MCQs</a>
+      <a href="../tools/studyforge/index.html">AI Lectures</a>
+      <a href="../tools/studyforge/index.html">Presentations</a>
+      <a href="../tools/studyforge/index.html">Visual Learning</a>
+    </div>
+    <div class="footer-col">
+      <h4>Career Tools</h4>
+      <a href="../tools/resume-generator/index.html">Resume Generator</a>
+      <a href="../tools/cover-letter-generator/index.html">Cover Letter AI</a>
+      <a href="../tools/content-writer/index.html">Content Writer</a>
+      <a href="../tools/business-name-generator/index.html">Business Names</a>
+      <a href="../tools/interview-generator/index.html">Interview Prep</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 AI Study Forge — All Rights Reserved</p>
+    <div style="display:flex;gap:var(--spacing-4);">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
 </footer>
 
+<script src="../assets/js/theme.js"></script>
 <script>
-/* --- Hamburger Menu --- */
 function toggleMenu(){
-    const menu = document.getElementById('mobileMenu');
-    const btn = document.getElementById('hamburger');
-    menu.classList.toggle('open');
-    btn.classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
 }
-
-/* Close mobile menu when a link is clicked */
-document.querySelectorAll('.mobile-menu a').forEach(function(link){
-    link.addEventListener('click', function(){
-        document.getElementById('mobileMenu').classList.remove('open');
-        document.getElementById('hamburger').classList.remove('open');
-    });
+document.querySelectorAll('.mobile-menu a').forEach(function(a){
+  a.addEventListener('click',function(){
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  });
 });
-
-/* --- Theme Toggle --- */
-function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme') || 'dark';
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('sf_theme', next);
-    var icon = document.getElementById('themeIcon');
-    if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
-}
 </script>
-
 </body>
 </html>
