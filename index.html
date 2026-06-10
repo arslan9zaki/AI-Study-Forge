@@ -296,51 +296,7 @@ body::before {
     66%{transform:translate(-20px,20px) scale(0.95);}
 }
 
-.hero-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:var(--spacing-2);
-    background:rgba(79, 70, 229, 0.1);
-    border:1px solid rgba(79, 70, 229, 0.2);
-    color:var(--color-primary);
-    font-size:var(--font-size-xs);
-    font-weight:var(--font-weight-semibold);
-    padding:var(--spacing-2) var(--spacing-5);
-    border-radius:var(--radius-full);
-    margin-bottom:var(--spacing-8);
-    letter-spacing:var(--letter-spacing-wide);
-    animation:fade-in-up 0.6s ease-out;
-    -webkit-backdrop-filter:blur(10px);
-    backdrop-filter:blur(10px);
-}
 
-.hero-content{
-    max-width:900px;
-    position:relative;
-    z-index:1;
-}
-
-.hero-content h1{
-    font-size:clamp(48px,5vw,80px);
-    line-height:var(--line-height-tight);
-    margin-bottom:var(--spacing-7);
-    font-weight:var(--font-weight-extrabold);
-    letter-spacing:-0.02em;
-    animation:fade-in-up 0.8s ease-out 0.1s both;
-    background: linear-gradient(135deg, #0F172A 0%, #4F46E5 50%, #8B5CF6 100%);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-}
-
-@media (prefers-color-scheme: dark) {
-    .hero-content h1 {
-        background: linear-gradient(135deg, #F8FAFC 0%, #6366F1 50%, #A855F7 100%);
-        -webkit-background-clip:text;
-        -webkit-text-fill-color:transparent;
-        background-clip:text;
-    }
-}
 
 .hero-content p{
     font-size:var(--font-size-xl);
@@ -1096,7 +1052,7 @@ footer{
         <a href="pages/about.html">About</a>
         <a href="pages/contact.html">Contact</a>
         <a href="tools/studyforge/index.html" class="nav-btn">Start Learning</a>
-        <button class="theme-toggle" onclick="window.ai-study-forgeTheme.toggle()" aria-label="Toggle dark/light mode" type="button">
+        <button class="theme-toggle" onclick="window.ASFTheme.toggle()" aria-label="Toggle dark/light mode" type="button">
             <span class="theme-icon" aria-hidden="true">🌙</span>
             <span class="theme-label sr-only">Dark Mode</span>
         </button>
@@ -1410,19 +1366,17 @@ async function subscribeNewsletter() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        access_key: 'YOUR_WEB3FORMS_KEY',
+        // access_key: 'YOUR_WEB3FORMS_KEY', // Replace with actual key
         subject: 'New Subscriber — AI Study Forge',
         email: email
       })
     });
     var data = await res.json();
-    msg.style.color = '#10B981';
-    msg.textContent = 'Successfully subscribed! Welcome aboard.';
-    document.getElementById('newsletterEmail').value = '';
+    msg.style.color = '#EF4444';
+    msg.textContent = 'Error: ' + (e.message || 'Subscription failed. Please try again.');
   } catch(e) {
-    msg.style.color = '#10B981';
-    msg.textContent = 'Successfully subscribed! Welcome aboard.';
-    document.getElementById('newsletterEmail').value = '';
+    msg.style.color = '#EF4444';
+    msg.textContent = 'Error: ' + (e.message || 'Subscription failed. Please try again.');
   }
   btn.disabled = false;
   btn.textContent = 'Subscribe Free';

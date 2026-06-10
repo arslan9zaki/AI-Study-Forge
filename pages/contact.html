@@ -153,6 +153,76 @@ background:var(--color-primary-hover);
     color:var(--color-text-secondary);
 }
 
+.hamburger{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:10px;
+}
+
+.hamburger span{
+    width:25px;
+    height:3px;
+    background:var(--color-text-primary);
+    transition:all 0.3s ease;
+}
+
+.hamburger.open span:nth-child(1){
+    transform:rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2){
+    opacity:0;
+}
+
+.hamburger.open span:nth-child(3){
+    transform:rotate(-45deg) translate(7px, -6px);
+}
+
+.mobile-menu{
+    display:none;
+    flex-direction:column;
+    gap:0;
+    background:var(--color-bg-secondary);
+    border-bottom:1px solid var(--color-border);
+    padding:var(--spacing-2) 0;
+}
+
+.mobile-menu.open{
+    display:flex;
+}
+
+.mobile-menu a{
+    color:var(--color-text-secondary);
+    text-decoration:none;
+    padding:var(--spacing-3) 8%;
+    transition:var(--transition-base);
+}
+
+.mobile-menu a:hover{
+    background:var(--color-primary-light);
+    color:var(--color-primary);
+}
+
+.header-actions{
+    display:none;
+}
+
+@media (max-width: 768px){
+    .header-actions{
+        display:flex;
+    }
+    .hamburger{
+        display:flex;
+    }
+    nav{
+        display:none;
+    }
+}
+
 footer{
 background:var(--color-bg-secondary);
 padding:var(--spacing-6);
@@ -179,7 +249,22 @@ font-size:var(--font-size-sm);
 <a href="contact.html">Contact</a>
 </nav>
 
+<div class="header-actions">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</div>
+
 </header>
+
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="../blog/index.html">Blog</a>
+    <a href="contact.html">Contact</a>
+</nav>
 
 <section class="contact-section">
 
@@ -256,6 +341,20 @@ document.getElementById('contactForm').addEventListener('submit', async function
   btn.disabled = false;
   btn.textContent = 'Send Message';
   setTimeout(function(){ result.textContent = ''; }, 5000);
+});
+
+function toggleMenu() {
+  var menu = document.getElementById('mobileMenu');
+  var btn = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+
+document.querySelectorAll('.mobile-menu a').forEach(function(link){
+  link.addEventListener('click', function(){
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  });
 });
 </script>
 
