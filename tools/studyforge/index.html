@@ -1,122 +1,3550 @@
-function renderMermaidDiagram(mermaidCode, outputBox) {
-    outputBox.innerHTML = "";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    // SANITIZE: Fix common Mermaid syntax errors from AI
-    mermaidCode = mermaidCode.replace(/([A-Za-z0-9]+)\s+([A-Za-z0-9]+)\s*\[/g, '$1_$2[');
-    mermaidCode = mermaidCode.replace(/–>/g, '-->');
-    mermaidCode = mermaidCode.replace(/—>/g, '-->');
-    mermaidCode = mermaidCode.replace(/=>/g, '-->');
+<!-- Theme Script -->
+<script>
+(function(){
+    var t = localStorage.getItem('sf_theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
+    document.addEventListener('DOMContentLoaded', function() {
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+    });
+})();
+</script>
 
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem; width:100%;';
+<title>AI Study Forge — AI-Powered Learning Platform</title>
+<meta name="description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
+<link rel="canonical" href="https://arslan9zaki.github.io/AI-Study-Forge/tools/studyforge/">
 
-    // Extract mermaid code block and text
-    let codeOnly = mermaidCode;
-    let explanation = '';
-    let notes = '';
-    let keyPoints = '';
+<!-- Open Graph -->
+<meta property="og:title" content="AI Study Forge — AI-Powered Learning Platform">
+<meta property="og:description" content="Generate Notes, MCQs, Concepts, Lectures, Presentations and Visual Learning diagrams instantly with AI. Free educational tool for students and educators.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studyforge.ai/tools/studyforge/">
+<meta property="og:site_name" content="AI Study Forge">
 
-    // Try to extract code between ```mermaid and ```
-    const mermaidBlockMatch = mermaidCode.match(/```mermaid\s*([\s\S]*?)```/);
-    if (mermaidBlockMatch) {
-        codeOnly = mermaidBlockMatch[1].trim();
-        const beforeCode = mermaidCode.split('```mermaid')[0].trim();
-        if (beforeCode) explanation = beforeCode;
-        const afterCodeParts = mermaidCode.split('```');
-        if (afterCodeParts.length > 2) {
-            notes = afterCodeParts[2].trim();
+<link rel="icon" href="../../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Design System -->
+<link rel="stylesheet" href="../../assets/css/design-system.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+
+<!-- Mermaid.js for Visual Learning -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
+
+<style>
+
+/* ── Reset ── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Base ── */
+body {
+    font-family: var(--font-family-base);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Premium background gradient */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.1), transparent),
+        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.1), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Navbar ── */
+.navbar {
+    width: 100%;
+    padding: var(--spacing-5) 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: var(--letter-spacing-tight);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--spacing-6);
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    transition: color var(--transition-default), transform var(--transition-base);
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    transition: width var(--transition-default);
+}
+
+.nav-links a:hover {
+    color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* ── Hero ── */
+.hero {
+    text-align: center;
+    padding: var(--spacing-16) 8% var(--spacing-12);
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-4);
+    background: linear-gradient(135deg, #1e293b 0%, #6366f1 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.hero p {
+    max-width: 680px;
+    margin: auto;
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    font-size: var(--font-size-base);
+    position: relative;
+}
+
+/* ── Main Grid ── */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-16);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-8);
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Card ── */
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    padding: var(--spacing-8);
+    border-radius: var(--radius-3xl);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+}
+
+.card h2 {
+    margin-bottom: var(--spacing-6);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+}
+
+/* ── Form Inputs ── */
+.input-group {
+    margin-bottom: var(--spacing-4);
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    outline: none;
+    border-radius: var(--radius-2xl);
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-base);
+    transition: all var(--transition-default);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    border-color: #6366f1;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 
+        0 0 0 3px rgba(99, 102, 241, 0.1),
+        0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.input-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-4) center;
+    padding-right: 40px;
+}
+
+.input-group select option {
+    background: var(--color-bg-secondary);
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+    line-height: var(--line-height-relaxed);
+}
+
+/* ── Error Message ── */
+.error-msg {
+    display: none;
+    color: #ef4444;
+    font-size: var(--font-size-xs);
+    margin-top: -10px;
+    margin-bottom: var(--spacing-3);
+    padding: var(--spacing-2) var(--spacing-3);
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.error-msg.visible {
+    display: block;
+}
+
+/* ── Generate Button ── */
+.generate-btn {
+    width: 100%;
+    padding: var(--spacing-4);
+    border: none;
+    border-radius: var(--radius-2xl);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family-base);
+    cursor: pointer;
+    transition: all var(--transition-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    box-shadow: 
+        0 4px 6px -1px rgba(99, 102, 241, 0.4),
+        0 2px 4px -1px rgba(99, 102, 241, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.generate-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.generate-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 12px -1px rgba(99, 102, 241, 0.5),
+        0 4px 8px -1px rgba(99, 102, 241, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+.generate-btn:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.generate-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.generate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+}
+
+.generate-btn.loading .spinner {
+    display: block;
+}
+
+.generate-btn.loading .btn-text::after {
+    content: "Generating...";
+}
+
+.generate-btn:not(.loading) .btn-text::after {
+    content: "Generate Content";
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Output Card Header ── */
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+}
+
+.output-header h2 {
+    margin-bottom: 0;
+}
+
+.output-actions {
+    display: flex;
+    gap: var(--spacing-2);
+    align-items: center;
+}
+
+.word-count {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+}
+
+/* ── Copy Button ── */
+.copy-btn {
+    padding: var(--spacing-2) var(--spacing-3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-lg);
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-base);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: none;
+}
+
+.copy-btn.visible {
+    display: inline-block;
+}
+
+.copy-btn:hover {
+    background: #6366f1;
+    color: white;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Output Box ── */
+.output-box {
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-6);
+    min-height: 420px;
+    max-height: 520px;
+    overflow-y: auto;
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    white-space: normal;
+    font-size: var(--font-size-sm);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    scroll-behavior: smooth;
+}
+
+.output-box.presentation-mode {
+    min-height: 600px;
+    max-height: 700px;
+}
+
+.output-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.output-box::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius-full);
+}
+
+.output-box::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-full);
+}
+
+.output-box::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
+}
+
+/* Presentation Slides */
+.slide-card {
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-5);
+    margin-bottom: var(--spacing-4);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+}
+
+.slide-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+.slide-number {
+    font-size: var(--font-size-xs);
+    color: #6366f1;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-2);
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.slide-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-3);
+    color: var(--color-text-primary);
+}
+
+.slide-content {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+}
+
+.slide-content ul {
+    margin-left: var(--spacing-4);
+    margin-top: var(--spacing-2);
+}
+
+.slide-content li {
+    margin-bottom: var(--spacing-2);
+}
+
+/* Presentation Viewer */
+.presentation-viewer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.presentation-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-3);
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.presentation-nav-btn {
+    padding: var(--spacing-2) var(--spacing-4);
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.presentation-nav-btn:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.presentation-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.presentation-counter {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+}
+
+.presentation-slide-display {
+    min-height: 400px;
+    max-height: 550px;
+    overflow-y: auto;
+}
+
+.presentation-slide-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-8);
+    box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+    position: relative;
+    min-height: 350px;
+}
+
+.presentation-slide-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+}
+
+.presentation-slide-number {
+    font-size: var(--font-size-xs);
+    color: #6366f1;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-3);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+}
+
+.presentation-slide-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-6);
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    padding-bottom: var(--spacing-4);
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+.presentation-slide-content {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+}
+
+.presentation-slide-content ul {
+    margin: 0;
+    padding-left: var(--spacing-5);
+}
+
+.presentation-slide-content li {
+    margin-bottom: var(--spacing-3);
+}
+
+/* Speaker Notes Section */
+.speaker-notes-section {
+    margin-top: var(--spacing-4);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: var(--spacing-3);
+}
+
+.speaker-notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    padding: var(--spacing-2);
+    background: rgba(139, 92, 246, 0.05);
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+}
+
+.speaker-notes-header:hover {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.toggle-icon {
+    font-size: var(--font-size-xs);
+    transition: transform 0.2s ease;
+}
+
+.speaker-notes-content {
+    margin-top: var(--spacing-2);
+    padding: var(--spacing-3);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    transition: var(--transition-base);
+}
+
+.speaker-notes-content.collapsed {
+    display: none;
+}
+
+/* Visual Placeholder */
+.visual-placeholder {
+    margin: var(--spacing-4) 0;
+    display: flex;
+    justify-content: center;
+}
+
+.placeholder-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-6);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+    border: 2px dashed rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-xl);
+    min-width: 200px;
+    min-height: 150px;
+    transition: var(--transition-base);
+}
+
+.placeholder-box:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+}
+
+.placeholder-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-3);
+}
+
+.placeholder-text {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+}
+
+/* Lecture Sections */
+.lecture-section {
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-5);
+    margin-bottom: var(--spacing-4);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+}
+
+.lecture-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+.lecture-section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-3);
+    color: var(--color-text-primary);
+    position: relative;
+}
+
+.lecture-section-content {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+}
+
+.lecture-subheader {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    margin: var(--spacing-4) 0 var(--spacing-2) 0;
+    color: var(--color-text-primary);
+}
+
+.lecture-list {
+    margin: var(--spacing-3) 0;
+    padding-left: var(--spacing-5);
+}
+
+.lecture-list-item {
+    margin-bottom: var(--spacing-2);
+    color: var(--color-text-secondary);
+}
+
+.lecture-list-item::marker {
+    color: #6366f1;
+}
+
+/* SVG Container */
+.svg-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin: var(--spacing-4) 0;
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.svg-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-4);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+}
+
+.diagram-explanation {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    padding: var(--spacing-3);
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: var(--radius-md);
+    border-left: 3px solid #6366f1;
+}
+
+.diagram-notes {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    padding: var(--spacing-3);
+    background: rgba(139, 92, 246, 0.05);
+    border-radius: var(--radius-md);
+    border-left: 3px solid #8b5cf6;
+}
+
+.diagram-notes strong {
+    color: var(--color-text-primary);
+}
+
+/* Mermaid Diagram */
+.mermaid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-4);
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin: var(--spacing-4) 0;
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.mermaid-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Placeholder text */
+.output-placeholder {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-16);
+    text-align: center;
+}
+
+.output-placeholder svg {
+    margin-bottom: 14px;
+    opacity: 0.4;
+}
+
+/* ── Footer ── */
+.footer {
+    text-align: center;
+    padding: var(--spacing-6);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    .nav-links {
+        gap: var(--spacing-4);
+    }
+}
+
+@media (max-width: 500px) {
+    .navbar {
+        padding: var(--spacing-4) 5%;
+    }
+
+    .hero {
+        padding: var(--spacing-10) 5% var(--spacing-8);
+    }
+
+    .container {
+        width: 95%;
+    }
+}
+
+/* Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #0f0f0f;
+    }
+    
+    body::before {
+        background: 
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.2), transparent),
+            radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.15), transparent),
+            radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.15), transparent);
+    }
+    
+    .navbar {
+        background: rgba(15, 15, 15, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .card {
+        background: rgba(30, 30, 30, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.3),
+            0 2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .card::before {
+        background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+    }
+    
+    .input-group input,
+    .input-group textarea,
+    .input-group select {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--color-text-primary);
+    }
+    
+    .input-group input:focus,
+    .input-group textarea:focus,
+    .input-group select:focus {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: #818cf8;
+        box-shadow: 
+            0 0 0 3px rgba(129, 140, 248, 0.2),
+            0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+    
+    .output-box {
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            inset 0 1px 2px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .output-box::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .output-box::-webkit-scrollbar-thumb {
+        background: rgba(129, 140, 248, 0.4);
+    }
+    
+    .slide-card {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .mermaid-container {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+    
+    .footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+}
+
+/* ════════════════════════════════════════════
+   ENHANCED RESULT STYLES - Visually Stunning Outputs
+════════════════════════════════════════════════ */
+
+/* ── Base Output Container ── */
+#output {
+    border-radius: var(--radius-2xl, 20px);
+    overflow: hidden;
+}
+
+/* ── SHARED: Glassmorphism Header ── */
+.sf-result-header {
+    display: flex; align-items: center; gap: 1.25rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+.sf-result-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
+}
+.sf-result-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.3));
+    animation: iconFloat 3s ease-in-out infinite;
+}
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+.sf-result-title {
+    font-size: 1.35rem; font-weight: 800;
+    margin: 0 0 4px;
+    background: linear-gradient(135deg, #1e293b 0%, #6366f1 50%, #8b5cf6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: -0.02em;
+}
+.sf-result-subtitle {
+    font-size: 0.875rem; font-weight: 500;
+    color: #64748b;
+    letter-spacing: 0.02em;
+}
+
+/* ── NOTES: Beautiful Card Layout ── */
+.sf-notes-container {
+    font-size: 0.9375rem; line-height: 1.85;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+.sf-notes-body {
+    padding: 1.5rem 2rem 2rem;
+}
+.sf-notes-section {
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.sf-notes-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+.sf-notes-heading {
+    display: flex; align-items: center; gap: 0.75rem;
+    font-size: 1.1rem; font-weight: 700;
+    color: #1e293b;
+    margin: 0; padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+.sf-heading-bar {
+    width: 4px; height: 22px; border-radius: 4px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+}
+.sf-notes-content {
+    padding: 1.25rem 1.5rem;
+}
+.sf-notes-point {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.5rem 0; color: #475569;
+    transition: padding-left 0.2s ease;
+}
+.sf-notes-point:hover {
+    padding-left: 4px;
+}
+.sf-point-dot {
+    color: #6366f1; font-size: 0.6rem; margin-top: 8px; flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(99, 102, 241, 0.3));
+}
+.sf-point-num {
+    min-width: 26px; height: 26px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+.sf-notes-para {
+    color: #475569; margin-bottom: 0.75rem; line-height: 1.8;
+}
+
+/* ── MCQs: Interactive Quiz Cards ── */
+.sf-mcqs-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+.sf-mcqs-list {
+    display: flex; flex-direction: column; gap: 1.5rem;
+    padding: 1.5rem 2rem 2rem;
+}
+.sf-mcq-card {
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: var(--radius-xl, 16px);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.sf-mcq-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+    border-radius: 4px 0 0 4px;
+}
+.sf-mcq-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(99, 102, 241, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    border-color: rgba(99, 102, 241, 0.25);
+}
+.sf-mcq-question {
+    display: flex; gap: 0.875rem; align-items: flex-start;
+    font-weight: 600; margin-bottom: 1.25rem;
+    color: #1e293b; font-size: 1rem;
+    padding-left: 0.5rem;
+}
+.sf-mcq-num {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border-radius: var(--radius-lg, 12px);
+    padding: 4px 10px;
+    font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+.sf-mcq-options {
+    display: flex; flex-direction: column; gap: 0.625rem;
+    padding-left: 0.5rem;
+}
+.sf-mcq-option {
+    display: flex; align-items: center; gap: 0.875rem;
+    padding: 0.875rem 1.25rem; text-align: left;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1.5px solid rgba(99, 102, 241, 0.15);
+    border-radius: var(--radius-lg, 12px);
+    color: #475569;
+    font-size: 0.9rem; cursor: pointer; transition: all 0.25s ease;
+    font-family: inherit; width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.sf-mcq-option::after {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 0; height: 100%;
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.05), transparent);
+    transition: width 0.3s ease;
+}
+.sf-mcq-option:hover:not(:disabled) {
+    border-color: #6366f1;
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    color: #1e293b;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+.sf-mcq-option:hover:not(:disabled)::after {
+    width: 100%;
+}
+.sf-mcq-option:disabled { cursor: default; }
+.sf-opt-letter {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border: 1.5px solid rgba(99, 102, 241, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+    color: #6366f1;
+    transition: all 0.25s ease;
+}
+.sf-mcq-option:hover:not(:disabled) .sf-opt-letter {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+.sf-opt-correct {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+    border-color: #10B981 !important;
+    color: #059669 !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15) !important;
+}
+.sf-opt-correct .sf-opt-letter {
+    background: linear-gradient(135deg, #10B981, #34d399) !important;
+    color: #fff !important; border-color: transparent !important;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+}
+.sf-opt-wrong {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.04) 100%) !important;
+    border-color: #EF4444 !important;
+    color: #dc2626 !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1) !important;
+}
+.sf-opt-wrong .sf-opt-letter {
+    background: linear-gradient(135deg, #EF4444, #f87171) !important;
+    color: #fff !important; border-color: transparent !important;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3) !important;
+}
+.sf-mcq-answer {
+    margin-top: 1rem; padding: 0.875rem 1.25rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: var(--radius-lg, 12px);
+    font-size: 0.9rem; color: #059669;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+.sf-mcq-answer.hidden { display: none; }
+.sf-answer-label { font-weight: 700; }
+
+/* ── PAST PAPER: Elegant Exam Paper ── */
+.sf-pastpaper-container {
+    font-family: 'Georgia', serif;
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+.sf-paper-header {
+    text-align: center; padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border-bottom: 2px solid rgba(99, 102, 241, 0.15);
+    position: relative;
+}
+.sf-paper-header::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 4px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    border-radius: 2px;
+}
+.sf-paper-logo {
+    font-size: 3rem; margin-bottom: 0.75rem;
+    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+    animation: iconFloat 3s ease-in-out infinite;
+}
+.sf-paper-title {
+    font-size: 1.6rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #1e293b 0%, #6366f1 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.sf-paper-meta {
+    font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;
+    font-weight: 500;
+}
+.sf-paper-instructions {
+    font-size: 0.85rem; font-style: italic;
+    color: #475569;
+    padding: 0.75rem 1.25rem;
+    border: 1px dashed rgba(99, 102, 241, 0.3);
+    border-radius: var(--radius-lg, 12px);
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.03);
+}
+.sf-paper-body { padding: 1.5rem 2rem 2rem; }
+.sf-paper-section {
+    margin-bottom: 2.5rem;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+}
+.sf-section-heading {
+    font-size: 1rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.06) 100%);
+    color: #4f46e5;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    position: relative;
+}
+.sf-section-heading::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+}
+.sf-paper-question {
+    display: grid; grid-template-columns: 36px 1fr;
+    gap: 1rem; padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background 0.2s ease;
+}
+.sf-paper-question:hover {
+    background: rgba(99, 102, 241, 0.02);
+}
+.sf-paper-question:last-child {
+    border-bottom: none;
+}
+.sf-q-num {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.875rem; color: #fff;
+    flex-shrink: 0; margin-top: 2px;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+.sf-q-marks {
+    display: inline-block; margin-top: 0.5rem;
+    font-size: 0.75rem; color: #8b5cf6;
+    font-weight: 600;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 2px 8px;
+    border-radius: var(--radius-full, 9999px);
+}
+.sf-answer-space {
+    margin-top: 0.875rem; height: 64px;
+    border-bottom: 2px dashed rgba(99, 102, 241, 0.15);
+    border-radius: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 24px,
+        rgba(99, 102, 241, 0.03) 24px,
+        rgba(99, 102, 241, 0.03) 25px
+    );
+}
+.sf-sub-question {
+    display: flex; gap: 0.75rem; margin: 0.75rem 0 0.75rem 2.5rem;
+    color: #475569;
+    padding: 0.5rem 0;
+}
+.sf-sub-letter {
+    font-weight: 700; color: #6366f1; flex-shrink: 0;
+    background: rgba(99, 102, 241, 0.1);
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+.sf-mark-scheme {
+    margin-top: 2rem; padding-top: 1.5rem;
+    border-top: 2px solid rgba(16, 185, 129, 0.2);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.03) 0%, transparent 100%);
+    border-radius: var(--radius-xl, 16px);
+    padding: 1.5rem;
+}
+.sf-ms-header {
+    font-size: 1.125rem; font-weight: 700;
+    color: #059669;
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.sf-ms-text { color: #475569; margin-bottom: 0.625rem; line-height: 1.7; }
+
+/* ── TESTS: Modern Assessment Cards ── */
+.sf-test-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+.sf-test-header {
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.06) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    position: relative;
+}
+.sf-test-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+}
+.sf-test-meta-row { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem; }
+.sf-test-icon { font-size: 2.5rem; filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2)); }
+.sf-test-title { font-size: 1.35rem; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em; }
+.sf-test-subtitle { font-size: 0.875rem; color: #6366f1; font-weight: 600; }
+.sf-test-info { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.sf-test-badge {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    padding: 0.375rem 1rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
+    color: #4f46e5;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-full, 9999px);
+    font-size: 0.8125rem; font-weight: 600;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
+    transition: all 0.2s ease;
+}
+.sf-test-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.15);
+}
+.sf-test-body { padding: 1.5rem 2rem 2rem; }
+.sf-test-part {
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.sf-test-part:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+}
+.sf-part-heading {
+    font-size: 0.9375rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #4f46e5;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    position: relative;
+}
+.sf-part-heading::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+}
+.sf-test-question {
+    display: grid; grid-template-columns: 32px 1fr;
+    gap: 0.875rem; padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background 0.2s ease;
+}
+.sf-test-question:hover {
+    background: rgba(99, 102, 241, 0.02);
+}
+.sf-test-question:last-child { border-bottom: none; }
+.sf-tq-num {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08));
+    color: #7c3aed;
+    border: 1.5px solid rgba(139, 92, 246, 0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+.sf-test-question:hover .sf-tq-num {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
+}
+.sf-tq-body { color: #1e293b; }
+.sf-tf-options { display: flex; gap: 1.5rem; margin-top: 0.625rem; }
+.sf-tf-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    cursor: pointer; font-size: 0.9rem; color: #475569;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: var(--radius-lg, 12px);
+    transition: all 0.2s ease;
+}
+.sf-tf-label:hover {
+    background: rgba(99, 102, 241, 0.05);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(2px);
+}
+.sf-test-options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.625rem; }
+.sf-test-opt {
+    display: flex; align-items: center; gap: 0.625rem;
+    cursor: pointer; font-size: 0.875rem; color: #475569;
+    padding: 0.5rem 0.875rem;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: var(--radius-lg, 12px);
+    transition: all 0.2s ease;
+}
+.sf-test-opt:hover {
+    background: rgba(99, 102, 241, 0.05);
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateX(2px);
+}
+.sf-test-input-line {
+    margin-top: 0.625rem; height: 32px;
+    border-bottom: 2px dashed rgba(99, 102, 241, 0.15);
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 24px,
+        rgba(99, 102, 241, 0.02) 24px,
+        rgba(99, 102, 241, 0.02) 25px
+    );
+}
+.sf-test-text { color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem; line-height: 1.7; }
+.sf-answer-key {
+    margin-top: 2rem; padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(16, 185, 129, 0.03) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+}
+.sf-ak-header {
+    font-size: 1.1rem; font-weight: 700;
+    color: #059669; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.sf-ak-text { font-size: 0.875rem; color: #475569; margin-bottom: 0.5rem; line-height: 1.7; }
+
+/* ── CONCEPTS: Knowledge Cards ── */
+.sf-concepts-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+.sf-concepts-body { padding: 1.5rem 2rem 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.sf-concept-block {
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.sf-concept-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+}
+.sf-concept-heading {
+    font-size: 1.05rem; font-weight: 700;
+    color: #1e293b;
+    margin: 0; padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    position: relative;
+}
+.sf-concept-heading::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+}
+.sf-definition-box {
+    padding: 1rem 1.5rem; margin: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.06) 0%, rgba(59, 130, 246, 0.02) 100%);
+    border-left: 4px solid #3b82f6;
+    border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+    transition: all 0.2s ease;
+}
+.sf-definition-box:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
+}
+.sf-def-label {
+    display: block; font-size: 0.75rem; font-weight: 700;
+    color: #3b82f6; text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+.sf-example-box {
+    padding: 1rem 1.5rem; margin: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(16, 185, 129, 0.02) 100%);
+    border-left: 4px solid #10B981;
+    border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+    transition: all 0.2s ease;
+}
+.sf-example-box:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+}
+.sf-ex-label {
+    display: block; font-size: 0.75rem; font-weight: 700;
+    color: #10B981; text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+.sf-tip-box {
+    padding: 1rem 1.5rem; margin: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(245, 158, 11, 0.02) 100%);
+    border-left: 4px solid #F59E0B;
+    border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08);
+    transition: all 0.2s ease;
+}
+.sf-tip-box:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
+}
+.sf-tip-label {
+    display: block; font-size: 0.75rem; font-weight: 700;
+    color: #F59E0B; text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+.sf-concept-point {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    padding: 0.375rem 1.5rem; color: #475569;
+    transition: padding-left 0.2s ease;
+}
+.sf-concept-point:hover {
+    padding-left: calc(1.5rem + 4px);
+}
+.sf-concept-point::before {
+    content: '●';
+    color: #6366f1; font-size: 0.5rem; margin-top: 7px; flex-shrink: 0;
+}
+.sf-concept-para { color: #475569; margin-bottom: 0.625rem; line-height: 1.8; padding: 0 1.5rem; }
+
+/* ── LECTURE: Elegant Section Cards ── */
+.sf-lecture-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+.sf-lecture-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    padding: 2rem 2rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.06) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    position: relative;
+}
+.sf-lecture-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+}
+.sf-lecture-icon { font-size: 2.5rem; filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2)); }
+.sf-lecture-title { font-size: 1.5rem; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em; }
+.sf-lecture-sub { font-size: 0.875rem; color: #6366f1; font-weight: 600; margin: 0; }
+.sf-lecture-body { padding: 1.5rem 2rem 2rem; }
+.sf-lecture-section {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.sf-lecture-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+.sf-lecture-section::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.sf-lecture-section:hover::before {
+    opacity: 1;
+}
+.sf-lecture-section:last-child { border-bottom: none; }
+.sf-lec-heading {
+    display: flex; align-items: center; gap: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+.sf-lec-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem; font-weight: 700; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+    transition: transform 0.3s ease;
+}
+.sf-lecture-section:hover .sf-lec-num {
+    transform: scale(1.1);
+}
+.sf-lec-heading h3 { font-size: 1.125rem; font-weight: 700; margin: 0; color: #1e293b; }
+.sf-lec-content { padding-left: 0.5rem; }
+.sf-lec-subheading {
+    font-size: 0.9375rem; font-weight: 600;
+    color: #7c3aed; margin: 1rem 0 0.625rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid rgba(139, 92, 246, 0.3);
+}
+.sf-lec-point {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    padding: 0.375rem 0; color: #475569;
+    transition: padding-left 0.2s ease;
+}
+.sf-lec-point:hover {
+    padding-left: 4px;
+}
+.sf-lec-bullet { color: #6366f1; font-size: 0.625rem; margin-top: 6px; flex-shrink: 0; }
+.sf-lec-para { color: #475569; line-height: 1.85; margin-bottom: 0.875rem; }
+.sf-lec-intro {
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.03) 100%);
+    border-left: 4px solid #6366f1;
+    border-radius: 0 var(--radius-lg, 12px) var(--radius-lg, 12px) 0;
+    margin-bottom: 1.25rem;
+    color: #475569; font-style: italic;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+}
+.sf-lec-summary {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.03) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-xl, 16px);
+    margin-top: 1.25rem;
+    color: #475569;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+}
+
+/* ── PRESENTATION: Slide Deck ── */
+.presentation-viewer {
+    display: flex; flex-direction: column; gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: var(--radius-xl, 16px);
+}
+.presentation-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.presentation-nav-btn {
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; border: none;
+    border-radius: var(--radius-lg, 12px);
+    font-size: 0.875rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+.presentation-nav-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+.presentation-nav-btn:disabled {
+    opacity: 0.4; cursor: not-allowed;
+    background: #cbd5e1;
+    box-shadow: none;
+}
+.presentation-counter {
+    font-size: 0.9rem; font-weight: 600;
+    color: #475569;
+    background: rgba(99, 102, 241, 0.08);
+    padding: 0.375rem 1rem;
+    border-radius: var(--radius-full, 9999px);
+}
+.presentation-slide-display {
+    min-height: 400px; max-height: 550px;
+    overflow-y: auto;
+}
+.presentation-slide-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: var(--radius-2xl, 20px);
+    padding: 2.5rem;
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+    position: relative;
+    min-height: 350px;
+    transition: all 0.3s ease;
+}
+.presentation-slide-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+}
+.presentation-slide-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+    border-radius: 4px 4px 0 0;
+}
+.presentation-slide-number {
+    font-size: 0.8rem; color: #6366f1;
+    font-weight: 700; margin-bottom: 1rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: rgba(99, 102, 241, 0.08);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full, 9999px);
+    display: inline-block;
+}
+.presentation-slide-title {
+    font-size: 1.75rem; font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #1e293b; line-height: 1.2;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+    background: linear-gradient(135deg, #1e293b 0%, #4f46e5 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.presentation-slide-content {
+    font-size: 1.1rem; color: #475569;
+    line-height: 1.8;
+}
+.presentation-slide-content ul {
+    margin: 0; padding-left: 1.5rem;
+}
+.presentation-slide-content li {
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+.presentation-slide-content li::marker {
+    color: #6366f1;
+}
+.slide-card {
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: var(--radius-xl, 16px);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.slide-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+}
+.slide-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    border-radius: 3px 3px 0 0;
+}
+.slide-number {
+    font-size: 0.75rem; color: #6366f1;
+    font-weight: 700; margin-bottom: 0.75rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+}
+.slide-title {
+    font-size: 1.25rem; font-weight: 700;
+    margin-bottom: 1rem; color: #1e293b;
+}
+.slide-content {
+    font-size: 0.9rem; color: #475569;
+    line-height: 1.7;
+}
+.slide-content ul {
+    margin-left: 1.25rem; margin-top: 0.75rem;
+}
+.slide-content li {
+    margin-bottom: 0.5rem;
+}
+
+/* Speaker Notes */
+.speaker-notes-section {
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 1rem;
+}
+.speaker-notes-header {
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; font-size: 0.875rem;
+    font-weight: 600; color: #1e293b;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(139, 92, 246, 0.03) 100%);
+    border-radius: var(--radius-lg, 12px);
+    transition: all 0.2s ease;
+    border: 1px solid rgba(139, 92, 246, 0.15);
+}
+.speaker-notes-header:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%);
+    transform: translateX(2px);
+}
+.toggle-icon {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    color: #8b5cf6;
+}
+.speaker-notes-content {
+    margin-top: 0.75rem; padding: 1rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-lg, 12px);
+    font-size: 0.875rem; color: #475569;
+    line-height: 1.7;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+}
+.speaker-notes-content.collapsed { display: none; }
+
+/* Visual Placeholder */
+.visual-placeholder {
+    margin: 1.5rem 0;
+    display: flex; justify-content: center;
+}
+.placeholder-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 2px dashed rgba(99, 102, 241, 0.25);
+    border-radius: var(--radius-xl, 16px);
+    min-width: 200px; min-height: 150px;
+    transition: all 0.3s ease;
+}
+.placeholder-box:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    transform: scale(1.02);
+}
+.placeholder-icon {
+    font-size: 48px; margin-bottom: 0.75rem;
+    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+}
+.placeholder-text {
+    font-size: 0.875rem; font-weight: 600;
+    color: #475569;
+}
+
+/* ── VISUAL LEARNING: Diagram Cards ── */
+.mermaid-container {
+    display: flex; justify-content: center; align-items: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    transition: all 0.3s ease;
+}
+.mermaid-container:hover {
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+.mermaid-container svg {
+    max-width: 100%; height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+.svg-container {
+    display: flex; flex-direction: column; gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl, 16px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+.svg-wrapper {
+    display: flex; justify-content: center; align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-lg, 12px);
+    overflow-x: auto;
+}
+.diagram-explanation {
+    font-size: 0.875rem; color: #475569;
+    line-height: 1.7; padding: 1rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(99, 102, 241, 0.02) 100%);
+    border-radius: var(--radius-lg, 12px);
+    border-left: 3px solid #6366f1;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.06);
+}
+.diagram-notes {
+    font-size: 0.875rem; color: #475569;
+    line-height: 1.7; padding: 1rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(139, 92, 246, 0.02) 100%);
+    border-radius: var(--radius-lg, 12px);
+    border-left: 3px solid #8b5cf6;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.06);
+}
+.diagram-notes strong { color: #1e293b; }
+
+/* ── GENERAL OUTPUT ── */
+.sf-plain-result {
+    padding: 1.5rem 2rem;
+    white-space: pre-wrap;
+    font-size: 0.9375rem; line-height: 1.8;
+    color: #475569;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+.hidden { display: none !important; }
+
+/* ── Output Placeholder ── */
+.output-placeholder {
+    color: #94a3b8;
+    font-size: 0.9375rem;
+    margin-top: 4rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.output-placeholder svg {
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
+}
+
+/* ── MOBILE MENU ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--color-text-primary, #F8FAFC);
+  transition: all 0.3s ease;
+}
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  background: var(--color-bg-secondary, #111827);
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  padding: var(--spacing-2, 0.5rem) 0;
+}
+.mobile-menu.open {
+  display: flex;
+}
+.mobile-menu a {
+  color: var(--color-text-secondary, #CBD5E1);
+  text-decoration: none;
+  padding: var(--spacing-3, 0.75rem) 8%;
+  transition: var(--transition-base);
+}
+.mobile-menu a:hover {
+  background: var(--color-primary-light, rgba(59,130,246,0.12));
+  color: var(--color-primary, #3B82F6);
+}
+.header-actions {
+  display: none;
+}
+@media (max-width: 768px) {
+  .header-actions {
+    display: flex;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .nav-links {
+    display: none;
+  }
+}
+
+/* ══ MOBILE MENU ══ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--color-text-primary, #F8FAFC);
+  transition: all 0.3s ease;
+}
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  background: var(--color-bg-secondary, #111827);
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  padding: var(--spacing-2, 0.5rem) 0;
+}
+.mobile-menu.open {
+  display: flex;
+}
+.mobile-menu a {
+  color: var(--color-text-secondary, #CBD5E1);
+  text-decoration: none;
+  padding: var(--spacing-3, 0.75rem) 8%;
+  transition: var(--transition-base);
+}
+.mobile-menu a:hover {
+  background: var(--color-primary-light, rgba(59,130,246,0.12));
+  color: var(--color-primary, #3B82F6);
+}
+.header-actions {
+  display: none;
+}
+@media (max-width: 768px) {
+  .header-actions {
+    display: flex;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .nav-links {
+    display: none;
+  }
+}
+
+</style>
+<base target="_blank">
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <a href="../../index.html" class="logo">AI Study Forge</a>
+    <div class="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="../../pages/about.html">About</a>
+        <a href="../../blog/index.html">Blog</a>
+        <a href="../../pages/contact.html">Contact</a>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Switch theme" title="Switch theme">
+            <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
+    </div>
+    <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</div>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu">
+    <a href="../../index.html">Home</a>
+    <a href="../../pages/about.html">About</a>
+    <a href="../../blog/index.html">Blog</a>
+    <a href="../../pages/contact.html">Contact</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <h1>AI Study Forge</h1>
+    <p>Generate educational content including notes, MCQs, concepts, lectures, presentations, and visual learning materials for any curriculum, subject, and topic.</p>
+</section>
+
+<!-- Main -->
+<div class="container">
+
+    <!-- Left: Input Card -->
+    <div class="card">
+        <h2>Generate Content</h2>
+
+        <div class="input-group">
+            <label>Curriculum</label>
+            <select id="curriculum" title="Select your curriculum">
+                <option>Grade 9</option>
+                <option>Grade 10</option>
+                <option>O Level</option>
+                <option>A Level</option>
+                <option>GCSE</option>
+                <option>AP</option>
+                <option>University</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Subject</label>
+            <select id="subject" title="Select your subject">
+                <option>Biology</option>
+                <option>Mathematics</option>
+                <option>Chemistry</option>
+                <option>Physics</option>
+                <option>English</option>
+                <option>Computer Science</option>
+                <option>Business Studies</option>
+                <option>Economics</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Topic</label>
+            <input type="text" id="topic" placeholder="e.g. Photosynthesis, Calculus, World War II">
+        </div>
+
+        <div class="input-group">
+            <label>Action</label>
+            <select id="action" title="Select content type to generate">
+                <option>Notes</option>
+                <option>MCQs</option>
+                <option>Past Papers</option>
+                <option>Tests</option>
+                <option>Concepts</option>
+                <option>Get Lecture</option>
+                <option>Presentation</option>
+                <option>Visual Learning</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Language</label>
+            <select id="language" title="Select output language">
+                <option>English</option>
+                <option>Simple English</option>
+                <option>Roman Urdu</option>
+            </select>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-msg" id="errorMsg">⚠ Please fill in the Topic field.</div>
+
+        <button class="generate-btn" id="generateBtn" onclick="generateContent()" aria-label="Generate AI content">
+            <div class="spinner"></div>
+            <span class="btn-text"></span>
+        </button>
+    </div>
+
+    <!-- Right: Output Card -->
+    <div class="card">
+        <div class="output-header">
+            <h2>Generated Content</h2>
+            <div class="output-actions">
+                <span class="word-count" id="wordCount"></span>
+                <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Copy</button>
+            </div>
+        </div>
+
+        <div class="output-box" id="output">
+            <div class="output-placeholder">
+                <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" color="#4da3ff">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <p>Your AI-generated educational content will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    © 2026 AI Study Forge — All Rights Reserved
+</div>
+
+<script>
+
+    let generatedText = "";
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
+
+    async function checkHealth() {
+        try {
+            const response = await fetch("https://aibiztools.arslan9zaki.workers.dev/health", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await response.json();
+            return response.ok && data.status === "ok";
+        } catch (e) {
+            return false;
         }
-    } else {
-        // Try without mermaid label
-        const codeBlockMatch = mermaidCode.match(/```\s*([\s\S]*?)```/);
-        if (codeBlockMatch) {
-            codeOnly = codeBlockMatch[1].trim();
-            const beforeCode = mermaidCode.split('```')[0].trim();
+    }
+
+    async function generateContent() {
+
+        const curriculum = document.getElementById("curriculum").value;
+        const subject = document.getElementById("subject").value;
+        const topic = document.getElementById("topic").value.trim();
+        const action = document.getElementById("action").value;
+        const language = document.getElementById("language").value;
+        const errorMsg = document.getElementById("errorMsg");
+        const btn = document.getElementById("generateBtn");
+        const outputBox = document.getElementById("output");
+        const copyBtn = document.getElementById("copyBtn");
+        const wordCountEl = document.getElementById("wordCount");
+
+        // Validation
+        if (!topic) {
+            errorMsg.classList.add("visible");
+            return;
+        }
+
+        errorMsg.classList.remove("visible");
+
+        // Health check before generation
+        btn.classList.add("loading");
+        btn.disabled = true;
+        outputBox.innerHTML = '<div class="output-placeholder"><p style="color:#3a5070">🔍 Checking service status…</p></div>';
+
+        const isHealthy = await checkHealth();
+        if (!isHealthy) {
+            outputBox.innerHTML = "";
+            outputBox.innerHTML = `
+                <div style="text-align:center; padding:2rem;">
+                    <p style="color:#EF4444; font-size:1.1rem; margin-bottom:1rem;">⚠ AI service temporarily unavailable</p>
+                    <p style="color:#64748B; margin-bottom:1.5rem;">The service is currently down or overloaded. Please try again later.</p>
+                    <button onclick="generateContent()" style="padding:0.75rem 1.5rem; background:#3B82F6; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem;">Try Again</button>
+                </div>
+            `;
+            btn.classList.remove("loading");
+            btn.disabled = false;
+            return;
+        }
+
+        // Loading state
+        copyBtn.classList.remove("visible");
+        wordCountEl.textContent = "";
+        generatedText = "";
+
+        // Clear output and show loading state
+        outputBox.innerHTML = '<div class="output-placeholder"><p style="color:#3a5070">⏳ Generating content…</p></div>';
+
+        // Build action-specific prompts
+        const prompts = {
+            'Notes': `Generate comprehensive revision-ready study notes for the topic "${topic}" in ${subject} at ${curriculum} level. Include: key definitions, important formulas (if applicable), main concepts, examples, and summary points. Use clear headings and bullet points. Language: ${language}.`,
+            'MCQs': `Generate 10 exam-style multiple-choice questions (MCQs) for the topic "${topic}" in ${subject} at ${curriculum} level. For each question, provide: the question, 4 options (A, B, C, D), the correct answer, and a brief explanation. Include a mix of difficulty levels. Language: ${language}.`,
+            'Past Papers': `You are an expert ${subject} examiner for ${curriculum} level.
+Generate a complete past paper style exam for the topic "${topic}" in ${subject} 
+for ${curriculum} curriculum students.
+
+The paper must include:
+
+SECTION A — SHORT QUESTIONS (5 questions, 2 marks each):
+- Direct factual questions
+- Definition questions
+- Fill in the blank style questions
+
+SECTION B — STRUCTURED QUESTIONS (3 questions, 5 marks each):
+- Multi-part questions (a, b, c parts)
+- Application and analysis questions
+- Each part clearly labelled with marks
+
+SECTION C — ESSAY / LONG QUESTIONS (2 questions, 10 marks each):
+- Choose one from two options
+- Requires detailed explanation, examples and analysis
+- Clear mark scheme hints in brackets
+
+At the end provide a complete MARK SCHEME with:
+- Model answers for Section A
+- Key points required for Section B (bullet points per mark)
+- Marking criteria for Section C
+
+Format the output clearly with proper section headings, question numbers, 
+and marks in square brackets like [2 marks].
+Language: ${language}.`,
+            'Tests': `You are an expert ${subject} teacher for ${curriculum} level.
+Generate a comprehensive topic test for "${topic}" in ${subject} 
+for ${curriculum} curriculum students.
+
+The test must contain ALL of the following question types:
+
+PART 1 — MULTIPLE CHOICE (10 questions, 1 mark each):
+- 4 options per question (A, B, C, D)
+- Answers listed at the end
+
+PART 2 — TRUE / FALSE (5 questions, 1 mark each):
+- Student must write True or False
+- Brief justification required for False answers
+
+PART 3 — FILL IN THE BLANKS (5 questions, 1 mark each):
+- Key terms and concepts
+- Answer key provided at the end
+
+PART 4 — SHORT ANSWER QUESTIONS (4 questions, 3 marks each):
+- Requires 3-4 sentence answers
+- Tests understanding not just recall
+
+PART 5 — DIAGRAM / LABEL (1 question, 5 marks):
+- Describe a diagram the student should draw and label
+- List exactly what must be included for full marks
+
+Include a complete ANSWER KEY at the end for all parts.
+State total marks: [Total: 35 marks] [Time: 45 minutes]
+Language: ${language}.`,
+            'Concepts': `Generate detailed conceptual explanations for the topic "${topic}" in ${subject} at ${curriculum} level. Explain the core concepts, provide real-world examples, include exam tips, and clarify common misconceptions. Language: ${language}.`,
+            'Get Lecture': `Generate a comprehensive lecture on the topic "${topic}" in ${subject} at ${curriculum} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language. Language: ${language}.`,
+            'Presentation': `Generate a 10-slide presentation outline for the topic "${topic}" in ${subject} at ${curriculum} level. Structure: Slide 1: Title, Slide 2: Introduction, Slides 3-8: Core Concepts (2 slides each for main concepts), Slide 9: Summary, Slide 10: Quiz/Review Questions. For each slide, provide: slide title, bullet points for content, and speaker notes. Format each slide as: "Slide X: [Title]" followed by bullet points, then "Speaker Notes:" followed by the notes. Language: ${language}.`,
+            'Visual Learning': `Create a detailed Mermaid diagram for the topic "${topic}" in ${subject} at ${curriculum} level.
+
+⚠️ CRITICAL - YOUR OUTPUT WILL BREAK IF YOU DON'T FOLLOW THESE RULES:
+1. Use PLAIN TEXT ONLY - NEVER use **bold**, __italic__, or ANY markdown
+2. Choose the BEST diagram type:
+   - graph TD/LR: For processes, steps, sequences (MOST COMMON)
+   - mindmap: For concepts, categories, branching ideas
+   - timeline: For historical events, chronological data
+   - pie: For percentages, distributions
+
+3. The diagram MUST have at least 10-15 nodes/elements
+4. ⚠️ NODE NAMES MUST NOT HAVE SPACES - Use underscores: Cell_Wall, Endoplasmic_Reticulum, Cell_Membrane
+5. Use descriptive labels in [brackets] for each node: A[Cell_Wall]
+6. Connect ALL related elements with arrows (-->, ---, -.->)
+7. Make it COMPREHENSIVE - don't leave out important details
+
+REQUIRED OUTPUT FORMAT (copy exactly):
+\`\`\`mermaid
+graph TD
+    A[Main_Concept] --> B[Sub_Concept_1]
+    A --> C[Sub_Concept_2]
+    B --> D[Detail_1]
+    B --> E[Detail_2]
+    C --> F[Detail_3]
+    C --> G[Detail_4]
+    D --> H[Example_1]
+    E --> I[Example_2]
+    F --> J[Application_1]
+    G --> K[Application_2]
+\`\`\`
+
+This diagram shows [2-3 sentence explanation].
+
+Key Points to Remember:
+- [Point 1]
+- [Point 2]
+- [Point 3]
+- [Point 4]
+
+Language: ${language}.`
+        };
+
+        const prompt = prompts[action] || prompts['Get Lecture'];
+        const systemPrompt = `You are an expert educational AI for AI Study Forge. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
+
+        const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
+
+        try {
+            const response = await fetch(WORKER_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    // No model specified — Worker auto-fallback through all 3 models
+                    prompt,
+                    systemPrompt
+                })
+            });
+
+            // FIX: always read raw text first — never call .json() on a potentially empty body
+            const rawText = await response.text();
+
+            // FIX: check HTTP status before trying to parse
+            if (!response.ok) {
+                let errMsg = `Server error (${response.status})`;
+                try {
+                    const errData = JSON.parse(rawText);
+                    errMsg = errData.error || errMsg;
+                } catch (_) {
+                    // rawText was not JSON (empty body, HTML error page, etc.)
+                    if (rawText.trim()) errMsg = rawText.trim().slice(0, 120);
+                }
+                throw new Error(errMsg);
+            }
+
+            // FIX: safe JSON parse with meaningful error if body is empty / malformed
+            if (!rawText || !rawText.trim()) {
+                throw new Error("Worker returned an empty response. Check that the Worker is deployed.");
+            }
+
+            let data;
+            try {
+                data = JSON.parse(rawText);
+            } catch (_) {
+                throw new Error("Worker returned invalid JSON. Raw response: " + rawText.slice(0, 100));
+            }
+
+            generatedText = (data.text || "").trim();
+
+            if (!generatedText) {
+                throw new Error("AI returned no content. Try a different topic or rephrase your request.");
+            }
+
+            // Reset retry count on success
+            retryCount = 0;
+
+            // Render output based on action type
+            renderResult(action, generatedText, outputBox, topic, subject, curriculum);
+
+            // Word count
+            const words = generatedText.split(/\s+/).filter(Boolean).length;
+            wordCountEl.textContent = `${words} words`;
+
+            // Show copy button
+            copyBtn.classList.add("visible");
+
+        } catch (err) {
+            retryCount++;
+            if (retryCount < MAX_RETRIES) {
+                outputBox.innerHTML = "";
+                outputBox.innerHTML = `
+                    <div style="text-align:center; padding:2rem;">
+                        <p style="color:#F59E0B; font-size:1.1rem; margin-bottom:1rem;">⚠ Request failed (attempt ${retryCount}/${MAX_RETRIES})</p>
+                        <p style="color:#64748B; margin-bottom:1.5rem;">${err.message || "Something went wrong"}</p>
+                        <p style="color:#64748B; margin-bottom:1.5rem;">Retrying automatically...</p>
+                    </div>
+                `;
+                setTimeout(() => generateContent(), 2000);
+                return;
+            }
+            
+            outputBox.innerHTML = "";
+            outputBox.innerHTML = `
+                <div style="text-align:center; padding:2rem;">
+                    <p style="color:#EF4444; font-size:1.1rem; margin-bottom:1rem;">⚠ AI service temporarily unavailable</p>
+                    <p style="color:#64748B; margin-bottom:1.5rem;">${err.message || "Something went wrong. Please try again later."}</p>
+                    <button onclick="retryCount=0; generateContent()" style="padding:0.75rem 1.5rem; background:#3B82F6; color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem;">Try Again</button>
+                </div>
+            `;
+        }
+
+        // Reset button
+        btn.classList.remove("loading");
+        btn.disabled = false;
+    }
+
+    function copyOutput() {
+        if (!generatedText) return;
+
+        navigator.clipboard.writeText(generatedText).then(() => {
+            const btn = document.getElementById("copyBtn");
+            btn.textContent = "Copied!";
+            btn.style.background = "#4da3ff";
+            btn.style.color = "white";
+            setTimeout(() => {
+                btn.textContent = "Copy";
+                btn.style.background = "";
+                btn.style.color = "";
+            }, 2000);
+        }).catch(() => {
+            // Fallback for older browsers
+            const el = document.createElement("textarea");
+            el.value = generatedText;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand("copy");
+            document.body.removeChild(el);
+        });
+    }
+
+    function renderResult(action, text, container, topic, subject, curriculum) {
+      // Clear container
+      container.innerHTML = '';
+      container.className = container.className.replace(/sf-output-\S+/g, '').trim();
+
+      // Sanitize AI output to remove markdown and fix common mistakes
+      text = sanitizeAIOutput(text);
+
+      switch(action) {
+        case 'Notes':
+          renderNotes(text, container, topic, subject);
+          break;
+        case 'MCQs':
+          renderMCQs(text, container, topic);
+          break;
+        case 'Past Papers':
+          renderPastPaper(text, container, topic, subject, curriculum);
+          break;
+        case 'Tests':
+          renderTest(text, container, topic, subject);
+          break;
+        case 'Concepts':
+          renderConcepts(text, container, topic);
+          break;
+        case 'Get Lecture':
+          renderLecture(text, container);
+          break;
+        case 'Presentation':
+          renderPresentation(text, container);
+          break;
+        case 'Visual Learning':
+          renderMermaidDiagram(text, container);
+          break;
+        default:
+          container.innerHTML = '<div class="sf-plain-result">' + escapeHtml(text) + '</div>';
+      }
+    }
+
+    /* ── AI OUTPUT SANITIZER ── */
+    function sanitizeAIOutput(text) {
+        if (!text) return '';
+
+        // Remove ALL markdown formatting
+        text = text.replace(/\*\*/g, '');           // **bold**
+        text = text.replace(/__/g, '');             // __italic__
+        text = text.replace(/\*/g, '');             // *italic*
+        text = text.replace(/`/g, '');              // `code`
+        text = text.replace(/~~/g, '');             // ~~strikethrough~~
+        text = text.replace(/#+\s*/g, '');          // # headers
+        text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // [text](link)
+        text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '');   // ![alt](image)
+
+        // Fix common AI mistakes in presentations
+        text = text.replace(/Bullet Points?:\s*/gi, '');
+        text = text.replace(/Content?:\s*/gi, '');
+        text = text.replace(/Key Points?:\s*/gi, 'Key Points: ');
+        text = text.replace(/Speaker['\s]*Notes?:\s*/gi, 'Speaker Notes: ');
+        text = text.replace(/Presenter['\s]*Notes?:\s*/gi, 'Speaker Notes: ');
+        text = text.replace(/Slide\s+(\d+)\s*[-–—]\s*/gi, 'Slide $1: ');
+        text = text.replace(/Slide\s+(\d+)\s*\.\s*/gi, 'Slide $1: ');
+
+        // Fix visual learning common mistakes
+        text = text.replace(/```mermaid\s*/gi, '\n\`\`\`mermaid\n');
+        text = text.replace(/```\s*$/gm, '\n\`\`\`');
+        text = text.replace(/Mermaid\s*Code:\s*/gi, '');
+        text = text.replace(/Diagram\s*Code:\s*/gi, '');
+
+        // Clean up excessive whitespace
+        text = text.replace(/\n{4,}/g, '\n\n\n');
+        text = text.replace(/[ \t]+$/gm, '');
+
+        return text.trim();
+    }
+
+    /* ── UTILITY ── */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function boldKeyTerms(text) {
+      return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                 .replace(/__(.*?)__/g, '<strong>$1</strong>')
+                 .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+
+    function splitLines(text) {
+      return text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    }
+
+    /* ── NOTES RENDERER ── */
+    function renderNotes(text, container, topic, subject) {
+      container.classList.add('sf-output-notes');
+      const lines = splitLines(text);
+      let html = '<div class="sf-notes-container">';
+      html += '<div class="sf-result-header"><span class="sf-result-icon">📝</span><div><h3 class="sf-result-title">' + escapeHtml(topic) + '</h3><span class="sf-result-subtitle">' + escapeHtml(subject) + ' Notes</span></div></div>';
+      html += '<div class="sf-notes-body">';
+
+      lines.forEach(function(line) {
+        if (/^#{1,3}\s/.test(line) || /^[A-Z][A-Z\s]{4,}:?$/.test(line.trim())) {
+          var heading = line.replace(/^#{1,3}\s*/, '').replace(/:$/, '');
+          html += '</div><div class="sf-notes-section"><h4 class="sf-notes-heading"><span class="sf-heading-bar"></span>' + escapeHtml(heading) + '</h4><div class="sf-notes-content">';
+        } else if (/^[-•*]\s/.test(line)) {
+          html += '<div class="sf-notes-point"><span class="sf-point-dot">●</span><span>' + boldKeyTerms(escapeHtml(line.replace(/^[-•*]\s/, ''))) + '</span></div>';
+        } else if (/^\d+\.\s/.test(line)) {
+          html += '<div class="sf-notes-point"><span class="sf-point-num">' + line.match(/^\d+/)[0] + '</span><span>' + boldKeyTerms(escapeHtml(line.replace(/^\d+\.\s/, ''))) + '</span></div>';
+        } else if (line.length > 0) {
+          html += '<p class="sf-notes-para">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div></div>';
+      container.innerHTML = html;
+    }
+
+    /* ── MCQs RENDERER ── */
+    function renderMCQs(text, container, topic) {
+      container.classList.add('sf-output-mcqs');
+      var questions = [];
+      var current = null;
+      var answerSection = false;
+
+      splitLines(text).forEach(function(line) {
+        if (/^answer(s)?[\s:]/i.test(line) || /^answer key/i.test(line)) {
+          answerSection = true;
+          if (current) { questions.push(current); current = null; }
+          return;
+        }
+        var qMatch = line.match(/^(?:Q\.?\s*)?(\d+)[.)]\s+(.+)/);
+        if (qMatch && !answerSection) {
+          if (current) questions.push(current);
+          current = { num: qMatch[1], question: qMatch[2], options: [], answer: '', explanation: '' };
+        } else if (current && /^[A-D][.)]\s/.test(line)) {
+          current.options.push(line);
+        } else if (current && /^(?:ans(?:wer)?|correct)[:\s]/i.test(line)) {
+          current.answer = line.replace(/^(?:ans(?:wer)?|correct)[:\s]*/i, '').trim();
+        } else if (current && /^exp(?:lanation)?[:\s]/i.test(line)) {
+          current.explanation = line.replace(/^exp(?:lanation)?[:\s]*/i, '').trim();
+        }
+      });
+      if (current) questions.push(current);
+
+      var html = '<div class="sf-mcqs-container">';
+      html += '<div class="sf-result-header"><span class="sf-result-icon">❓</span><div><h3 class="sf-result-title">MCQ Quiz</h3><span class="sf-result-subtitle">' + escapeHtml(topic) + ' — ' + questions.length + ' Questions</span></div></div>';
+      html += '<div class="sf-mcqs-list">';
+
+      questions.forEach(function(q, i) {
+        html += '<div class="sf-mcq-card" data-index="' + i + '">';
+        html += '<div class="sf-mcq-question"><span class="sf-mcq-num">Q' + q.num + '</span><span>' + boldKeyTerms(escapeHtml(q.question)) + '</span></div>';
+        html += '<div class="sf-mcq-options">';
+        q.options.forEach(function(opt) {
+          var letter = opt.charAt(0);
+          var optText = opt.slice(2).trim();
+          html += '<button class="sf-mcq-option" data-letter="' + letter + '" onclick="selectMCQ(this, \'' + escapeHtml(q.answer) + '\')">';
+          html += '<span class="sf-opt-letter">' + letter + '</span><span>' + escapeHtml(optText) + '</span></button>';
+        });
+        html += '</div>';
+        if (q.answer) {
+          html += '<div class="sf-mcq-answer hidden"><span class="sf-answer-label">✅ Answer: </span>' + escapeHtml(q.answer) + (q.explanation ? ' — ' + escapeHtml(q.explanation) : '') + '</div>';
+        }
+        html += '</div>';
+      });
+
+      html += '</div></div>';
+      container.innerHTML = html;
+    }
+
+    window.selectMCQ = function(btn, correctAnswer) {
+      var card = btn.closest('.sf-mcq-card');
+      var allOpts = card.querySelectorAll('.sf-mcq-option');
+      allOpts.forEach(function(o) { o.disabled = true; });
+      var selected = btn.getAttribute('data-letter');
+      if (correctAnswer && correctAnswer.toUpperCase().startsWith(selected.toUpperCase())) {
+        btn.classList.add('sf-opt-correct');
+      } else {
+        btn.classList.add('sf-opt-wrong');
+        allOpts.forEach(function(o) {
+          if (correctAnswer && correctAnswer.toUpperCase().startsWith(o.getAttribute('data-letter').toUpperCase())) {
+            o.classList.add('sf-opt-correct');
+          }
+        });
+      }
+      var ansDiv = card.querySelector('.sf-mcq-answer');
+      if (ansDiv) ansDiv.classList.remove('hidden');
+    };
+
+    /* ── PAST PAPER RENDERER ── */
+    function renderPastPaper(text, container, topic, subject, curriculum) {
+      container.classList.add('sf-output-pastpaper');
+      var lines = splitLines(text);
+      var html = '<div class="sf-pastpaper-container">';
+
+      // Header
+      html += '<div class="sf-paper-header">';
+      html += '<div class="sf-paper-logo">📄</div>';
+      html += '<h2 class="sf-paper-title">' + escapeHtml(subject) + ' — ' + escapeHtml(topic) + '</h2>';
+      html += '<p class="sf-paper-meta">' + escapeHtml(curriculum) + ' Level &nbsp;|&nbsp; Past Paper Style</p>';
+      html += '<div class="sf-paper-instructions">Read all questions carefully. Marks are shown in square brackets.</div>';
+      html += '</div>';
+
+      html += '<div class="sf-paper-body">';
+      var inMarkScheme = false;
+
+      lines.forEach(function(line) {
+        if (/MARK SCHEME|MARKING SCHEME|ANSWER KEY/i.test(line)) {
+          inMarkScheme = true;
+          html += '</div><div class="sf-mark-scheme"><div class="sf-ms-header">📋 Mark Scheme</div><div class="sf-ms-body">';
+          return;
+        }
+        if (/^SECTION [ABC]/i.test(line)) {
+          html += '<div class="sf-paper-section"><h4 class="sf-section-heading">' + escapeHtml(line) + '</h4>';
+        } else if (/^\d+[.)]\s/.test(line) && !inMarkScheme) {
+          var qNum = line.match(/^(\d+)/)[1];
+          var qText = line.replace(/^\d+[.)]\s*/, '');
+          var marksMatch = qText.match(/\[(\d+)\s*marks?\]/i);
+          var marks = marksMatch ? marksMatch[1] : '';
+          html += '<div class="sf-paper-question">';
+          html += '<span class="sf-q-num">' + qNum + '</span>';
+          html += '<div class="sf-q-body"><p>' + boldKeyTerms(escapeHtml(qText)) + '</p>';
+          if (marks) html += '<span class="sf-q-marks">[' + marks + ' mark' + (marks > 1 ? 's' : '') + ']</span>';
+          html += '<div class="sf-answer-space" aria-label="Answer space"></div></div></div>';
+        } else if (/^[a-z][.)]\s/i.test(line) && !inMarkScheme) {
+          var pLetter = line.charAt(0);
+          var pText = line.slice(2).trim();
+          html += '<div class="sf-sub-question"><span class="sf-sub-letter">(' + pLetter + ')</span><div>' + boldKeyTerms(escapeHtml(pText)) + '</div></div>';
+        } else if (line.length > 0) {
+          html += '<p class="sf-paper-text' + (inMarkScheme ? ' sf-ms-text' : '') + '">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div>';
+      container.innerHTML = html;
+    }
+
+    /* ── TEST RENDERER ── */
+    function renderTest(text, container, topic, subject) {
+      container.classList.add('sf-output-test');
+      var lines = splitLines(text);
+      var html = '<div class="sf-test-container">';
+
+      // Header
+      html += '<div class="sf-test-header">';
+      html += '<div class="sf-test-meta-row">';
+      html += '<span class="sf-test-icon">✅</span>';
+      html += '<div><h3 class="sf-test-title">' + escapeHtml(topic) + '</h3>';
+      html += '<p class="sf-test-subtitle">' + escapeHtml(subject) + ' — Class Test</p></div>';
+      html += '</div>';
+
+      var totalMatch = text.match(/Total[:\s]+\[?(\d+)\s*marks?\]?/i);
+      var timeMatch  = text.match(/Time[:\s]+\[?(\d+)\s*minutes?\]?/i);
+      if (totalMatch || timeMatch) {
+        html += '<div class="sf-test-info">';
+        if (totalMatch) html += '<span class="sf-test-badge">📊 ' + totalMatch[1] + ' Marks</span>';
+        if (timeMatch)  html += '<span class="sf-test-badge">⏱ ' + timeMatch[1] + ' Minutes</span>';
+        html += '</div>';
+      }
+      html += '</div><div class="sf-test-body">';
+
+      var inAnswerKey = false;
+
+      lines.forEach(function(line) {
+        if (/ANSWER KEY|ANSWERS|ANSWER SHEET/i.test(line)) {
+          inAnswerKey = true;
+          html += '</div><div class="sf-answer-key"><div class="sf-ak-header">🔑 Answer Key</div><div class="sf-ak-body">';
+          return;
+        }
+        if (/^PART\s+\d+|^SECTION\s+[A-Z]/i.test(line)) {
+          html += '<div class="sf-test-part"><h4 class="sf-part-heading">' + escapeHtml(line) + '</h4>';
+        } else if (/^Q?\.?\d+[.)]\s/.test(line) && !inAnswerKey) {
+          var num = line.match(/\d+/)[0];
+          var qText = line.replace(/^Q?\.?\d+[.)]\s*/, '');
+          html += '<div class="sf-test-question">';
+          html += '<span class="sf-tq-num">' + num + '</span>';
+          html += '<div class="sf-tq-body">' + boldKeyTerms(escapeHtml(qText));
+          if (/true.*false/i.test(qText)) {
+            html += '<div class="sf-tf-options"><label class="sf-tf-label"><input type="radio" name="tf_' + num + '" value="true"> True</label><label class="sf-tf-label"><input type="radio" name="tf_' + num + '" value="false"> False</label></div>';
+          } else if (/^[A-D][.)]\s/.test(lines[lines.indexOf(line) + 1] || '')) {
+            html += '<div class="sf-test-options">';
+            var optLines = [];
+            var nextIdx = lines.indexOf(line) + 1;
+            while (nextIdx < lines.length && /^[A-D][.)]\s/.test(lines[nextIdx])) {
+              var ol = lines[nextIdx];
+              html += '<label class="sf-test-opt"><input type="radio" name="mcq_' + num + '" value="' + ol.charAt(0) + '"><span class="sf-opt-letter">' + ol.charAt(0) + '</span>' + escapeHtml(ol.slice(2).trim()) + '</label>';
+              nextIdx++;
+            }
+            html += '</div>';
+          } else {
+            html += '<div class="sf-test-input-line"></div>';
+          }
+          html += '</div></div>';
+        } else if (/^[A-D][.)]\s/.test(line) && !inAnswerKey) {
+          // options already handled above, skip
+        } else if (line.length > 0) {
+          html += '<p class="sf-test-text' + (inAnswerKey ? ' sf-ak-text' : '') + '">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div>';
+      container.innerHTML = html;
+    }
+
+    /* ── CONCEPTS RENDERER ── */
+    function renderConcepts(text, container, topic) {
+      container.classList.add('sf-output-concepts');
+      var lines = splitLines(text);
+      var html = '<div class="sf-concepts-container">';
+      html += '<div class="sf-result-header"><span class="sf-result-icon">💡</span><div><h3 class="sf-result-title">Core Concepts</h3><span class="sf-result-subtitle">' + escapeHtml(topic) + '</span></div></div>';
+      html += '<div class="sf-concepts-body">';
+      var inDef = false;
+
+      lines.forEach(function(line) {
+        if (/^#{1,3}\s/.test(line) || /^[A-Z][A-Z\s]{3,}:?$/.test(line.trim())) {
+          html += '<div class="sf-concept-block"><h4 class="sf-concept-heading">' + escapeHtml(line.replace(/^#{1,3}\s*/, '')) + '</h4>';
+        } else if (/definition|meaning|refers to/i.test(line) && line.length < 120) {
+          html += '<div class="sf-definition-box"><span class="sf-def-label">📌 Definition</span><p>' + boldKeyTerms(escapeHtml(line)) + '</p></div>';
+        } else if (/example|for instance|e\.g\./i.test(line)) {
+          html += '<div class="sf-example-box"><span class="sf-ex-label">💡 Example</span><p>' + boldKeyTerms(escapeHtml(line)) + '</p></div>';
+        } else if (/exam tip|remember|note:/i.test(line)) {
+          html += '<div class="sf-tip-box"><span class="sf-tip-label">⭐ Exam Tip</span><p>' + boldKeyTerms(escapeHtml(line)) + '</p></div>';
+        } else if (/^[-•*]\s/.test(line)) {
+          html += '<div class="sf-concept-point"><span>●</span><span>' + boldKeyTerms(escapeHtml(line.replace(/^[-•*]\s/, ''))) + '</span></div>';
+        } else if (line.length > 0) {
+          html += '<p class="sf-concept-para">' + boldKeyTerms(escapeHtml(line)) + '</p>';
+        }
+      });
+
+      html += '</div></div></div>';
+      container.innerHTML = html;
+    }
+
+    function renderLecture(text, outputBox) {
+        outputBox.innerHTML = "";
+
+        const lines = text.split('\n');
+        let sections = [];
+        let currentSection = null;
+        let currentContent = [];
+
+        // Detect section headers
+        const sectionPatterns = [
+            /^(Introduction|Key Concepts|Definitions|Examples|Applications|Summary|Key Takeaways|Conclusion)/i,
+            /^#+\s*(Introduction|Key Concepts|Definitions|Examples|Applications|Summary|Key Takeaways|Conclusion)/i,
+            /^\d+\.\s+(Introduction|Key Concepts|Definitions|Examples|Applications|Summary|Key Takeaways|Conclusion)/i
+        ];
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed) {
+                if (currentContent.length > 0) {
+                    currentContent.push('');
+                }
+                return;
+            }
+
+            let isSectionHeader = false;
+            for (const pattern of sectionPatterns) {
+                if (pattern.test(trimmed)) {
+                    isSectionHeader = true;
+                    break;
+                }
+            }
+
+            if (isSectionHeader) {
+                if (currentSection) {
+                    sections.push({
+                        title: currentSection,
+                        content: currentContent.join('\n')
+                    });
+                }
+                currentSection = trimmed.replace(/^#+\s*|^\d+\.\s*/, '').trim();
+                currentContent = [];
+            } else {
+                currentContent.push(trimmed);
+            }
+        });
+
+        if (currentSection) {
+            sections.push({
+                title: currentSection,
+                content: currentContent.join('\n')
+            });
+        }
+
+        // If no sections detected, create a default structure
+        if (sections.length === 0) {
+            sections.push({
+                title: 'Lecture Content',
+                content: text
+            });
+        }
+
+        // Render sections as cards
+        sections.forEach(section => {
+            const sectionCard = document.createElement('div');
+            sectionCard.className = 'lecture-section';
+
+            const sectionTitle = document.createElement('div');
+            sectionTitle.className = 'lecture-section-title';
+            sectionTitle.textContent = section.title;
+
+            const sectionContent = document.createElement('div');
+            sectionContent.className = 'lecture-section-content';
+
+            // Format content with basic markdown-like parsing
+            const formattedContent = formatLectureContent(section.content);
+            sectionContent.innerHTML = formattedContent;
+
+            sectionCard.appendChild(sectionTitle);
+            sectionCard.appendChild(sectionContent);
+            outputBox.appendChild(sectionCard);
+        });
+    }
+
+    function formatLectureContent(content) {
+        if (!content) return '';
+
+        let formatted = content
+            // Escape HTML
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            // Bold text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Italic text
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // Numbered lists
+            .replace(/^(\d+)\.\s+(.*)$/gm, '<li class="lecture-list-item">$2</li>')
+            // Bullet points
+            .replace(/^[-•*]\s+(.*)$/gm, '<li class="lecture-list-item">$1</li>')
+            // Headers within content
+            .replace(/^###\s+(.*)$/gm, '<h4 class="lecture-subheader">$1</h4>')
+            .replace(/^##\s+(.*)$/gm, '<h3 class="lecture-subheader">$1</h3>')
+            // Line breaks
+            .replace(/\n/g, '<br>');
+
+        // Wrap consecutive list items
+        formatted = formatted.replace(/(<li class="lecture-list-item">.*?<\/li>(<br>)?)+/g, function(match) {
+            return '<ul class="lecture-list">' + match.replace(/<br>/g, '') + '</ul>';
+        });
+
+        return formatted;
+    }
+
+    function renderPresentation(text, outputBox) {
+        outputBox.innerHTML = "";
+        
+        // Apply presentation mode for increased height
+        outputBox.classList.add('presentation-mode');
+
+        // Parse the presentation text into slides with robust detection
+        const lines = text.split('\n').filter(line => line.trim());
+        let currentSlide = null;
+        let slideNumber = 1;
+        let slides = [];
+        let inSpeakerNotes = false;
+
+        // Robust slide header patterns
+        const slidePatterns = [
+            /^Slide\s*\d+:/i,
+            /^SLIDE\s*\d+:/i,
+            /^#\s*\d+/,
+            /^\d+\.\s/,
+            /^===+\s*(.+?)\s*===+$/,
+            /^---+\s*(.+?)\s*---+$/
+        ];
+
+        // Speaker notes patterns
+        const speakerNotesPatterns = [
+            /^Speaker Notes:/i,
+            /^Notes:/i,
+            /^Speaker's Notes:/i,
+            /^Presenter Notes:/i
+        ];
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            
+            // Detect slide headers with multiple patterns
+            let isSlideHeader = false;
+            for (const pattern of slidePatterns) {
+                if (pattern.test(trimmed)) {
+                    isSlideHeader = true;
+                    break;
+                }
+            }
+
+            // Detect speaker notes
+            let isSpeakerNotes = false;
+            for (const pattern of speakerNotesPatterns) {
+                if (pattern.test(trimmed)) {
+                    isSpeakerNotes = true;
+                    break;
+                }
+            }
+
+            if (isSlideHeader) {
+                if (currentSlide) {
+                    slides.push(currentSlide);
+                }
+                currentSlide = {
+                    number: slideNumber++,
+                    title: trimmed.replace(/^(Slide\s*\d+:|SLIDE\s*\d+:|#\s*\d+|\d+\.\s|===+\s*|---+\s*|===+|---+)/gi, '').trim(),
+                    content: [],
+                    speakerNotes: []
+                };
+                inSpeakerNotes = false;
+            } else if (isSpeakerNotes) {
+                inSpeakerNotes = true;
+            } else if (currentSlide) {
+                if (inSpeakerNotes) {
+                    currentSlide.speakerNotes.push(trimmed);
+                } else {
+                    currentSlide.content.push(trimmed);
+                }
+            }
+        });
+        
+        if (currentSlide) {
+            slides.push(currentSlide);
+        }
+        
+        // If no slides were detected, create a simple slide structure
+        if (slides.length === 0) {
+            const sections = text.split(/\n\n+/);
+            sections.forEach((section, index) => {
+                const lines = section.split('\n').filter(l => l.trim());
+                if (lines.length > 0) {
+                    slides.push({
+                        number: index + 1,
+                        title: lines[0],
+                        content: lines.slice(1),
+                        speakerNotes: []
+                    });
+                }
+            });
+        }
+
+        // Create presentation viewer container
+        const presentationContainer = document.createElement('div');
+        presentationContainer.className = 'presentation-viewer';
+
+        // Create navigation controls
+        const navControls = document.createElement('div');
+        navControls.className = 'presentation-nav';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'presentation-nav-btn';
+        prevBtn.textContent = '← Previous';
+        prevBtn.disabled = true;
+        prevBtn.onclick = () => navigateSlide(-1);
+
+        const slideCounter = document.createElement('div');
+        slideCounter.className = 'presentation-counter';
+        slideCounter.textContent = `Slide 1 of ${slides.length}`;
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'presentation-nav-btn';
+        nextBtn.textContent = 'Next →';
+        nextBtn.onclick = () => navigateSlide(1);
+
+        navControls.appendChild(prevBtn);
+        navControls.appendChild(slideCounter);
+        navControls.appendChild(nextBtn);
+
+        // Create slide display area
+        const slideDisplay = document.createElement('div');
+        slideDisplay.className = 'presentation-slide-display';
+
+        // Store slides and current index for navigation
+        let currentSlideIndex = 0;
+
+        function renderCurrentSlide() {
+            slideDisplay.innerHTML = '';
+            const slide = slides[currentSlideIndex];
+
+            const slideCard = document.createElement('div');
+            slideCard.className = 'presentation-slide-card';
+
+            const slideNumber = document.createElement('div');
+            slideNumber.className = 'presentation-slide-number';
+            slideNumber.textContent = `Slide ${slide.number}`;
+
+            const slideTitle = document.createElement('div');
+            slideTitle.className = 'presentation-slide-title';
+            slideTitle.textContent = slide.title;
+
+            const slideContent = document.createElement('div');
+            slideContent.className = 'presentation-slide-content';
+
+            if (slide.content.length > 0) {
+                const ul = document.createElement('ul');
+                slide.content.forEach(item => {
+                    if (item.trim()) {
+                        const li = document.createElement('li');
+                        li.textContent = item.replace(/^[-*•]\s*/, '').trim();
+                        ul.appendChild(li);
+                    }
+                });
+                slideContent.appendChild(ul);
+            }
+
+            slideCard.appendChild(slideNumber);
+            slideCard.appendChild(slideTitle);
+            slideCard.appendChild(slideContent);
+
+            // Add visual placeholder if content suggests it
+            const visualPlaceholder = detectVisualPlaceholder(slide.content);
+            if (visualPlaceholder) {
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'visual-placeholder';
+                placeholderDiv.innerHTML = visualPlaceholder;
+                slideCard.appendChild(placeholderDiv);
+            }
+
+            // Add collapsible speaker notes section
+            if (slide.speakerNotes && slide.speakerNotes.length > 0) {
+                const speakerNotesSection = document.createElement('div');
+                speakerNotesSection.className = 'speaker-notes-section';
+
+                const speakerNotesHeader = document.createElement('div');
+                speakerNotesHeader.className = 'speaker-notes-header';
+                speakerNotesHeader.innerHTML = '<span>📝 Speaker Notes</span> <span class="toggle-icon">▼</span>';
+                speakerNotesHeader.onclick = () => {
+                    speakerNotesContent.classList.toggle('collapsed');
+                    const icon = speakerNotesHeader.querySelector('.toggle-icon');
+                    icon.textContent = speakerNotesContent.classList.contains('collapsed') ? '▶' : '▼';
+                };
+
+                const speakerNotesContent = document.createElement('div');
+                speakerNotesContent.className = 'speaker-notes-content';
+                speakerNotesContent.innerHTML = slide.speakerNotes.join('<br>');
+
+                speakerNotesSection.appendChild(speakerNotesHeader);
+                speakerNotesSection.appendChild(speakerNotesContent);
+                slideCard.appendChild(speakerNotesSection);
+            }
+
+            slideDisplay.appendChild(slideCard);
+
+            // Update navigation state
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === slides.length - 1;
+            slideCounter.textContent = `Slide ${currentSlideIndex + 1} of ${slides.length}`;
+        }
+
+        function navigateSlide(direction) {
+            const newIndex = currentSlideIndex + direction;
+            if (newIndex >= 0 && newIndex < slides.length) {
+                currentSlideIndex = newIndex;
+                renderCurrentSlide();
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                navigateSlide(-1);
+            } else if (event.key === 'ArrowRight') {
+                navigateSlide(1);
+            }
+        });
+
+        // Initial render
+        renderCurrentSlide();
+
+        presentationContainer.appendChild(navControls);
+        presentationContainer.appendChild(slideDisplay);
+        outputBox.appendChild(presentationContainer);
+    }
+
+    function detectVisualPlaceholder(content) {
+        const contentText = content.join(' ').toLowerCase();
+        
+        const visualKeywords = {
+            'DNA': '🧬 DNA Diagram',
+            'Cell': '🔬 Cell Structure Diagram',
+            'Water Cycle': '💧 Water Cycle Diagram',
+            'Photosynthesis': '🌱 Photosynthesis Diagram',
+            'Timeline': '📅 Timeline Visualization',
+            'Process': '⚙️ Process Flow Diagram',
+            'Cycle': '🔄 Cycle Diagram',
+            'Structure': '🏗️ Structure Diagram',
+            'Graph': '📊 Graph Visualization',
+            'Chart': '📈 Chart Visualization'
+        };
+
+        for (const [keyword, label] of Object.entries(visualKeywords)) {
+            if (contentText.includes(keyword.toLowerCase())) {
+                return `<div class="placeholder-box"><span class="placeholder-icon">${label.split(' ')[0]}</span><span class="placeholder-text">${label}</span></div>`;
+            }
+        }
+
+        return null;
+    }
+
+    function renderMermaidDiagram(mermaidCode, outputBox) {
+        outputBox.innerHTML = "";
+
+        // SANITIZE: Fix common Mermaid syntax errors from AI
+        mermaidCode = mermaidCode.replace(/([A-Za-z0-9]+)\s+([A-Za-z0-9]+)\s*\[/g, '$1_$2[');
+        mermaidCode = mermaidCode.replace(/–>/g, '-->');
+        mermaidCode = mermaidCode.replace(/—>/g, '-->');
+        mermaidCode = mermaidCode.replace(/=>/g, '-->');
+
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem; width:100%;';
+
+        // Extract mermaid code block and text
+        let codeOnly = mermaidCode;
+        let explanation = '';
+        let notes = '';
+        let keyPoints = '';
+
+        // Try to extract code between ```mermaid and ```
+        const mermaidBlockMatch = mermaidCode.match(/```mermaid\s*([\s\S]*?)```/);
+        if (mermaidBlockMatch) {
+            codeOnly = mermaidBlockMatch[1].trim();
+            const beforeCode = mermaidCode.split('```mermaid')[0].trim();
             if (beforeCode) explanation = beforeCode;
+            const afterCodeParts = mermaidCode.split('```');
+            if (afterCodeParts.length > 2) {
+                notes = afterCodeParts[2].trim();
+            }
+        } else {
+            // Try without mermaid label
+            const codeBlockMatch = mermaidCode.match(/```\s*([\s\S]*?)```/);
+            if (codeBlockMatch) {
+                codeOnly = codeBlockMatch[1].trim();
+                const beforeCode = mermaidCode.split('```')[0].trim();
+                if (beforeCode) explanation = beforeCode;
+            }
         }
-    }
 
-    // Extract Key Points from notes
-    if (notes) {
-        const keyPointsMatch = notes.match(/Key\s*Points[^:]*:([\s\S]*)/i);
-        if (keyPointsMatch) {
-            keyPoints = keyPointsMatch[1].trim();
-            notes = notes.replace(/Key\s*Points[^:]*:([\s\S]*)/i, '').trim();
+        // Extract Key Points from notes
+        if (notes) {
+            const keyPointsMatch = notes.match(/Key\s*Points[^:]*:([\s\S]*)/i);
+            if (keyPointsMatch) {
+                keyPoints = keyPointsMatch[1].trim();
+                notes = notes.replace(/Key\s*Points[^:]*:([\s\S]*)/i, '').trim();
+            }
         }
-    }
 
-    // Validate mermaid code
-    const validMermaidKeywords = ['graph', 'flowchart', 'mindmap', 'timeline', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'pie', 'gantt', 'journey', 'gitGraph'];
-    const isValidMermaid = validMermaidKeywords.some(keyword => codeOnly.toLowerCase().startsWith(keyword));
+        // Validate mermaid code
+        const validMermaidKeywords = ['graph', 'flowchart', 'mindmap', 'timeline', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'pie', 'gantt', 'journey', 'gitGraph'];
+        const isValidMermaid = validMermaidKeywords.some(keyword => codeOnly.toLowerCase().startsWith(keyword));
 
-    // Render explanation if present
-    if (explanation) {
-        const explanationDiv = document.createElement('div');
-        explanationDiv.className = 'diagram-explanation';
-        explanationDiv.innerHTML = `<p><strong>📖 About this Diagram:</strong></p><p>${explanation}</p>`;
-        wrapper.appendChild(explanationDiv);
-    }
+        // Render explanation if present
+        if (explanation) {
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'diagram-explanation';
+            explanationDiv.innerHTML = `<p><strong>📖 About this Diagram:</strong></p><p>${explanation}</p>`;
+            wrapper.appendChild(explanationDiv);
+        }
 
-    // Create mermaid div if valid
-    if (isValidMermaid && codeOnly.trim()) {
-        const container = document.createElement('div');
-        container.className = 'mermaid-container';
-        container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
+        // Create mermaid div if valid
+        if (isValidMermaid && codeOnly.trim()) {
+            const container = document.createElement('div');
+            container.className = 'mermaid-container';
+            container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
 
-        const mermaidDiv = document.createElement('div');
-        mermaidDiv.className = 'mermaid';
-        mermaidDiv.textContent = codeOnly;
-        mermaidDiv.style.cssText = 'background:#fff; padding:1rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);';
+            const mermaidDiv = document.createElement('div');
+            mermaidDiv.className = 'mermaid';
+            mermaidDiv.textContent = codeOnly;
+            mermaidDiv.style.cssText = 'background:#fff; padding:1rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);';
 
-        container.appendChild(mermaidDiv);
-        wrapper.appendChild(container);
-        outputBox.appendChild(wrapper);
+            container.appendChild(mermaidDiv);
+            wrapper.appendChild(container);
+            outputBox.appendChild(wrapper);
 
-        // ✅ FIX: Use mermaid.render() with unique ID instead of mermaid.run()
-        const diagramId = 'mermaid-diagram-' + Date.now();
-
-        mermaid.render(diagramId, codeOnly)
-            .then(result => {
-                // result.svg contains the rendered SVG string
-                mermaidDiv.innerHTML = result.svg;
-                // Remove the mermaid class to prevent re-rendering
-                mermaidDiv.classList.remove('mermaid');
-            })
-            .catch(err => {
+            // Render the diagram
+            mermaid.run({
+                nodes: [mermaidDiv]
+            }).catch(err => {
                 console.error('Mermaid rendering error:', err);
                 // Show error message and fallback
                 const errorDiv = document.createElement('div');
                 errorDiv.style.cssText = 'padding:1rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:12px; color:#dc2626; margin:1rem 0;';
-                errorDiv.innerHTML = '<strong>⚠ Diagram could not be rendered.</strong><br>Error: ' + escapeHtml(err.message || 'Unknown error') + '<br><br>Showing text-based fallback below.';
+                errorDiv.innerHTML = '<strong>⚠ Diagram could not be rendered.</strong><br>Showing text-based fallback below.';
                 wrapper.insertBefore(errorDiv, container);
 
                 // Fallback to enhanced SVG
                 renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
             });
-    } else {
-        // If not valid Mermaid, render enhanced SVG fallback
-        renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
-        return;
+        } else {
+            // If not valid Mermaid, render enhanced SVG fallback
+            renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
+            return;
+        }
+
+        // Render key points if present
+        if (keyPoints) {
+            const keyPointsDiv = document.createElement('div');
+            keyPointsDiv.className = 'diagram-notes';
+            keyPointsDiv.style.cssText = 'background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border-left: 3px solid #F59E0B;';
+            const pointsList = keyPoints.split('\n').filter(p => p.trim()).map(p => {
+                const clean = p.replace(/^[-•*]\s*/, '').trim();
+                return clean ? `<li style="margin-bottom:0.5rem;">${clean}</li>` : '';
+            }).join('');
+            keyPointsDiv.innerHTML = `<p><strong>🎯 Key Points to Remember:</strong></p><ul style="margin-left:1.25rem;">${pointsList}</ul>`;
+            wrapper.appendChild(keyPointsDiv);
+        }
+
+        // Render additional notes if present
+        if (notes) {
+            const notesDiv = document.createElement('div');
+            notesDiv.className = 'diagram-notes';
+            notesDiv.innerHTML = `<p><strong>📝 Additional Notes:</strong></p><p>${notes}</p>`;
+            wrapper.appendChild(notesDiv);
+        }
     }
 
-    // Render key points if present
-    if (keyPoints) {
-        const keyPointsDiv = document.createElement('div');
-        keyPointsDiv.className = 'diagram-notes';
-        keyPointsDiv.style.cssText = 'background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border-left: 3px solid #F59E0B;';
-        const pointsList = keyPoints.split('\n').filter(p => p.trim()).map(p => {
-            const clean = p.replace(/^[-•*]\s*/, '').trim();
-            return clean ? `<li style="margin-bottom:0.5rem;">${clean}</li>` : '';
-        }).join('');
-        keyPointsDiv.innerHTML = `<p><strong>🎯 Key Points to Remember:</strong></p><ul style="margin-left:1.25rem;">${pointsList}</ul>`;
-        wrapper.appendChild(keyPointsDiv);
+    function renderEnhancedSVGFallback(code, outputBox, explanation, notes, keyPoints) {
+        outputBox.innerHTML = "";
+
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem; width:100%;';
+
+        // Render explanation if present
+        if (explanation) {
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'diagram-explanation';
+            explanationDiv.innerHTML = `<p><strong>📖 About this Diagram:</strong></p><p>${explanation}</p>`;
+            wrapper.appendChild(explanationDiv);
+        }
+
+        // Generate enhanced SVG diagram
+        const svgContent = generateEnhancedSVG(code);
+
+        const container = document.createElement('div');
+        container.className = 'svg-container';
+        container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
+
+        const svgWrapper = document.createElement('div');
+        svgWrapper.className = 'svg-wrapper';
+        svgWrapper.style.cssText = 'background:#fff; border-radius:12px; padding:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+        svgWrapper.innerHTML = svgContent;
+        container.appendChild(svgWrapper);
+        wrapper.appendChild(container);
+
+        // Render key points if present
+        if (keyPoints) {
+            const keyPointsDiv = document.createElement('div');
+            keyPointsDiv.className = 'diagram-notes';
+            keyPointsDiv.style.cssText = 'background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border-left: 3px solid #F59E0B;';
+            const pointsList = keyPoints.split('\n').filter(p => p.trim()).map(p => {
+                const clean = p.replace(/^[-•*]\s*/, '').trim();
+                return clean ? `<li style="margin-bottom:0.5rem;">${clean}</li>` : '';
+            }).join('');
+            keyPointsDiv.innerHTML = `<p><strong>🎯 Key Points to Remember:</strong></p><ul style="margin-left:1.25rem;">${pointsList}</ul>`;
+            wrapper.appendChild(keyPointsDiv);
+        }
+
+        // Render additional notes if present
+        if (notes) {
+            const notesDiv = document.createElement('div');
+            notesDiv.className = 'diagram-notes';
+            notesDiv.innerHTML = `<p><strong>📝 Additional Notes:</strong></p><p>${notes}</p>`;
+            wrapper.appendChild(notesDiv);
+        }
+
+        outputBox.appendChild(wrapper);
     }
 
-    // Render additional notes if present
-    if (notes) {
-        const notesDiv = document.createElement('div');
-        notesDiv.className = 'diagram-notes';
-        notesDiv.innerHTML = `<p><strong>📝 Additional Notes:</strong></p><p>${notes}</p>`;
-        wrapper.appendChild(notesDiv);
+    function generateEnhancedSVG(code) {
+        // Parse the code to extract nodes and relationships
+        const lines = code.split('\n');
+        const nodes = [];
+        const edges = [];
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            // Simple parsing for common patterns
+            const arrowMatch = trimmed.match(/(\w+)\s*[-=]>\s*(\w+)/);
+            if (arrowMatch) {
+                edges.push({ from: arrowMatch[1], to: arrowMatch[2] });
+                if (!nodes.includes(arrowMatch[1])) nodes.push(arrowMatch[1]);
+                if (!nodes.includes(arrowMatch[2])) nodes.push(arrowMatch[2]);
+            }
+
+            const nodeMatch = trimmed.match(/(\w+)\[([^\]]+)\]/);
+            if (nodeMatch) {
+                if (!nodes.includes(nodeMatch[1])) nodes.push(nodeMatch[1]);
+            }
+        });
+
+        // If no structure detected, create a simple concept map from text
+        if (nodes.length === 0) {
+            const words = code.split(/\s+/).filter(w => w.length > 3).slice(0, 6);
+            words.forEach(word => nodes.push(word));
+        }
+
+        // Generate SVG
+        const width = Math.max(400, nodes.length * 120);
+        const height = 300;
+        const nodeRadius = 40;
+
+        let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        
+        // Add gradient definitions
+        svg += `
+            <defs>
+                <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+        `;
+
+        // Calculate node positions
+        const positions = {};
+        nodes.forEach((node, index) => {
+            const x = 80 + (index * ((width - 160) / Math.max(nodes.length - 1, 1)));
+            const y = height / 2 + (index % 2 === 0 ? -50 : 50);
+            positions[node] = { x, y };
+        });
+
+        // Draw edges
+        edges.forEach(edge => {
+            const from = positions[edge.from];
+            const to = positions[edge.to];
+            if (from && to) {
+                svg += `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"/>`;
+            }
+        });
+
+        // Add arrowhead marker
+        svg += `
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1"/>
+                </marker>
+            </defs>
+        `;
+
+        // Draw nodes
+        nodes.forEach(node => {
+            const pos = positions[node];
+            if (pos) {
+                const label = node.length > 10 ? node.substring(0, 10) + '...' : node;
+                svg += `
+                    <circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" fill="url(#nodeGradient)" filter="url(#shadow)"/>
+                    <text x="${pos.x}" y="${pos.y}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="12" font-weight="500">${label}</text>
+                `;
+            }
+        });
+
+        svg += '</svg>';
+
+        return svg;
     }
-}
+
+    function toggleTheme() {
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('sf_theme', next);
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+    }
+
+    function toggleMenu() {
+        var menu = document.getElementById('mobileMenu');
+        var btn = document.getElementById('hamburger');
+        menu.classList.toggle('open');
+        btn.classList.toggle('open');
+    }
+
+    document.querySelectorAll('.mobile-menu a').forEach(function(link){
+        link.addEventListener('click', function(){
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.getElementById('hamburger').classList.remove('open');
+        });
+    });
+
+</script>
+
+<!-- Theme System -->
+<script src="../../assets/js/theme.js"></script>
+
+</body>
+</html>
