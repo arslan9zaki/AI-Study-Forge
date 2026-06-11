@@ -2132,6 +2132,7 @@ body::before {
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -2402,46 +2403,23 @@ Language: ${language}.`,
             'Concepts': `Generate detailed conceptual explanations for the topic "${topic}" in ${subject} at ${curriculum} level. Explain the core concepts, provide real-world examples, include exam tips, and clarify common misconceptions. Language: ${language}.`,
             'Get Lecture': `Generate a comprehensive lecture on the topic "${topic}" in ${subject} at ${curriculum} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language. Language: ${language}.`,
             'Presentation': `Generate a 10-slide presentation outline for the topic "${topic}" in ${subject} at ${curriculum} level. Structure: Slide 1: Title, Slide 2: Introduction, Slides 3-8: Core Concepts (2 slides each for main concepts), Slide 9: Summary, Slide 10: Quiz/Review Questions. For each slide, provide: slide title, bullet points for content, and speaker notes. Format each slide as: "Slide X: [Title]" followed by bullet points, then "Speaker Notes:" followed by the notes. Language: ${language}.`,
-            'Visual Learning': `Create a detailed Mermaid diagram for the topic "${topic}" in ${subject} at ${curriculum} level.
+            'Visual Learning': 'RESPOND WITH ONLY RAW JSON. NO EXPLANATION. NO MARKDOWN. NO CODE FENCES. NO BACKTICKS. JUST THE JSON OBJECT ITSELF.
 
-⚠️ CRITICAL - YOUR OUTPUT WILL BREAK IF YOU DON'T FOLLOW THESE RULES:
-1. Use PLAIN TEXT ONLY - NEVER use **bold**, __italic__, or ANY markdown
-2. Choose the BEST diagram type:
-   - graph TD/LR: For processes, steps, sequences (MOST COMMON)
-   - mindmap: For concepts, categories, branching ideas
-   - timeline: For historical events, chronological data
-   - pie: For percentages, distributions
+Analyze this topic for ' + curriculum + ' ' + subject + ': "' + topic + '"
 
-3. The diagram MUST have at least 10-15 nodes/elements
-4. ⚠️ NODE NAMES MUST NOT HAVE SPACES - Use underscores: Cell_Wall, Endoplasmic_Reticulum, Cell_Membrane
-5. Use descriptive labels in [brackets] for each node: A[Cell_Wall]
-6. Connect ALL related elements with arrows (-->, ---, -.->)
-7. Make it COMPREHENSIVE - don't leave out important details
+Choose the best visual type and return ONLY this JSON:
 
-REQUIRED OUTPUT FORMAT (copy exactly):
-\`\`\`mermaid
-graph TD
-    A[Main_Concept] --> B[Sub_Concept_1]
-    A --> C[Sub_Concept_2]
-    B --> D[Detail_1]
-    B --> E[Detail_2]
-    C --> F[Detail_3]
-    C --> G[Detail_4]
-    D --> H[Example_1]
-    E --> I[Example_2]
-    F --> J[Application_1]
-    G --> K[Application_2]
-\`\`\`
+For a CONCEPT_MAP (use for most topics):
+{"type":"CONCEPT_MAP","title":"' + topic + '","center":"' + topic + '","branches":[{"label":"Definition","color":"#3B82F6","children":["key term 1","key term 2","key term 3"]},{"label":"Types","color":"#8B5CF6","children":["type 1","type 2","type 3"]},{"label":"Functions","color":"#10B981","children":["function 1","function 2","function 3"]},{"label":"Examples","color":"#F59E0B","children":["example 1","example 2","example 3"]},{"label":"Key Facts","color":"#EF4444","children":["fact 1","fact 2","fact 3"]}]}
 
-This diagram shows [2-3 sentence explanation].
+For a FLOWCHART (use for processes, cycles, stages):
+{"type":"FLOWCHART","title":"' + topic + ' Process","steps":[{"id":1,"label":"Step Name","detail":"brief description","color":"#3B82F6"},{"id":2,"label":"Step Name","detail":"brief description","color":"#8B5CF6"},{"id":3,"label":"Step Name","detail":"brief description","color":"#10B981"},{"id":4,"label":"Step Name","detail":"brief description","color":"#F59E0B"},{"id":5,"label":"Step Name","detail":"brief description","color":"#EF4444"}],"connections":[{"from":1,"to":2,"label":"then"},{"from":2,"to":3,"label":"then"},{"from":3,"to":4,"label":"then"},{"from":4,"to":5,"label":"then"}]}
 
-Key Points to Remember:
-- [Point 1]
-- [Point 2]
-- [Point 3]
-- [Point 4]
+For a COMPARISON_TABLE (use for comparing types/differences):
+{"type":"COMPARISON_TABLE","title":"' + topic + ' Comparison","headers":["Feature","Type A","Type B","Type C"],"rows":[{"feature":"Feature 1","values":["value","value","value"]},{"feature":"Feature 2","values":["value","value","value"]},{"feature":"Feature 3","values":["value","value","value"]},{"feature":"Feature 4","values":["value","value","value"]}]}
 
-Language: ${language}.`
+Fill ALL placeholder text with REAL accurate information about ' + topic + ' in ' + subject + '.
+Return ONLY the JSON. First character must be { and last character must be }.'
         };
 
         const prompt = prompts[action] || prompts['Get Lecture'];
@@ -2592,7 +2570,7 @@ Language: ${language}.`
           renderPresentation(text, container);
           break;
         case 'Visual Learning':
-          renderMermaidDiagram(text, container);
+          renderVisualLearning(text, container);
           break;
         default:
           container.innerHTML = '<div class="sf-plain-result">' + escapeHtml(text) + '</div>';
@@ -3259,120 +3237,200 @@ Language: ${language}.`
         return null;
     }
 
-    function renderMermaidDiagram(mermaidCode, outputBox) {
+    
+function extractVisualJSON(text) {
+  if (!text) return null;
+  var t = text.trim();
+
+  try { return JSON.parse(t); } catch(_) {}
+
+  var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fence) { try { return JSON.parse(fence[1].trim()); } catch(_) {} }
+
+  var start = t.indexOf('{');
+  var end = t.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    try { return JSON.parse(t.slice(start, end + 1)); } catch(_) {}
+  }
+
+  var m = t.match(/\{[\s\S]*?"type"[\s\S]*?\}/);
+  if (m) { try { return JSON.parse(m[0]); } catch(_) {} }
+
+  return null;
+}
+
+function renderVisualLearning(text, outputBox) {
         outputBox.innerHTML = "";
 
-        // SANITIZE: Fix common Mermaid syntax errors from AI
-        mermaidCode = mermaidCode.replace(/([A-Za-z0-9]+)\s+([A-Za-z0-9]+)\s*\[/g, '$1_$2[');
-        mermaidCode = mermaidCode.replace(/–>/g, '-->');
-        mermaidCode = mermaidCode.replace(/—>/g, '-->');
-        mermaidCode = mermaidCode.replace(/=>/g, '-->');
+        var data = extractVisualJSON(text);
+        var svgHTML = "";
 
-        const wrapper = document.createElement('div');
+        if (data && data.type) {
+            if (data.type === 'CONCEPT_MAP') {
+                svgHTML = renderConceptMapSVG(data);
+            } else if (data.type === 'FLOWCHART') {
+                svgHTML = renderFlowchartSVG(data);
+            } else if (data.type === 'COMPARISON_TABLE') {
+                svgHTML = renderComparisonTableSVG(data);
+            } else {
+                svgHTML = renderConceptMapSVG(data);
+            }
+        } else {
+            // SMART TEXT PARSER FALLBACK
+            var lines = text.split('\n').filter(function(l){ return l.trim().length > 2; });
+            var branches = [];
+            var currentBranch = null;
+            var bColors = ['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EF4444','#06B6D4','#EC4899'];
+            var ci = 0;
+
+            lines.forEach(function(line) {
+              var c = line.trim();
+              var isHeading = (c.length < 65 && !c.startsWith('-') && !c.startsWith('•') && !c.startsWith('*') && !/^\d+\./.test(c) &&
+                (c.endsWith(':') || /^#{1,3}\s/.test(c) || /^[A-Z][A-Z ]{3,}/.test(c) || (c.length < 40 && c === c.replace(/[^A-Za-z0-9\s\-&]/g,'') && c.split(' ').length <= 5)));
+              if (isHeading) {
+                if (currentBranch && currentBranch.children.length > 0) branches.push(currentBranch);
+                currentBranch = { label: c.replace(/^#+\s*/,'').replace(/:$/,'').slice(0,28), color: bColors[ci%bColors.length], children: [] };
+                ci++;
+              } else if (currentBranch && (c.startsWith('-')||c.startsWith('•')||c.startsWith('*')||/^\d+\./.test(c))) {
+                var child = c.replace(/^[-•*\d+\.]\s*/,'').replace(/\*\*(.*?)\*\*/g,'$1').slice(0,32);
+                if (child.length > 2 && currentBranch.children.length < 4) currentBranch.children.push(child);
+              }
+            });
+            if (currentBranch && currentBranch.children.length > 0) branches.push(currentBranch);
+
+            var finalData;
+            if (branches.length >= 2) {
+              finalData = { type:'CONCEPT_MAP', title:topic, center:topic, branches:branches.slice(0,7) };
+            } else {
+              var stopWords = /^(the|and|or|in|of|to|a|an|is|are|was|were|for|with|this|that|from|it|its|by|as|at|be|but|not|on|into|their|they|which|have|has|been|will|can|also|such|these|those|when|where|how|what|why|who|all|both|each|more|most|some|very|just|about|than|then|so|if|do|does|did|may|might|should|would|could|shall|during|within|between|through|after|before|about|above|below|over|under)$/i;
+              var words = text.replace(/[#*_`\[\]()]/g,'').split(/[\n,;.!?\s]+/)
+                .map(function(w){ return w.trim().replace(/^[^a-zA-Z]+|[^a-zA-Z0-9]+$/g,''); })
+                .filter(function(w){ return w.length > 4 && w.length < 32 && !stopWords.test(w); });
+              var unique = words.filter(function(w,i){ return words.indexOf(w) === i; }).slice(0,32);
+              var labels = ['Core Concepts','Key Terms','Key Facts','Examples','Applications','Structure','Functions'];
+              var autoBranches = [];
+              var chunk = 4;
+              for (var i=0; i<Math.min(7,Math.ceil(unique.length/chunk)); i++) {
+                var kids = unique.slice(i*chunk, i*chunk+chunk);
+                if (kids.length > 0) autoBranches.push({ label:labels[i]||'Details', color:bColors[i%bColors.length], children:kids });
+              }
+              finalData = { type:'CONCEPT_MAP', title:topic, center:topic, branches:autoBranches.length>0?autoBranches:[{label:'Topic Overview',color:'#3B82F6',children:[topic,'Study this topic','Key concepts','Important terms']}] };
+            }
+            svgHTML = renderConceptMapSVG(finalData);
+        }
+
+        var wrapper = document.createElement('div');
         wrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem; width:100%;';
 
-        // Extract mermaid code block and text
-        let codeOnly = mermaidCode;
-        let explanation = '';
-        let notes = '';
-        let keyPoints = '';
+        var container = document.createElement('div');
+        container.className = 'svg-container';
+        container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
 
-        // Try to extract code between ```mermaid and ```
-        const mermaidBlockMatch = mermaidCode.match(/```mermaid\s*([\s\S]*?)```/);
-        if (mermaidBlockMatch) {
-            codeOnly = mermaidBlockMatch[1].trim();
-            const beforeCode = mermaidCode.split('```mermaid')[0].trim();
-            if (beforeCode) explanation = beforeCode;
-            const afterCodeParts = mermaidCode.split('```');
-            if (afterCodeParts.length > 2) {
-                notes = afterCodeParts[2].trim();
+        var svgWrapper = document.createElement('div');
+        svgWrapper.className = 'svg-wrapper';
+        svgWrapper.style.cssText = 'background:#fff; border-radius:12px; padding:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+        svgWrapper.innerHTML = svgHTML;
+        container.appendChild(svgWrapper);
+        wrapper.appendChild(container);
+        outputBox.appendChild(wrapper);
+    }
+
+    function renderConceptMapSVG(data) {
+        if (!data || !data.branches) return '';
+        var branches = data.branches;
+        var center = data.center || data.title || 'Topic';
+        var w = 800, h = 500;
+        var cx = w/2, cy = h/2;
+        var radius = 160;
+        var svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">';
+        svg += '<defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/></filter></defs>';
+        svg += '<rect width="' + w + '" height="' + h + '" fill="#fafafa" rx="12"/>';
+
+        // Draw connections first
+        branches.forEach(function(b, i) {
+            var angle = (2 * Math.PI * i) / branches.length - Math.PI/2;
+            var bx = cx + Math.cos(angle) * radius;
+            var by = cy + Math.sin(angle) * radius;
+            svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + bx + '" y2="' + by + '" stroke="#cbd5e1" stroke-width="2"/>';
+        });
+
+        // Draw center node
+        svg += '<circle cx="' + cx + '" cy="' + cy + '" r="50" fill="#6366f1" filter="url(#shadow)"/>';
+        svg += '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="13" font-weight="600">' + center + '</text>';
+
+        // Draw branch nodes
+        branches.forEach(function(b, i) {
+            var angle = (2 * Math.PI * i) / branches.length - Math.PI/2;
+            var bx = cx + Math.cos(angle) * radius;
+            var by = cy + Math.sin(angle) * radius;
+            svg += '<circle cx="' + bx + '" cy="' + by + '" r="40" fill="' + b.color + '" filter="url(#shadow)"/>';
+            svg += '<text x="' + bx + '" y="' + by + '" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="11" font-weight="500">' + b.label + '</text>';
+        });
+
+        svg += '</svg>';
+        return svg;
+    }
+
+    function renderFlowchartSVG(data) {
+        if (!data || !data.steps) return '';
+        var steps = data.steps;
+        var w = 800, h = 120 + steps.length * 100;
+        var svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">';
+        svg += '<defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/></filter></defs>';
+        svg += '<rect width="' + w + '" height="' + h + '" fill="#fafafa" rx="12"/>';
+
+        var startY = 60;
+        var stepH = 80;
+        var boxW = 200;
+        var boxH = 50;
+        var cx = w/2;
+
+        steps.forEach(function(s, i) {
+            var y = startY + i * stepH;
+            if (i > 0) {
+                svg += '<line x1="' + cx + '" y1="' + (y - stepH + boxH) + '" x2="' + cx + '" y2="' + y + '" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrowhead)"/>';
             }
-        } else {
-            // Try without mermaid label
-            const codeBlockMatch = mermaidCode.match(/```\s*([\s\S]*?)```/);
-            if (codeBlockMatch) {
-                codeOnly = codeBlockMatch[1].trim();
-                const beforeCode = mermaidCode.split('```')[0].trim();
-                if (beforeCode) explanation = beforeCode;
-            }
-        }
+            svg += '<rect x="' + (cx - boxW/2) + '" y="' + y + '" width="' + boxW + '" height="' + boxH + '" rx="8" fill="' + s.color + '" filter="url(#shadow)"/>';
+            svg += '<text x="' + cx + '" y="' + (y + boxH/2) + '" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="12" font-weight="500">' + s.label + '</text>';
+        });
 
-        // Extract Key Points from notes
-        if (notes) {
-            const keyPointsMatch = notes.match(/Key\s*Points[^:]*:([\s\S]*)/i);
-            if (keyPointsMatch) {
-                keyPoints = keyPointsMatch[1].trim();
-                notes = notes.replace(/Key\s*Points[^:]*:([\s\S]*)/i, '').trim();
-            }
-        }
+        svg += '<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#cbd5e1"/></marker></defs>';
+        svg += '</svg>';
+        return svg;
+    }
 
-        // Validate mermaid code
-        const validMermaidKeywords = ['graph', 'flowchart', 'mindmap', 'timeline', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'pie', 'gantt', 'journey', 'gitGraph'];
-        const isValidMermaid = validMermaidKeywords.some(keyword => codeOnly.toLowerCase().startsWith(keyword));
+    function renderComparisonTableSVG(data) {
+        if (!data || !data.headers || !data.rows) return '';
+        var headers = data.headers;
+        var rows = data.rows;
+        var colW = 140;
+        var rowH = 40;
+        var w = 100 + headers.length * colW;
+        var h = 80 + (rows.length + 1) * rowH;
+        var svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">';
+        svg += '<rect width="' + w + '" height="' + h + '" fill="#fafafa" rx="12"/>';
 
-        // Render explanation if present
-        if (explanation) {
-            const explanationDiv = document.createElement('div');
-            explanationDiv.className = 'diagram-explanation';
-            explanationDiv.innerHTML = `<p><strong>📖 About this Diagram:</strong></p><p>${explanation}</p>`;
-            wrapper.appendChild(explanationDiv);
-        }
+        // Header row
+        headers.forEach(function(hd, i) {
+            var x = 50 + i * colW;
+            svg += '<rect x="' + x + '" y="20" width="' + colW + '" height="' + rowH + '" fill="#6366f1"/>';
+            svg += '<text x="' + (x + colW/2) + '" y="' + (20 + rowH/2) + '" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="12" font-weight="600">' + hd + '</text>';
+        });
 
-        // Create mermaid div if valid
-        if (isValidMermaid && codeOnly.trim()) {
-            const container = document.createElement('div');
-            container.className = 'mermaid-container';
-            container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
-
-            const mermaidDiv = document.createElement('div');
-            mermaidDiv.className = 'mermaid';
-            mermaidDiv.textContent = codeOnly;
-            mermaidDiv.style.cssText = 'background:#fff; padding:1rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);';
-
-            container.appendChild(mermaidDiv);
-            wrapper.appendChild(container);
-            outputBox.appendChild(wrapper);
-
-            // Render the diagram
-            mermaid.run({
-                nodes: [mermaidDiv]
-            }).catch(err => {
-                console.error('Mermaid rendering error:', err);
-                // Show error message and fallback
-                const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = 'padding:1rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:12px; color:#dc2626; margin:1rem 0;';
-                errorDiv.innerHTML = '<strong>⚠ Diagram could not be rendered.</strong><br>Showing text-based fallback below.';
-                wrapper.insertBefore(errorDiv, container);
-
-                // Fallback to enhanced SVG
-                renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
+        // Data rows
+        rows.forEach(function(r, ri) {
+            var y = 20 + (ri + 1) * rowH;
+            svg += '<rect x="50" y="' + y + '" width="' + colW + '" height="' + rowH + '" fill="' + (ri%2===0?'#f1f5f9':'#e2e8f0') + '" stroke="#cbd5e1"/>';
+            svg += '<text x="' + (50 + colW/2) + '" y="' + (y + rowH/2) + '" text-anchor="middle" dominant-baseline="middle" fill="#334155" font-size="11">' + r.feature + '</text>';
+            r.values.forEach(function(v, vi) {
+                var x = 50 + (vi + 1) * colW;
+                svg += '<rect x="' + x + '" y="' + y + '" width="' + colW + '" height="' + rowH + '" fill="' + (ri%2===0?'#f8fafc':'#f1f5f9') + '" stroke="#cbd5e1"/>';
+                svg += '<text x="' + (x + colW/2) + '" y="' + (y + rowH/2) + '" text-anchor="middle" dominant-baseline="middle" fill="#475569" font-size="11">' + v + '</text>';
             });
-        } else {
-            // If not valid Mermaid, render enhanced SVG fallback
-            renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
-            return;
-        }
+        });
 
-        // Render key points if present
-        if (keyPoints) {
-            const keyPointsDiv = document.createElement('div');
-            keyPointsDiv.className = 'diagram-notes';
-            keyPointsDiv.style.cssText = 'background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border-left: 3px solid #F59E0B;';
-            const pointsList = keyPoints.split('\n').filter(p => p.trim()).map(p => {
-                const clean = p.replace(/^[-•*]\s*/, '').trim();
-                return clean ? `<li style="margin-bottom:0.5rem;">${clean}</li>` : '';
-            }).join('');
-            keyPointsDiv.innerHTML = `<p><strong>🎯 Key Points to Remember:</strong></p><ul style="margin-left:1.25rem;">${pointsList}</ul>`;
-            wrapper.appendChild(keyPointsDiv);
-        }
-
-        // Render additional notes if present
-        if (notes) {
-            const notesDiv = document.createElement('div');
-            notesDiv.className = 'diagram-notes';
-            notesDiv.innerHTML = `<p><strong>📝 Additional Notes:</strong></p><p>${notes}</p>`;
-            wrapper.appendChild(notesDiv);
-        }
+        svg += '</svg>';
+        return svg;
     }
 
     function renderEnhancedSVGFallback(code, outputBox, explanation, notes, keyPoints) {
