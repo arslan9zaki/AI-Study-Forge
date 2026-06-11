@@ -1,12 +1,6 @@
 /**
  * AI Study Forge — Cloudflare Worker (Gemini Primary + OpenRouter Fallback)
- *
- * DEPLOY:
- *   npx wrangler secret put GEMINI_API_KEY
- *   npx wrangler secret put OPENROUTER_API_KEY
- *   npx wrangler deploy
- *
- * ALLOWED ORIGINS: update ALLOWED_ORIGINS if you add a custom domain.
+ * FIXED VERSION — Added debug logging and better fallback models
  */
 
 const ALLOWED_ORIGINS = [
@@ -22,11 +16,12 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:8080"
 ];
 
+// FIXED: Better free models, removed garbage "openrouter/free"
 const OR_MODELS = [
-  "openrouter/free",
   "meta-llama/llama-3.3-70b-instruct:free",
-  "qwen/qwen3-8b:free",
-  "deepseek/deepseek-r1:free"
+  "google/gemma-4-27b-it:free",
+  "deepseek/deepseek-r1:free",
+  "qwen/qwen3-30b-a3b:free"
 ];
 
 const LOW_TEMP_KEYWORDS = ["json", "array", "interview", "questions", "list of"];
@@ -60,6 +55,7 @@ function jsonError(message, status, origin, extra) {
   });
 }
 
+// FIXED: Added gemini-2.5-flash as primary option
 async function callGemini(apiKey, prompt, systemPrompt, temperature) {
   const body = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -72,8 +68,10 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
   const tid  = setTimeout(() => ctrl.abort(), 15000);
   let res;
   try {
+    // FIXED: Try gemini-2.5-flash first, fallback to gemini-2.0-flash
+    const modelName = "gemini-2.5-flash";
     res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+      `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`,
       {
         method:  "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
@@ -83,13 +81,19 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
     );
   } catch (e) {
     clearTimeout(tid);
+    console.log("Gemini network error:", e.message);
     return { ok: false, status: 503, error: e.name === "AbortError" ? "Gemini timed out" : e.message };
   }
   clearTimeout(tid);
   const raw = await res.text();
+  
+  // FIXED: Log Gemini response for debugging
+  console.log(`Gemini status: ${res.status}, body: ${raw.slice(0, 300)}`);
+  
   if (!res.ok) {
     let p = null;
     try { p = JSON.parse(raw); } catch (_) {}
+    console.log("Gemini error details:", p?.error || raw.slice(0, 200));
     return { ok: false, status: res.status, error: p?.error?.message || raw.slice(0, 200) };
   }
   let data;
@@ -99,7 +103,7 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
   const fin  = data?.candidates?.[0]?.finishReason ?? "STOP";
   if (!text) return { ok: false, status: 422, error: "Gemini empty: " + fin };
-  return { ok: true, text, model: "gemini-2.0-flash", finishReason: fin };
+  return { ok: true, text, model: "gemini-2.5-flash", finishReason: fin };
 }
 
 async function callOpenRouter(apiKey, modelId, messages, temperature) {
@@ -163,6 +167,20 @@ export default {
       }, origin);
     }
 
+    // FIXED: Added debug endpoint
+    if (request.method === "GET" && url.pathname === "/debug") {
+      if (!env.GEMINI_API_KEY) {
+        return jsonOk({ geminiWorking: false, geminiError: "No API key configured", geminiModel: null, geminiText: null }, origin);
+      }
+      const geminiTest = await callGemini(env.GEMINI_API_KEY, "Say hello and confirm you are working", "", 0.5);
+      return jsonOk({
+        geminiWorking: geminiTest.ok,
+        geminiError: geminiTest.error || null,
+        geminiModel: geminiTest.model || null,
+        geminiText: geminiTest.ok ? geminiTest.text.slice(0, 100) : null
+      }, origin);
+    }
+
     if (request.method === "GET") {
       const gKey = env.GEMINI_API_KEY || "";
       const oKey = env.OPENROUTER_API_KEY || "";
@@ -195,7 +213,9 @@ export default {
 
     // Step 1: Try Gemini first
     if (env.GEMINI_API_KEY) {
+      console.log("Trying Gemini...");
       const r = await callGemini(env.GEMINI_API_KEY, prompt.trim(), systemPrompt || "", temperature);
+      console.log("Gemini result:", r.ok ? "SUCCESS" : "FAILED - " + r.error);
       if (r.ok) return jsonOk({ text: r.text, model: r.model, finishReason: r.finishReason, provider: "gemini" }, origin);
       if (r.status === 422) return jsonError(r.error, r.status, origin);
     }
@@ -210,7 +230,9 @@ export default {
 
       let lastError = null;
       for (const modelId of OR_MODELS) {
+        console.log("Trying OpenRouter model:", modelId);
         const r = await callOpenRouter(env.OPENROUTER_API_KEY, modelId, messages, temperature);
+        console.log("OpenRouter result:", r.ok ? "SUCCESS" : "FAILED - " + r.error);
         if (r.ok) return jsonOk({ text: r.text, model: r.model, finishReason: r.finishReason, provider: "openrouter" }, origin);
         if (r.skip) {
           lastError = r.error;
@@ -218,7 +240,6 @@ export default {
         }
         return jsonError(r.error, r.status, origin);
       }
-      // All OpenRouter models were skipped (rate limited, not found, etc.)
       return jsonError("OpenRouter fallback failed: " + (lastError || "All models unavailable"), 503, origin);
     }
 
