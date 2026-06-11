@@ -475,6 +475,12 @@ body::before {
 </head>
 <body>
 
+<!-- API Status Warning -->
+<div id="apiWarning" style="display:none; background:var(--color-error-bg); color:var(--color-error-text); padding:12px 20px; text-align:center; font-size:13px; font-weight:500; border-bottom:1px solid var(--color-error); position:sticky; top:0; z-index:9999;">
+    ⚠️ AI service is currently unavailable. You can still write your cover letter manually or try again later.
+    <button onclick="this.parentElement.style.display='none'" style="margin-left:12px; background:none; border:1px solid var(--color-error); color:var(--color-error); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Dismiss</button>
+</div>
+
 <!-- Header -->
 <header class="main-header">
     <a href="../../index.html" class="logo">AI Study <span>Forge</span></a>
@@ -641,11 +647,6 @@ body::before {
                 </div>
 
                 <div class="input-group">
-                    <label>Why This Company? *</label>
-                    <textarea id="whyCompany" rows="2" placeholder="What attracts you to this company specifically?"></textarea>
-                </div>
-
-                <div class="input-group">
                     <label>Achievement Highlight <small style="font-weight:400; text-transform:none; color:var(--color-text-tertiary);">(optional)</small></label>
                     <textarea id="achievement" rows="2" placeholder="A specific achievement that makes you stand out..."></textarea>
                 </div>
@@ -751,7 +752,7 @@ function selectTone(el) {
    VALIDATION
 ═══════════════════════════════════════════ */
 function validate() {
-    const required = ['name', 'email', 'position', 'company', 'experience', 'skills', 'whyCompany'];
+    const required = ['name', 'email', 'position', 'company', 'experience', 'skills'];
     const errorMsg = document.getElementById('errorMsg');
     const errorText = document.getElementById('errorText');
 
@@ -793,6 +794,18 @@ async function generateLetter() {
     btn.classList.add('loading');
     btnText.textContent = 'Generating...';
 
+    // Try AI first, fallback to template if API fails
+    try {
+        const isOnline = await checkApiStatus();
+        if (!isOnline) throw new Error('API offline');
+
+        await generateWithAI();
+    } catch (err) {
+        console.warn('AI failed, using template fallback:', err.message);
+        generateWithTemplate();
+        showToast('⚠️ AI unavailable — generated from template. You can edit the result.');
+    }
+
     const g = id => document.getElementById(id).value.trim();
 
     const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -811,7 +824,6 @@ Company Address: ${g('companyAddress') || 'Not provided'}
 
 Experience: ${g('experience')}
 Skills: ${g('skills')}
-Why this company: ${g('whyCompany')}
 Key Achievement: ${g('achievement') || 'Not provided'}
 
 Tone: ${selectedTone}
@@ -824,7 +836,7 @@ Write a complete, compelling cover letter with:
 4. Salutation: "Dear [Hiring Manager],"
 5. Opening paragraph: strong hook mentioning the position and company
 6. Body paragraph 1: relevant experience and skills
-7. Body paragraph 2: why this company specifically
+7. Body paragraph 2: why this company specifically (AI will infer this from the company name and position)
 8. Body paragraph 3: key achievement or unique value proposition
 9. Closing paragraph: call to action and enthusiasm
 10. Sign-off: "Sincerely," followed by name
@@ -832,6 +844,24 @@ Write a complete, compelling cover letter with:
 Return ONLY the letter text. No explanations, no markdown, no commentary.`;
 
     try {
+        // Check worker health first with timeout
+        let healthCheck = null;
+        try {
+            const ctrl = new AbortController();
+            const timeout = setTimeout(() => ctrl.abort(), 3000);
+            healthCheck = await fetch(WORKER_URL, { 
+                method: 'GET',
+                signal: ctrl.signal
+            });
+            clearTimeout(timeout);
+        } catch (e) {
+            console.warn('Health check failed:', e.message);
+        }
+
+        if (!healthCheck || !healthCheck.ok) {
+            throw new Error('AI service is currently unavailable. Please try again later.');
+        }
+
         const response = await fetch(WORKER_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -842,9 +872,17 @@ Return ONLY the letter text. No explanations, no markdown, no commentary.`;
             })
         });
 
-        const result = await response.json();
+        const rawText = await response.text();
+        if (!rawText) throw new Error('Empty response from server');
 
-        if (!response.ok) throw new Error(result.error || 'Worker error');
+        let result;
+        try {
+            result = JSON.parse(rawText);
+        } catch (e) {
+            throw new Error('Invalid response format from server');
+        }
+
+        if (!response.ok) throw new Error(result.error || `Server error ${response.status}`);
 
         generatedLetter = (result.text || '').trim();
 
@@ -1049,7 +1087,13 @@ function downloadWord() {
     const wordContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset='utf-8'><title>Cover Letter</title></head>
-        <body>${html}</body>
+        <body>
+
+<!-- API Status Warning -->
+<div id="apiWarning" style="display:none; background:var(--color-error-bg); color:var(--color-error-text); padding:12px 20px; text-align:center; font-size:13px; font-weight:500; border-bottom:1px solid var(--color-error); position:sticky; top:0; z-index:9999;">
+    ⚠️ AI service is currently unavailable. You can still write your cover letter manually or try again later.
+    <button onclick="this.parentElement.style.display='none'" style="margin-left:12px; background:none; border:1px solid var(--color-error); color:var(--color-error); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Dismiss</button>
+</div>${html}</body>
         </html>
     `;
 
@@ -1084,10 +1128,36 @@ function copyLetter() {
 /* ═══════════════════════════════════════════
    CLEAR ALL
 ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   API STATUS CHECK
+═══════════════════════════════════════════ */
+async function checkApiStatus() {
+    try {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 5000);
+        const response = await fetch(WORKER_URL, { 
+            method: 'GET',
+            headers: { 'Origin': window.location.origin },
+            signal: ctrl.signal
+        });
+        clearTimeout(timeout);
+        if (!response.ok) throw new Error('Not OK');
+        document.getElementById('apiWarning').style.display = 'none';
+        return true;
+    } catch (e) {
+        document.getElementById('apiWarning').style.display = 'block';
+        console.warn('AI Worker unavailable:', e.message);
+        return false;
+    }
+}
+
+// Check on load
+checkApiStatus();
+
 function clearAll() {
     if (!confirm('Clear all data? This cannot be undone.')) return;
 
-    ['name', 'email', 'phone', 'address', 'position', 'company', 'hiringManager', 'companyAddress', 'experience', 'skills', 'whyCompany', 'achievement']
+    ['name', 'email', 'phone', 'address', 'position', 'company', 'hiringManager', 'companyAddress', 'experience', 'skills', 'achievement']
         .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
 
     document.getElementById('letterOutput').style.display = 'none';

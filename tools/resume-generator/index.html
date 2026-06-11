@@ -545,6 +545,12 @@ body::before {
 </head>
 <body>
 
+<!-- API Status Warning -->
+<div id="apiWarning" style="display:none; background:var(--color-error-bg); color:var(--color-error-text); padding:12px 20px; text-align:center; font-size:13px; font-weight:500; border-bottom:1px solid var(--color-error); position:sticky; top:0; z-index:9999;">
+    ⚠️ AI service is currently unavailable. You can still use the tool manually — fill in the summary yourself or try again later.
+    <button onclick="this.parentElement.style.display='none'" style="margin-left:12px; background:none; border:1px solid var(--color-error); color:var(--color-error); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Dismiss</button>
+</div>
+
 <!-- Header -->
 <header class="main-header">
     <a href="../../index.html" class="logo">AI Study <span>Forge</span></a>
@@ -1050,6 +1056,14 @@ async function generateSummary() {
         return;
     }
 
+    // Check API status first
+    const isOnline = await checkApiStatus();
+    if (!isOnline) {
+        showToast('❌ AI service is down. Please write your summary manually or try again later.', true);
+        document.getElementById('apiWarning').style.display = 'block';
+        return;
+    }
+
     btn.disabled = true;
     btn.classList.add('loading');
     btnText.textContent = 'Generating...';
@@ -1068,9 +1082,19 @@ Education: ${eduList || 'Not specified'}
 Write in third-person implied, professional tone. No "I" statements. Focus on key strengths and career highlights. Return ONLY the summary text.`;
 
     try {
+        // First check if worker is reachable
+        const healthCheck = await fetch(WORKER_URL, { 
+            method: 'GET',
+            headers: { 'Origin': window.location.origin }
+        }).catch(() => null);
+
+        if (!healthCheck || !healthCheck.ok) {
+            throw new Error('AI service is currently unavailable. Please try again later.');
+        }
+
         const response = await fetch(WORKER_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Origin': window.location.origin },
             body: JSON.stringify({
                 model: 'gemini-2.0-flash',
                 prompt: prompt,
@@ -1078,9 +1102,17 @@ Write in third-person implied, professional tone. No "I" statements. Focus on ke
             })
         });
 
-        const result = await response.json();
+        const rawText = await response.text();
+        if (!rawText) throw new Error('Empty response from server');
 
-        if (!response.ok) throw new Error(result.error || 'Worker error');
+        let result;
+        try {
+            result = JSON.parse(rawText);
+        } catch (e) {
+            throw new Error('Invalid response format from server');
+        }
+
+        if (!response.ok) throw new Error(result.error || `Server error ${response.status}`);
 
         const summary = (result.text || '').trim();
         if (summary) {
@@ -1088,10 +1120,11 @@ Write in third-person implied, professional tone. No "I" statements. Focus on ke
             generateResume();
             showToast('✨ AI summary generated!');
         } else {
-            throw new Error('Empty response');
+            throw new Error('AI returned empty summary');
         }
     } catch (err) {
-        showToast('❌ Error: ' + err.message, true);
+        console.error('Summary generation error:', err);
+        showToast('❌ ' + (err.message || 'Failed to generate summary'), true);
     } finally {
         btn.disabled = false;
         btn.classList.remove('loading');
@@ -1550,7 +1583,13 @@ function downloadWord() {
     const wordContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head><meta charset='utf-8'><title>Resume</title></head>
-        <body>${html}</body>
+        <body>
+
+<!-- API Status Warning -->
+<div id="apiWarning" style="display:none; background:var(--color-error-bg); color:var(--color-error-text); padding:12px 20px; text-align:center; font-size:13px; font-weight:500; border-bottom:1px solid var(--color-error); position:sticky; top:0; z-index:9999;">
+    ⚠️ AI service is currently unavailable. You can still use the tool manually — fill in the summary yourself or try again later.
+    <button onclick="this.parentElement.style.display='none'" style="margin-left:12px; background:none; border:1px solid var(--color-error); color:var(--color-error); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Dismiss</button>
+</div>${html}</body>
         </html>
     `;
 
@@ -1658,6 +1697,32 @@ function clearAll() {
 
     showToast('🗑 All data cleared');
 }
+
+/* ═══════════════════════════════════════════
+   API STATUS CHECK
+═══════════════════════════════════════════ */
+async function checkApiStatus() {
+    try {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 5000);
+        const response = await fetch(WORKER_URL, { 
+            method: 'GET',
+            headers: { 'Origin': window.location.origin },
+            signal: ctrl.signal
+        });
+        clearTimeout(timeout);
+        if (!response.ok) throw new Error('Not OK');
+        document.getElementById('apiWarning').style.display = 'none';
+        return true;
+    } catch (e) {
+        document.getElementById('apiWarning').style.display = 'block';
+        console.warn('AI Worker unavailable:', e.message);
+        return false;
+    }
+}
+
+// Check on load
+checkApiStatus();
 
 /* ═══════════════════════════════════════════
    INIT
