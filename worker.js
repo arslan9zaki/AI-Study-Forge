@@ -1,6 +1,6 @@
 /**
- * AI Study Forge — Cloudflare Worker (Gemini Primary + OpenRouter Fallback)
- * FIXED VERSION — Valid model IDs, better error handling, debug endpoint
+ * AI Study Forge — Cloudflare Worker (Gemini ONLY)
+ * SIMPLIFIED VERSION — No OpenRouter fallback
  */
 
 const ALLOWED_ORIGINS = [
@@ -14,14 +14,6 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:8000",
   "http://localhost:8080",
   "http://127.0.0.1:8080"
-];
-
-// FIXED: Valid OpenRouter free model IDs
-const OR_MODELS = [
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "google/gemma-3-27b-it:free",
-  "deepseek/deepseek-chat:free",
-  "qwen/qwen-2.5-72b-instruct:free"
 ];
 
 const LOW_TEMP_KEYWORDS = ["json", "array", "interview", "questions", "list of"];
@@ -64,12 +56,11 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
     body.systemInstruction = { role: "system", parts: [{ text: systemPrompt.trim() }] };
   }
   const ctrl = new AbortController();
-  const tid  = setTimeout(() => ctrl.abort(), 15000);
+  const tid  = setTimeout(() => ctrl.abort(), 20000);
   let res;
   try {
-    const modelName = "gemini-2.5-flash";
     res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
       {
         method:  "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
@@ -79,15 +70,15 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
     );
   } catch (e) {
     clearTimeout(tid);
-    return { ok: false, status: 503, error: e.name === "AbortError" ? "Gemini timed out" : e.message };
+    return { ok: false, status: 503, error: e.name === "AbortError" ? "Gemini timed out (20s)" : e.message };
   }
   clearTimeout(tid);
   const raw = await res.text();
-  console.log(`Gemini status: ${res.status}, body: ${raw.slice(0, 300)}`);
+  console.log(`Gemini status: ${res.status}, body: ${raw.slice(0, 500)}`);
   if (!res.ok) {
     let p = null;
     try { p = JSON.parse(raw); } catch (_) {}
-    return { ok: false, status: res.status, error: p?.error?.message || raw.slice(0, 200) };
+    return { ok: false, status: res.status, error: p?.error?.message || raw.slice(0, 300) };
   }
   let data;
   try { data = JSON.parse(raw); } catch (_) {
@@ -95,49 +86,8 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
   }
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
   const fin  = data?.candidates?.[0]?.finishReason ?? "STOP";
-  if (!text) return { ok: false, status: 422, error: "Gemini empty: " + fin };
+  if (!text) return { ok: false, status: 422, error: "Gemini returned empty content. Reason: " + fin };
   return { ok: true, text, model: "gemini-2.5-flash", finishReason: fin };
-}
-
-async function callOpenRouter(apiKey, modelId, messages, temperature) {
-  const ctrl = new AbortController();
-  const tid  = setTimeout(() => ctrl.abort(), 15000);
-  let res;
-  try {
-    res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method:  "POST",
-      headers: {
-        "Content-Type":  "application/json",
-        "Authorization": "Bearer " + apiKey,
-        "HTTP-Referer":  "https://ai-study-forge.arslan9zaki.workers.dev",
-        "X-Title":       "AI Study Forge"
-      },
-      body:   JSON.stringify({ model: modelId, messages, temperature, max_tokens: 4096, stream: false }),
-      signal: ctrl.signal
-    });
-  } catch (e) {
-    clearTimeout(tid);
-    return { ok: false, status: 503, skip: true, error: e.message };
-  }
-  clearTimeout(tid);
-  const raw = await res.text();
-  if (!res.ok) {
-    let p = null;
-    try { p = JSON.parse(raw); } catch (_) {}
-    return {
-      ok: false,
-      status: res.status,
-      skip: res.status === 429 || res.status === 404 || res.status === 503,
-      error: p?.error?.message || raw.slice(0, 200)
-    };
-  }
-  let data;
-  try { data = JSON.parse(raw); } catch (_) {
-    return { ok: false, status: 502, skip: true, error: "Unreadable OR response" };
-  }
-  const text = data?.choices?.[0]?.message?.content ?? "";
-  if (!text) return { ok: false, status: 422, skip: true, error: "Empty content" };
-  return { ok: true, text, model: data?.model || modelId, finishReason: data?.choices?.[0]?.finish_reason ?? "stop" };
 }
 
 export default {
@@ -154,40 +104,33 @@ export default {
       return jsonOk({
         status: "ok",
         timestamp: Date.now(),
-        geminiConfigured: !!env.GEMINI_API_KEY,
-        openrouterConfigured: !!env.OPENROUTER_API_KEY
+        geminiConfigured: !!env.GEMINI_API_KEY
       }, origin);
     }
 
     if (request.method === "GET" && url.pathname === "/debug") {
       if (!env.GEMINI_API_KEY) {
-        return jsonOk({ geminiWorking: false, geminiError: "No API key configured", geminiModel: null, geminiText: null }, origin);
+        return jsonOk({ geminiWorking: false, error: "No API key" }, origin);
       }
-      const geminiTest = await callGemini(env.GEMINI_API_KEY, "Say hello and confirm you are working", "", 0.5);
+      const r = await callGemini(env.GEMINI_API_KEY, "Say hello", "", 0.5);
       return jsonOk({
-        geminiWorking: geminiTest.ok,
-        geminiError: geminiTest.error || null,
-        geminiModel: geminiTest.model || null,
-        geminiText: geminiTest.ok ? geminiTest.text.slice(0, 100) : null
+        geminiWorking: r.ok,
+        error: r.error || null,
+        text: r.ok ? r.text.slice(0, 100) : null
       }, origin);
     }
 
     if (request.method === "GET") {
-      const gKey = env.GEMINI_API_KEY || "";
-      const oKey = env.OPENROUTER_API_KEY || "";
       return jsonOk({
-        status:               "ok",
-        service:              "ai-study-forge",
-        geminiConfigured:     gKey.length > 0,
-        geminiKeyPrefix:      gKey.length > 0 ? gKey.slice(0, 10) + "..." : "NOT SET",
-        openrouterConfigured: oKey.length > 0,
-        openrouterKeyPrefix:  oKey.length > 0 ? oKey.slice(0, 12) + "..." : "NOT SET",
-        timestamp:            Date.now()
+        status: "ok",
+        service: "ai-study-forge",
+        geminiConfigured: !!env.GEMINI_API_KEY,
+        timestamp: Date.now()
       }, origin);
     }
 
     if (request.method !== "POST") return jsonError("Use POST", 405, origin);
-    if (!env.GEMINI_API_KEY && !env.OPENROUTER_API_KEY) return jsonError("No API keys configured", 500, origin);
+    if (!env.GEMINI_API_KEY) return jsonError("No Gemini API key configured", 500, origin);
 
     const ct = request.headers.get("Content-Type") || "";
     if (!ct.includes("application/json")) return jsonError("Content-Type must be application/json", 415, origin);
@@ -202,38 +145,13 @@ export default {
     const needsLowTemp = LOW_TEMP_KEYWORDS.some(kw => prompt.toLowerCase().includes(kw));
     const temperature  = needsLowTemp ? 0.2 : 0.8;
 
-    // Step 1: Try Gemini first
-    if (env.GEMINI_API_KEY) {
-      console.log("Trying Gemini...");
-      const r = await callGemini(env.GEMINI_API_KEY, prompt.trim(), systemPrompt || "", temperature);
-      console.log("Gemini result:", r.ok ? "SUCCESS" : "FAILED - " + r.error);
-      if (r.ok) return jsonOk({ text: r.text, model: r.model, finishReason: r.finishReason, provider: "gemini" }, origin);
-      if (r.status === 422) return jsonError(r.error, r.status, origin);
-    }
-
-    // Step 2: OpenRouter fallbacks
-    if (env.OPENROUTER_API_KEY) {
-      const messages = [];
-      if (systemPrompt && typeof systemPrompt === "string" && systemPrompt.trim()) {
-        messages.push({ role: "system", content: systemPrompt.trim() });
-      }
-      messages.push({ role: "user", content: prompt.trim() });
-
-      let lastError = null;
-      for (const modelId of OR_MODELS) {
-        console.log("Trying OpenRouter model:", modelId);
-        const r = await callOpenRouter(env.OPENROUTER_API_KEY, modelId, messages, temperature);
-        console.log("OpenRouter result:", r.ok ? "SUCCESS" : "FAILED - " + r.error);
-        if (r.ok) return jsonOk({ text: r.text, model: r.model, finishReason: r.finishReason, provider: "openrouter" }, origin);
-        if (r.skip) {
-          lastError = r.error;
-          continue;
-        }
-        return jsonError(r.error, r.status, origin);
-      }
-      return jsonError("OpenRouter fallback failed: " + (lastError || "All models unavailable"), 503, origin);
-    }
-
-    return jsonError("All AI providers are busy. Please try again in 30 seconds.", 429, origin);
+    // Use Gemini only
+    const r = await callGemini(env.GEMINI_API_KEY, prompt.trim(), systemPrompt || "", temperature);
+    if (r.ok) return jsonOk({ text: r.text, model: r.model, finishReason: r.finishReason, provider: "gemini" }, origin);
+    
+    // Return specific error
+    return jsonError(r.error || "Gemini failed", r.status || 500, origin, { 
+      suggestion: "If rate limited, wait 60 seconds and try again. Free tier: 15 requests/minute." 
+    });
   }
 };
