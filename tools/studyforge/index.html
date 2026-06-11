@@ -2130,6 +2130,7 @@ body::before {
 
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -2400,7 +2401,46 @@ Language: ${language}.`,
             'Concepts': `Generate detailed conceptual explanations for the topic "${topic}" in ${subject} at ${curriculum} level. Explain the core concepts, provide real-world examples, include exam tips, and clarify common misconceptions. Language: ${language}.`,
             'Get Lecture': `Generate a comprehensive lecture on the topic "${topic}" in ${subject} at ${curriculum} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language. Language: ${language}.`,
             'Presentation': `Generate a 10-slide presentation outline for the topic "${topic}" in ${subject} at ${curriculum} level. Structure: Slide 1: Title, Slide 2: Introduction, Slides 3-8: Core Concepts (2 slides each for main concepts), Slide 9: Summary, Slide 10: Quiz/Review Questions. For each slide, provide: slide title, bullet points for content, and speaker notes. Format each slide as: "Slide X: [Title]" followed by bullet points, then "Speaker Notes:" followed by the notes. Language: ${language}.`,
-            'Visual Learning': `Generate a Mermaid-compatible diagram for the topic "${topic}" in ${subject} at ${curriculum} level. Choose the most appropriate diagram type: flowchart, mind map, timeline, process diagram, or concept map. Return ONLY the Mermaid code (no explanations). Example format for flowchart: graph TD; A[Start] --> B[Process]; B --> C[End]. Language: ${language}.`
+            'Visual Learning': `Create a detailed Mermaid diagram for the topic "${topic}" in ${subject} at ${curriculum} level.
+
+⚠️ CRITICAL - YOUR OUTPUT WILL BREAK IF YOU DON'T FOLLOW THESE RULES:
+1. Use PLAIN TEXT ONLY - NEVER use **bold**, __italic__, or ANY markdown
+2. Choose the BEST diagram type:
+   - graph TD/LR: For processes, steps, sequences (MOST COMMON)
+   - mindmap: For concepts, categories, branching ideas
+   - timeline: For historical events, chronological data
+   - pie: For percentages, distributions
+
+3. The diagram MUST have at least 10-15 nodes/elements
+4. ⚠️ NODE NAMES MUST NOT HAVE SPACES - Use underscores: Cell_Wall, Endoplasmic_Reticulum, Cell_Membrane
+5. Use descriptive labels in [brackets] for each node: A[Cell_Wall]
+6. Connect ALL related elements with arrows (-->, ---, -.->)
+7. Make it COMPREHENSIVE - don't leave out important details
+
+REQUIRED OUTPUT FORMAT (copy exactly):
+\`\`\`mermaid
+graph TD
+    A[Main_Concept] --> B[Sub_Concept_1]
+    A --> C[Sub_Concept_2]
+    B --> D[Detail_1]
+    B --> E[Detail_2]
+    C --> F[Detail_3]
+    C --> G[Detail_4]
+    D --> H[Example_1]
+    E --> I[Example_2]
+    F --> J[Application_1]
+    G --> K[Application_2]
+\`\`\`
+
+This diagram shows [2-3 sentence explanation].
+
+Key Points to Remember:
+- [Point 1]
+- [Point 2]
+- [Point 3]
+- [Point 4]
+
+Language: ${language}.`
         };
 
         const prompt = prompts[action] || prompts['Get Lecture'];
@@ -2525,6 +2565,9 @@ Language: ${language}.`,
       container.innerHTML = '';
       container.className = container.className.replace(/sf-output-\S+/g, '').trim();
 
+      // Sanitize AI output to remove markdown and fix common mistakes
+      text = sanitizeAIOutput(text);
+
       switch(action) {
         case 'Notes':
           renderNotes(text, container, topic, subject);
@@ -2553,6 +2596,42 @@ Language: ${language}.`,
         default:
           container.innerHTML = '<div class="sf-plain-result">' + escapeHtml(text) + '</div>';
       }
+    }
+
+    /* ── AI OUTPUT SANITIZER ── */
+    function sanitizeAIOutput(text) {
+        if (!text) return '';
+
+        // Remove ALL markdown formatting
+        text = text.replace(/\*\*/g, '');           // **bold**
+        text = text.replace(/__/g, '');             // __italic__
+        text = text.replace(/\*/g, '');             // *italic*
+        text = text.replace(/`/g, '');              // `code`
+        text = text.replace(/~~/g, '');             // ~~strikethrough~~
+        text = text.replace(/#+\s*/g, '');          // # headers
+        text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // [text](link)
+        text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, '');   // ![alt](image)
+
+        // Fix common AI mistakes in presentations
+        text = text.replace(/Bullet Points?:\s*/gi, '');
+        text = text.replace(/Content?:\s*/gi, '');
+        text = text.replace(/Key Points?:\s*/gi, 'Key Points: ');
+        text = text.replace(/Speaker['\s]*Notes?:\s*/gi, 'Speaker Notes: ');
+        text = text.replace(/Presenter['\s]*Notes?:\s*/gi, 'Speaker Notes: ');
+        text = text.replace(/Slide\s+(\d+)\s*[-–—]\s*/gi, 'Slide $1: ');
+        text = text.replace(/Slide\s+(\d+)\s*\.\s*/gi, 'Slide $1: ');
+
+        // Fix visual learning common mistakes
+        text = text.replace(/```mermaid\s*/gi, '\n\`\`\`mermaid\n');
+        text = text.replace(/```\s*$/gm, '\n\`\`\`');
+        text = text.replace(/Mermaid\s*Code:\s*/gi, '');
+        text = text.replace(/Diagram\s*Code:\s*/gi, '');
+
+        // Clean up excessive whitespace
+        text = text.replace(/\n{4,}/g, '\n\n\n');
+        text = text.replace(/[ \t]+$/gm, '');
+
+        return text.trim();
     }
 
     /* ── UTILITY ── */
@@ -3182,114 +3261,172 @@ Language: ${language}.`,
     function renderMermaidDiagram(mermaidCode, outputBox) {
         outputBox.innerHTML = "";
 
-        const container = document.createElement('div');
-        container.className = 'mermaid-container';
+        // SANITIZE: Fix common Mermaid syntax errors from AI
+        mermaidCode = mermaidCode.replace(/([A-Za-z0-9]+)\s+([A-Za-z0-9]+)\s*\[/g, '$1_$2[');
+        mermaidCode = mermaidCode.replace(/–>/g, '-->');
+        mermaidCode = mermaidCode.replace(/—>/g, '-->');
+        mermaidCode = mermaidCode.replace(/=>/g, '-->');
 
-        // Clean up the mermaid code
-        let cleanCode = mermaidCode.trim();
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem; width:100%;';
 
-        // Extract text explanation if present
+        // Extract mermaid code block and text
+        let codeOnly = mermaidCode;
         let explanation = '';
-        const explanationMatch = cleanCode.match(/^([\s\S]*?)(?:```mermaid|graph|flowchart|mindmap|timeline|sequenceDiagram)/i);
-        if (explanationMatch && explanationMatch[1].trim()) {
-            explanation = explanationMatch[1].trim();
-            cleanCode = cleanCode.replace(explanationMatch[1], '').trim();
-        }
-
-        // Extract additional notes after mermaid code
         let notes = '';
-        const notesMatch = cleanCode.match(/```(?:mermaid)?\s*([\s\S]*?)```([\s\S]*?)$/);
-        if (notesMatch && notesMatch[2] && notesMatch[2].trim()) {
-            notes = notesMatch[2].trim();
-            cleanCode = cleanCode.replace(notesMatch[2], '').trim();
+        let keyPoints = '';
+
+        // Try to extract code between ```mermaid and ```
+        const mermaidBlockMatch = mermaidCode.match(/```mermaid\s*([\s\S]*?)```/);
+        if (mermaidBlockMatch) {
+            codeOnly = mermaidBlockMatch[1].trim();
+            const beforeCode = mermaidCode.split('```mermaid')[0].trim();
+            if (beforeCode) explanation = beforeCode;
+            const afterCodeParts = mermaidCode.split('```');
+            if (afterCodeParts.length > 2) {
+                notes = afterCodeParts[2].trim();
+            }
+        } else {
+            // Try without mermaid label
+            const codeBlockMatch = mermaidCode.match(/```\s*([\s\S]*?)```/);
+            if (codeBlockMatch) {
+                codeOnly = codeBlockMatch[1].trim();
+                const beforeCode = mermaidCode.split('```')[0].trim();
+                if (beforeCode) explanation = beforeCode;
+            }
         }
 
-        // If the AI didn't return pure mermaid code, try to extract it
-        if (!cleanCode.startsWith('graph') && !cleanCode.startsWith('flowchart') && !cleanCode.startsWith('mindmap') && !cleanCode.startsWith('timeline') && !cleanCode.startsWith('sequenceDiagram')) {
-            // Try to find mermaid code in backticks
-            const match = cleanCode.match(/```(?:mermaid)?\s*([\s\S]*?)```/);
-            if (match) {
-                cleanCode = match[1].trim();
+        // Extract Key Points from notes
+        if (notes) {
+            const keyPointsMatch = notes.match(/Key\s*Points[^:]*:([\s\S]*)/i);
+            if (keyPointsMatch) {
+                keyPoints = keyPointsMatch[1].trim();
+                notes = notes.replace(/Key\s*Points[^:]*:([\s\S]*)/i, '').trim();
             }
         }
 
         // Validate mermaid code
-        const validMermaidKeywords = ['graph', 'flowchart', 'mindmap', 'timeline', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'pie', 'gantt'];
-        const isValidMermaid = validMermaidKeywords.some(keyword => cleanCode.toLowerCase().startsWith(keyword));
+        const validMermaidKeywords = ['graph', 'flowchart', 'mindmap', 'timeline', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'pie', 'gantt', 'journey', 'gitGraph'];
+        const isValidMermaid = validMermaidKeywords.some(keyword => codeOnly.toLowerCase().startsWith(keyword));
 
         // Render explanation if present
         if (explanation) {
             const explanationDiv = document.createElement('div');
             explanationDiv.className = 'diagram-explanation';
-            explanationDiv.innerHTML = `<p>${explanation}</p>`;
-            container.appendChild(explanationDiv);
+            explanationDiv.innerHTML = `<p><strong>📖 About this Diagram:</strong></p><p>${explanation}</p>`;
+            wrapper.appendChild(explanationDiv);
         }
 
         // Create mermaid div if valid
-        if (isValidMermaid && cleanCode.trim()) {
+        if (isValidMermaid && codeOnly.trim()) {
+            const container = document.createElement('div');
+            container.className = 'mermaid-container';
+            container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
+
             const mermaidDiv = document.createElement('div');
             mermaidDiv.className = 'mermaid';
-            mermaidDiv.textContent = cleanCode;
+            mermaidDiv.textContent = codeOnly;
+            mermaidDiv.style.cssText = 'background:#fff; padding:1rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);';
 
             container.appendChild(mermaidDiv);
-            outputBox.appendChild(container);
+            wrapper.appendChild(container);
+            outputBox.appendChild(wrapper);
 
             // Render the diagram
             mermaid.run({
                 nodes: [mermaidDiv]
             }).catch(err => {
                 console.error('Mermaid rendering error:', err);
-                // Fallback to SVG if Mermaid fails
-                renderSVGFallback(cleanCode, outputBox, explanation, notes);
+                // Show error message and fallback
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'padding:1rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:12px; color:#dc2626; margin:1rem 0;';
+                errorDiv.innerHTML = '<strong>⚠ Diagram could not be rendered.</strong><br>Showing text-based fallback below.';
+                wrapper.insertBefore(errorDiv, container);
+
+                // Fallback to enhanced SVG
+                renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
             });
         } else {
-            // If not valid Mermaid, try to render as SVG fallback
-            renderSVGFallback(cleanCode, outputBox, explanation, notes);
+            // If not valid Mermaid, render enhanced SVG fallback
+            renderEnhancedSVGFallback(codeOnly, outputBox, explanation, notes, keyPoints);
+            return;
         }
 
-        // Render notes if present
+        // Render key points if present
+        if (keyPoints) {
+            const keyPointsDiv = document.createElement('div');
+            keyPointsDiv.className = 'diagram-notes';
+            keyPointsDiv.style.cssText = 'background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border-left: 3px solid #F59E0B;';
+            const pointsList = keyPoints.split('\n').filter(p => p.trim()).map(p => {
+                const clean = p.replace(/^[-•*]\s*/, '').trim();
+                return clean ? `<li style="margin-bottom:0.5rem;">${clean}</li>` : '';
+            }).join('');
+            keyPointsDiv.innerHTML = `<p><strong>🎯 Key Points to Remember:</strong></p><ul style="margin-left:1.25rem;">${pointsList}</ul>`;
+            wrapper.appendChild(keyPointsDiv);
+        }
+
+        // Render additional notes if present
         if (notes) {
             const notesDiv = document.createElement('div');
             notesDiv.className = 'diagram-notes';
-            notesDiv.innerHTML = `<p><strong>Additional Notes:</strong></p><p>${notes}</p>`;
-            container.appendChild(notesDiv);
+            notesDiv.innerHTML = `<p><strong>📝 Additional Notes:</strong></p><p>${notes}</p>`;
+            wrapper.appendChild(notesDiv);
         }
     }
 
-    function renderSVGFallback(code, outputBox, explanation, notes) {
+    function renderEnhancedSVGFallback(code, outputBox, explanation, notes, keyPoints) {
         outputBox.innerHTML = "";
 
-        const container = document.createElement('div');
-        container.className = 'svg-container';
-
-        // Try to generate a simple SVG diagram based on the content
-        const svgContent = generateSimpleSVG(code);
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem; width:100%;';
 
         // Render explanation if present
         if (explanation) {
             const explanationDiv = document.createElement('div');
             explanationDiv.className = 'diagram-explanation';
-            explanationDiv.innerHTML = `<p>${explanation}</p>`;
-            container.appendChild(explanationDiv);
+            explanationDiv.innerHTML = `<p><strong>📖 About this Diagram:</strong></p><p>${explanation}</p>`;
+            wrapper.appendChild(explanationDiv);
         }
+
+        // Generate enhanced SVG diagram
+        const svgContent = generateEnhancedSVG(code);
+
+        const container = document.createElement('div');
+        container.className = 'svg-container';
+        container.style.cssText = 'background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); padding:1.5rem;';
 
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'svg-wrapper';
+        svgWrapper.style.cssText = 'background:#fff; border-radius:12px; padding:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.08);';
         svgWrapper.innerHTML = svgContent;
         container.appendChild(svgWrapper);
+        wrapper.appendChild(container);
 
-        // Render notes if present
+        // Render key points if present
+        if (keyPoints) {
+            const keyPointsDiv = document.createElement('div');
+            keyPointsDiv.className = 'diagram-notes';
+            keyPointsDiv.style.cssText = 'background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border-left: 3px solid #F59E0B;';
+            const pointsList = keyPoints.split('\n').filter(p => p.trim()).map(p => {
+                const clean = p.replace(/^[-•*]\s*/, '').trim();
+                return clean ? `<li style="margin-bottom:0.5rem;">${clean}</li>` : '';
+            }).join('');
+            keyPointsDiv.innerHTML = `<p><strong>🎯 Key Points to Remember:</strong></p><ul style="margin-left:1.25rem;">${pointsList}</ul>`;
+            wrapper.appendChild(keyPointsDiv);
+        }
+
+        // Render additional notes if present
         if (notes) {
             const notesDiv = document.createElement('div');
             notesDiv.className = 'diagram-notes';
-            notesDiv.innerHTML = `<p><strong>Additional Notes:</strong></p><p>${notes}</p>`;
-            container.appendChild(notesDiv);
+            notesDiv.innerHTML = `<p><strong>📝 Additional Notes:</strong></p><p>${notes}</p>`;
+            wrapper.appendChild(notesDiv);
         }
 
-        outputBox.appendChild(container);
+        outputBox.appendChild(wrapper);
     }
 
-    function generateSimpleSVG(code) {
+    function generateEnhancedSVG(code) {
         // Parse the code to extract nodes and relationships
         const lines = code.split('\n');
         const nodes = [];
