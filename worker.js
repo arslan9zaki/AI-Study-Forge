@@ -1,6 +1,6 @@
 /**
  * AI Study Forge — Cloudflare Worker (Gemini Primary + OpenRouter Fallback)
- * FIXED VERSION — Added debug logging and better fallback models
+ * FIXED VERSION — Valid model IDs, better error handling, debug endpoint
  */
 
 const ALLOWED_ORIGINS = [
@@ -16,12 +16,12 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:8080"
 ];
 
-// FIXED: Better free models, removed garbage "openrouter/free"
+// FIXED: Valid OpenRouter free model IDs
 const OR_MODELS = [
   "meta-llama/llama-3.3-70b-instruct:free",
-  "google/gemma-4-27b-it:free",
-  "deepseek/deepseek-r1:free",
-  "qwen/qwen3-30b-a3b:free"
+  "google/gemma-3-27b-it:free",
+  "deepseek/deepseek-chat:free",
+  "qwen/qwen-2.5-72b-instruct:free"
 ];
 
 const LOW_TEMP_KEYWORDS = ["json", "array", "interview", "questions", "list of"];
@@ -55,7 +55,6 @@ function jsonError(message, status, origin, extra) {
   });
 }
 
-// FIXED: Added gemini-2.5-flash as primary option
 async function callGemini(apiKey, prompt, systemPrompt, temperature) {
   const body = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -68,7 +67,6 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
   const tid  = setTimeout(() => ctrl.abort(), 15000);
   let res;
   try {
-    // FIXED: Try gemini-2.5-flash first, fallback to gemini-2.0-flash
     const modelName = "gemini-2.5-flash";
     res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`,
@@ -81,19 +79,14 @@ async function callGemini(apiKey, prompt, systemPrompt, temperature) {
     );
   } catch (e) {
     clearTimeout(tid);
-    console.log("Gemini network error:", e.message);
     return { ok: false, status: 503, error: e.name === "AbortError" ? "Gemini timed out" : e.message };
   }
   clearTimeout(tid);
   const raw = await res.text();
-  
-  // FIXED: Log Gemini response for debugging
   console.log(`Gemini status: ${res.status}, body: ${raw.slice(0, 300)}`);
-  
   if (!res.ok) {
     let p = null;
     try { p = JSON.parse(raw); } catch (_) {}
-    console.log("Gemini error details:", p?.error || raw.slice(0, 200));
     return { ok: false, status: res.status, error: p?.error?.message || raw.slice(0, 200) };
   }
   let data;
@@ -157,7 +150,6 @@ export default {
     }
     if (!origin) return jsonError("Origin not allowed", 403, ALLOWED_ORIGINS[0]);
 
-    // Health endpoint
     if (request.method === "GET" && url.pathname === "/health") {
       return jsonOk({
         status: "ok",
@@ -167,7 +159,6 @@ export default {
       }, origin);
     }
 
-    // FIXED: Added debug endpoint
     if (request.method === "GET" && url.pathname === "/debug") {
       if (!env.GEMINI_API_KEY) {
         return jsonOk({ geminiWorking: false, geminiError: "No API key configured", geminiModel: null, geminiText: null }, origin);
