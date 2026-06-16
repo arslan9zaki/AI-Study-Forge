@@ -3309,7 +3309,7 @@ function renderVisualLearning(text, outputBox) {
       var labels = ['Core Concepts','Key Terms','Key Facts','Examples','Applications','Structure','Functions'];
       var autoBranches = [];
       var chunk = 4;
-      for (var i=0; i<<Math.min(7,Math.ceil(unique.length/chunk)); i++) {
+      for (var i=0; i<Math.min(7,Math.ceil(unique.length/chunk)); i++) {
         var kids = unique.slice(i*chunk, i*chunk+chunk);
         if (kids.length > 0) autoBranches.push({ label:labels[i]||'Details', color:bColors[i%bColors.length], children:kids });
       }
