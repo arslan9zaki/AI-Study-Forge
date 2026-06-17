@@ -2343,7 +2343,7 @@ Language: ${language}.`,
         const prompt = prompts[action] || prompts['Get Lecture'];
         const systemPrompt = `You are an expert educational AI for AI Study Forge. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
 
-        const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
+        const WORKER_URL = "https://ai-study-forge.arslan9zaki.workers.dev";
 
         try {
             const response = await fetch(WORKER_URL, {
