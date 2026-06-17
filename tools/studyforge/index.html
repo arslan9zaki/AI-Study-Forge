@@ -2340,74 +2340,27 @@ body::before {
         // Build action-specific prompts
         const prompts = {
             'Notes': `Generate comprehensive revision-ready study notes for the topic "${topic}" in ${subject} at ${curriculum} level. Include: key definitions, important formulas (if applicable), main concepts, examples, and summary points. Use clear headings and bullet points. Language: ${language}.`,
-            'MCQs': `Generate 10 exam-style multiple-choice questions (MCQs) for the topic "${topic}" in ${subject} at ${curriculum} level. For each question, provide: the question, 4 options (A, B, C, D), the correct answer, and a brief explanation. Include a mix of difficulty levels. Language: ${language}.`,
-            'Past Papers': `You are an expert ${subject} examiner for ${curriculum} level.
-Generate a complete past paper style exam for the topic "${topic}" in ${subject} 
-for ${curriculum} curriculum students.
 
-The paper must include:
+            'MCQs': `Generate 10 exam-style multiple-choice questions (MCQs) for the topic "${topic}" in ${subject} at ${curriculum} level. For each question provide: the question, 4 options (A, B, C, D), the correct answer, and a brief explanation. Include a mix of difficulty levels. Language: ${language}.`,
 
-SECTION A — SHORT QUESTIONS
-`; (5 questions, 2 marks each):
-- Direct factual questions
-- Definition questions
-- Fill in the blank style questions
+            'Past Papers': `You are an expert ${subject} examiner for ${curriculum} level. Generate a complete past paper style exam for the topic "${topic}" in ${subject} for ${curriculum} students. SECTION A — SHORT QUESTIONS (5 questions, 2 marks each): direct factual, definition, and fill-in-the-blank questions. SECTION B — STRUCTURED QUESTIONS (3 questions, 5 marks each): multi-part questions labelled (a)(b)(c). SECTION C — ESSAY QUESTIONS (2 questions, 10 marks each): detailed explanation with examples. End with a complete MARK SCHEME. Show marks in square brackets like [2 marks]. Language: ${language}.`,
 
-SECTION B — STRUCTURED QUESTIONS (3 questions, 5 marks each):
-- Multi-part questions (a, b, c parts)
-- Application and analysis questions
-- Each part clearly labelled with marks
+            'Tests': `You are an expert ${subject} teacher for ${curriculum} level. Generate a comprehensive topic test for "${topic}" in ${subject} for ${curriculum} students. PART 1 — MULTIPLE CHOICE (10 questions, 1 mark each): 4 options per question. PART 2 — TRUE/FALSE (5 questions, 1 mark each). PART 3 — FILL IN THE BLANKS (5 questions, 1 mark each). PART 4 — SHORT ANSWER (4 questions, 3 marks each). PART 5 — DIAGRAM/LABEL (1 question, 5 marks). Include complete ANSWER KEY. Total: [35 marks] Time: [45 minutes]. Language: ${language}.`,
 
-SECTION C — ESSAY / LONG QUESTIONS (2 questions, 10 marks each):
-- Choose one from two options
-- Requires detailed explanation, examples and analysis
-- Clear mark scheme hints in brackets
-
-At the end provide a complete MARK SCHEME with:
-- Model answers for Section A
-- Key points required for Section B (bullet points per mark)
-- Marking criteria for Section C
-
-Format the output clearly with proper section headings, question numbers, 
-and marks in square brackets like [2 marks].
-Language: ${language}.`,
-            'Tests': `You are an expert ${subject} teacher for ${curriculum} level.
-Generate a comprehensive topic test for "${topic}" in ${subject} 
-for ${curriculum} curriculum students.
-
-The test must contain ALL of the following question types:
-
-PART 1 — MULTIPLE CHOICE (10 questions, 1 mark each):
-- 4 options per question (A, B, C, D)
-- Answers listed at the end
-
-PART 2 — TRUE / FALSE (5 questions, 1 mark each):
-- Student must write True or False
-- Brief justification required for False answers
-
-PART 3 — FILL IN THE BLANKS (5 questions, 1 mark each):
-- Key terms and concepts
-- Answer key provided at the end
-
-PART 4 — SHORT ANSWER QUESTIONS (4 questions, 3 marks each):
-- Requires 3-4 sentence answers
-- Tests understanding not just recall
-
-PART 5 — DIAGRAM / LABEL (1 question, 5 marks):
-- Describe a diagram the student should draw and label
-- List exactly what must be included for full marks
-
-Include a complete ANSWER KEY at the end for all parts.
-State total marks: [Total: 35 marks] [Time: 45 minutes]
-Language: ${language}.`,
             'Concepts': `Generate detailed conceptual explanations for the topic "${topic}" in ${subject} at ${curriculum} level. Explain the core concepts, provide real-world examples, include exam tips, and clarify common misconceptions. Language: ${language}.`,
-            'Get Lecture': `Generate a comprehensive lecture on the topic "${topic}" in ${subject} at ${curriculum} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language. Language: ${language}.`,
-            'Presentation': `Generate a 10-slide presentation outline for the topic "${topic}" in ${subject} at ${curriculum} level. Structure: Slide 1: Title, Slide 2: Introduction, Slides 3-8: Core Concepts (2 slides each for main concepts), Slide 9: Summary, Slide 10: Quiz/Review Questions. For each slide, provide: slide title, bullet points for content, and speaker notes. Format each slide as: "Slide X: [Title]" followed by bullet points, then "Speaker Notes:" followed by the notes. Language: ${language}.`,
-            'Visual Learning': 'RESPOND WITH ONLY RAW JSON. NO EXPLANATION. NO MARKDOWN. NO CODE FENCES. NO BACKTICKS. JUST THE JSON OBJECT ITSELF.\n\nAnalyze this topic for ' + curriculum + ' ' + subject + ': "' + topic + '"\n\nChoose the best visual type and return ONLY this JSON:\n\nFor a CONCEPT_MAP (use for most topics):\n{"type":"CONCEPT_MAP","title":"' + topic + '","center":"' + topic + '","branches":[{"label":"Definition","color":"#3B82F6","children":["key term 1","key term 2","key term 3"]},{"label":"Types","color":"#8B5CF6","children":["type 1","type 2","type 3"]},{"label":"Functions","color":"#10B981","children":["function 1","function 2","function 3"]},{"label":"Examples","color":"#F59E0B","children":["example 1","example 2","example 3"]},{"label":"Key Facts","color":"#EF4444","children":["fact 1","fact 2","fact 3"]}]}\n\nFor a FLOWCHART (use for processes, cycles, stages):\n{"type":"FLOWCHART","title":"' + topic + ' Process","steps":[{"id":1,"label":"Step Name","detail":"brief description","color":"#3B82F6"},{"id":2,"label":"Step Name","detail":"brief description","color":"#8B5CF6"},{"id":3,"label":"Step Name","detail":"brief description","color":"#10B981"},{"id":4,"label":"Step Name","detail":"brief description","color":"#F59E0B"},{"id":5,"label":"Step Name","detail":"brief description","color":"#EF4444"}],"connections":[{"from":1,"to":2,"label":"then"},{"from":2,"to":3,"label":"then"},{"from":3,"to":4,"label":"then"},{"from":4,"to":5,"label":"then"}]}\n\nFor a COMPARISON_TABLE (use for comparing types/differences):\n{"type":"COMPARISON_TABLE","title":"' + topic + ' Comparison","headers":["Feature","Type A","Type B","Type C"],"rows":[{"feature":"Feature 1","values":["value","value","value"]},{"feature":"Feature 2","values":["value","value","value"]},{"feature":"Feature 3","values":["value","value","value"]},{"feature":"Feature 4","values":["value","value","value"]}]}\n\nFill ALL placeholder text with REAL accurate information about ' + topic + ' in ' + subject + '.\nReturn ONLY the JSON. First character must be { and last character must be }.'
-        const prompt = prompts[action] || prompts['Get Lecture'];
-        const systemPrompt = `You are an expert educational AI for AI Study Forge. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you're doing — just write the content directly.`;
 
-        const WORKER_URL = "https://aibiztools.arslan9zaki.workers.dev";
+            'Get Lecture': `Generate a comprehensive lecture on the topic "${topic}" in ${subject} at ${curriculum} level. Include: introduction, key concepts with explanations, examples and applications, summary, and key takeaways. Use clear, engaging language. Language: ${language}.`,
+
+            'Presentation': `Generate a 10-slide presentation outline for the topic "${topic}" in ${subject} at ${curriculum} level. Structure: Slide 1: Title, Slide 2: Introduction, Slides 3-8: Core Concepts, Slide 9: Summary, Slide 10: Quiz. For each slide provide: slide title, bullet points, and speaker notes. Format each as: "Slide X: [Title]" then bullet points then "Speaker Notes:" then notes. Language: ${language}.`,
+
+            'Visual Learning': 'RESPOND WITH ONLY RAW JSON. NO EXPLANATION. NO MARKDOWN. NO CODE FENCES. NO BACKTICKS. JUST THE JSON OBJECT ITSELF.\n\nAnalyze this topic for ' + curriculum + ' ' + subject + ': "' + topic + '"\n\nReturn ONLY this JSON for a CONCEPT_MAP:\n{"type":"CONCEPT_MAP","title":"' + topic + '","center":"' + topic + '","branches":[{"label":"Definition","color":"#3B82F6","children":["key term 1","key term 2","key term 3"]},{"label":"Types","color":"#8B5CF6","children":["type 1","type 2","type 3"]},{"label":"Functions","color":"#10B981","children":["function 1","function 2","function 3"]},{"label":"Examples","color":"#F59E0B","children":["example 1","example 2","example 3"]},{"label":"Key Facts","color":"#EF4444","children":["fact 1","fact 2","fact 3"]}]}\n\nFill ALL placeholders with REAL accurate information about ' + topic + ' in ' + subject + '. First character must be { and last must be }.'
+        };
+
+        const prompt = prompts[action] || prompts['Get Lecture'];
+
+        const systemPrompt = `You are an expert educational AI for AI Study Forge. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you are doing — just write the content directly.`;
+
+        const WORKER_URL = "https://ai-study-forge.arslan9zaki.workers.dev";
 
         try {
             const response = await fetch(WORKER_URL, {
