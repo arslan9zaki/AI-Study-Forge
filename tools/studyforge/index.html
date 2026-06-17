@@ -2225,7 +2225,7 @@ body::before {
         }
     }
 
-    async function generateContent() {
+async function generateContent() {
 
         const curriculum = document.getElementById("curriculum").value;
         const subject = document.getElementById("subject").value;
@@ -2253,7 +2253,6 @@ body::before {
 
         const isHealthy = await checkHealth();
         if (!isHealthy) {
-            outputBox.innerHTML = "";
             outputBox.innerHTML = `
                 <div style="text-align:center; padding:2rem;">
                     <p style="color:#EF4444; font-size:1.1rem; margin-bottom:1rem;">⚠ AI service temporarily unavailable</p>
@@ -2277,14 +2276,31 @@ body::before {
         // Build action-specific prompts
         const prompts = {
             'Notes': `Generate comprehensive revision-ready study notes for the topic "${topic}" in ${subject} at ${curriculum} level. Include: key definitions, important formulas (if applicable), main concepts, examples, and summary points. Use clear headings and bullet points. Language: ${language}.`,
-            'MCQs': `Generate 10 exam-style multiple-choice questions (MCQs) for the topic "${topic}" in ${subject} at ${curriculum} level. For each question, provide: the question, 4 options (A, B, C, D), the correct answer, and a brief explanation. Include a mix of difficulty levels. Language: ${language}.`,
-            'Past Papers': `You are an expert ${subject} examiner for ${curriculum} level.
-Generate a complete past paper style exam for the topic "${topic}" in ${subject} 
-for ${curriculum} curriculum students.
 
-The paper must include:
+            'MCQs': `Generate 10 exam-style multiple-choice questions (MCQs) for the topic "${topic}" in ${subject} at ${curriculum} level. For each question provide: the question, 4 options (A B C D), the correct answer, and a brief explanation. Include a mix of difficulty levels. Language: ${language}.`,
 
-SECTION A — SHORT QUESTIONS (5 questions, 2 marks each):
+            'Past Papers': `You are an expert ${subject} examiner for ${curriculum} level. Generate a complete past paper style exam for the topic "${topic}" in ${subject} for ${curriculum} students. Structure: Section A - 10 MCQs (1 mark each), Section B - 5 short questions (3 marks each), Section C - 2 long questions (10 marks each). Include a full answer key at the end. Language: ${language}.`,
+
+            'Short Questions': `Generate 10 short exam-style questions with model answers for the topic "${topic}" in ${subject} at ${curriculum} level. Each answer should be 3 to 5 lines. Number each question clearly. Language: ${language}.`,
+
+            'Long Questions': `Generate 5 structured long-answer exam questions with detailed model answers for the topic "${topic}" in ${subject} at ${curriculum} level. Use proper essay structure with introduction, main points, and conclusion for each answer. Language: ${language}.`,
+
+            'Concepts': `Explain the core concepts of "${topic}" in ${subject} at ${curriculum} level. For each concept provide: definition, detailed explanation, real-world example, and common exam question. Use clear headings. Language: ${language}.`,
+
+            'Flashcards': `Generate 15 flashcard pairs for the topic "${topic}" in ${subject} at ${curriculum} level. Format each exactly as: FRONT: [term or question] | BACK: [definition or answer]. One per line. Language: ${language}.`,
+
+            'Presentation': `Generate a 10-slide presentation for the topic "${topic}" in ${subject} at ${curriculum} level. For each slide include: Slide number, Title, and 4 to 5 concise bullet points. End with a summary slide and a quiz slide. Language: ${language}.`,
+
+            'Get Lecture': `You are an expert ${subject} teacher delivering a lecture on "${topic}" to ${curriculum} level students. Generate a complete structured lecture with these exact sections: Lecture Title, Learning Objectives, Topic Explanation, Examples, Important Terms, Common Mistakes, Exam Tips, Summary, Practice Questions. Language: ${language}.`,
+        };
+
+        const prompt = prompts[action] || prompts['Get Lecture'];
+
+        const systemPrompt = `You are an expert educational AI for AI Study Forge. Generate ${action} content for ${curriculum} level ${subject}. Keep all scientific/technical terms in their standard form regardless of output language. Maintain exam-style formatting and syllabus accuracy. Do not include any explanations about what you are doing — just write the content directly.`;
+
+        const WORKER_URL = "https://ai-study-forge.arslan9zaki.workers.dev";
+        
+        SECTION A — SHORT QUESTIONS (5 questions, 2 marks each):
 - Direct factual questions
 - Definition questions
 - Fill in the blank style questions
