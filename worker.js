@@ -41,16 +41,9 @@ function isRateLimited(ip) {
 
 function getAllowedOrigin(request) {
   const origin = request.headers.get("Origin") || "";
-
-  // Allow direct browser access (no Origin header = direct URL visit or same-origin)
-  if (!origin) return ALLOWED_ORIGINS[0];
-
-  // Allow exact matches
   if (ALLOWED_ORIGINS.includes(origin)) return origin;
-
-  // Allow any page under arslan9zaki.github.io
+  // Allow any subdirectory of arslan9zaki.github.io
   if (origin.startsWith("https://arslan9zaki.github.io")) return origin;
-
   return null;
 }
 
